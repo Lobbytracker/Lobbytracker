@@ -14,6 +14,22 @@ $ git clone git@github.com:Lobbytracker/Lobbytracker.git
 uv sync
 ```
 
+### Creating a local database with docker
+```
+docker run --name lobbytracker-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=lobbytracker \
+  -p 5432:5432 \
+  -d postgres:16
+```
+
+### How to see current postgres tables
+```
+docker exec lobbytracker-postgres \
+  psql -U postgres -d lobbytracker -c '\dt'
+```
+
 ### Building docker image:
 ```
 docker build -t lobbytracker .
