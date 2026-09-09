@@ -1,9 +1,16 @@
 import asyncio
+import os
+
 import asyncpg
 
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:postgres@localhost:5432/lobbytracker",
+)
 
 async def connect_db():
-    conn = await asyncpg.connect("postgresql://postgres@localhost/lobbytracker", user="postgres", password="postgres")
+    conn = await asyncpg.connect(DATABASE_URL)
+
     try:
         await conn.execute(
             """
@@ -36,6 +43,8 @@ async def connect_db():
         )
     finally:
         await conn.close()
+
+
 
 
 if __name__ == "__main__":
