@@ -14,30 +14,32 @@ $ git clone git@github.com:Lobbytracker/Lobbytracker.git
 uv sync
 ```
 
-### Creating a local database with docker
+### Create local environment file
 ```
-docker run --name lobbytracker-postgres \
-  -e POSTGRES_USER=postgres \
-  -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=lobbytracker \
-  -p 5432:5432 \
-  -d postgres:16
+cp .env.example .env
+```
+Fill required fields with your own credentials.
+
+### Start the application with Docker Compose
+```
+docker compose up -d --build
+```
+The application is available at: http://localhost:8000
+
+### Checking running containers
+```
+docker compose ps
 ```
 
 ### How to see current postgres tables
 ```
-docker exec lobbytracker-postgres \
+docker compose exec db \
   psql -U postgres -d lobbytracker -c '\dt'
 ```
 
-### Building docker image:
+### Stopping the application
 ```
-docker build -t lobbytracker .
-```
-
-### Running a docker image:
-```
-docker run -p 8000:80 lobbytracker
+docker compose down
 ```
 
 ## Backlog
