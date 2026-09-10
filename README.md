@@ -37,6 +37,12 @@ docker compose exec db \
   psql -U postgres -d lobbytracker -c '\dt'
 ```
 
+### Accesing database interactively
+
+```
+ docker compose exec -it db psql -U postgres -d lobbytracker
+```
+
 ### Stopping the application
 ```
 docker compose down
