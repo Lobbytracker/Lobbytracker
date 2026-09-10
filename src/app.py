@@ -1,4 +1,4 @@
-import ai
+from ai import LlmManager
 
 def instructions():
     print("0. Quit")
@@ -16,11 +16,19 @@ def codebooks():
 def choose_file():
     print("Choose file")
 
+def prompts():
+    manager = LlmManager()
+    chat_completions = manager.call_aitta()
+
+    for chunk in chat_completions:
+            if chunk.choices[0].delta.content is not None:
+                print(chunk.choices[0].delta.content, end='', flush=True)
+
 def main():
     commands = {1: print_files,
                 2: codebooks,
                 3: choose_file,
-                4: ai.aitta_prompts}
+                4: prompts}
     instructions()
     while True:
         command = int(input("\nAnna komento: "))
