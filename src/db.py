@@ -24,9 +24,9 @@ async def connect_db():
         await conn.execute(
             """
             CREATE TABLE IF NOT EXISTS files (
-                id SERIAL PRIMARY KEY, 
-                fileName TEXT, 
-                author TEXT, 
+                id SERIAL PRIMARY KEY,
+                filename TEXT,
+                author TEXT,
                 content TEXT
             )
             """
