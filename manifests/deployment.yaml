@@ -1,20 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lobbytracker-dep
+  name: lobbytracker-dep
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: lobbytracker
-  template:
-    metadata:
-      labels:
-        app: lobbytracker
-    spec:
-      containers:
-        - name: lobbytracker
-          image: ghcr.io/lobbytracker/lobbytracker:staging
-          ports:
-            - containerPort: 8000
-          
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lobbytracker
+  template:
+    metadata:
+      labels:
+        app: lobbytracker
+    spec:
+      containers:
+        - name: lobbytracker
+          image: ghcr.io/lobbytracker/lobbytracker:staging
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_URL
+              valueFrom:
+              configMapKeyRef:
+                name: demoapp-config
+                key: DB_URL
