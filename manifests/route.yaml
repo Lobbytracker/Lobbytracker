@@ -1,0 +1,19 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: lobbytracker-route
+  namespace: evaluationharness-ohtu-s2026
+  labels:
+    app: lobbytracker
+    router: external
+spec:
+  host: lobbytracker-ohtuprojekti-staging.ext.okd-cs-test-0.k8s.cs.helsinki.fi
+  port:
+    targetPort: 8000
+  to:
+    kind: Service
+    name: lobbytracker-svc
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
