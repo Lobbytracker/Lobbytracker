@@ -60,5 +60,4 @@ jobs:
           context: .
           push: true
           tags: staging
-          labels: ${{ steps.meta.outputs.labels }}
 
