@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: lobbytracker
-          image: PLACEHOLDER
+          image: ghcr.io/lobbytracker/lobbytracker:staging
           ports:
             - containerPort: 8000
           
