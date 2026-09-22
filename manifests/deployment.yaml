@@ -1,11 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: lobbytracker-dep
+  namespace: evaluationharness-ohtu-s2026
   annotations:
     alpha.image.policy.openshift.io/resolve-names: "*"
     image.openshift.io/triggers: >-
-      [{"from":{"kind":"ImageStreamTag","name":"evaluationharness-ohtu-s2026:staging","namespace":"YOUR-NAMESPACE-HERE"},"fieldPath":"spec.template.spec.containers[?(@.name==\"lobbytracker\")].image","pause":"false"}]
-  name: lobbytracker-dep
+      [
+        {
+          "from": {
+            "kind": "ImageStreamTag",
+            "name": "evaluationharness-ohtu-s2026:staging",
+            "namespace": "evaluationharness-ohtu-s2026"
+          },
+          "fieldPath": "spec.template.spec.containers[?(@.name==\"lobbytracker\")].image",
+          "paused": false
+        },
+        {
+          "from": {
+            "kind": "ImageStreamTag",
+            "name": "evaluationharness-ohtu-s2026:staging",
+            "namespace": "evaluationharness-ohtu-s2026"
+          },
+          "fieldPath": "spec.template.spec.initContainers[?(@.name==\"db-init\")].image",
+          "paused": false
+        }
+      ]
 spec:
   replicas: 1
   selector:
@@ -16,9 +36,23 @@ spec:
       labels:
         app: lobbytracker
     spec:
+      initContainers:
+        - name: db-init
+          image: ghcr.io/lobbytracker/lobbytracker:staging
+          imagePullPolicy: Always
+          command: [".venv/bin/python", "src/db.py"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: evaluationharness-ohtu-s2026-config
+                  key: DB_URL
+            - name: PGSSLMODE
+              value: "require"
       containers:
         - name: lobbytracker
           image: ghcr.io/lobbytracker/lobbytracker:staging
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           env:
