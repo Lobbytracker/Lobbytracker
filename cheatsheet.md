@@ -56,3 +56,7 @@ git add, commit, push
 | `oc port-forward svc/<service>` | ohjaa lokaalin koneen portin liikenne palveluun                                       |
 
 https://lobbytracker-ohtuprojekti-staging.ext.okd-cs-test-0.k8s.cs.helsinki.fi/
+
+Kirjautuminen oc:
+`oc login` 
+palauttaa linkin, jonka kautta voi kirjautua HY -tunnuksilla. Sieltä kopioi 'Display token' takaata paljastuvat komennon terminaaliin. 
