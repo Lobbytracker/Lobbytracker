@@ -1,0 +1,19 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+
+metadata:
+  name: evaluationharness-ohtu-s2026
+  labels:
+    app: evaluationharness-ohtu-s2026
+spec:
+  lookupPolicy:
+    local: false
+  tags:
+    - name: staging
+      from:
+        kind: DockerImage
+        name: ghcr.io/lobbytracker/evaluationharness-ohtu-s2026:staging
+      importPolicy:
+        scheduled: true
+      referencePolicy:
+        type: Local

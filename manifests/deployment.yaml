@@ -1,25 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lobbytracker-dep
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: "*"
+    image.openshift.io/triggers: >-
+      [{"from":{"kind":"ImageStreamTag","name":"evaluationharness-ohtu-s2026:staging","namespace":"YOUR-NAMESPACE-HERE"},"fieldPath":"spec.template.spec.containers[?(@.name==\"lobbytracker\")].image","pause":"false"}]
+  name: lobbytracker-dep
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: lobbytracker
-  template:
-    metadata:
-      labels:
-        app: lobbytracker
-    spec:
-      containers:
-        - name: lobbytracker
-          image: ghcr.io/lobbytracker/lobbytracker:staging
-          ports:
-            - containerPort: 8000
-          env:
-            - name: DB_URL
-              valueFrom:
-              configMapKeyRef:
-                name: demoapp-config
-                key: DB_URL
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lobbytracker
+  template:
+    metadata:
+      labels:
+        app: lobbytracker
+    spec:
+      containers:
+        - name: lobbytracker
+          image: ghcr.io/lobbytracker/lobbytracker:staging
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: evaluationharness-ohtu-s2026-config
+                  key: DB_URL
