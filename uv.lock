@@ -545,6 +545,7 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "openai" },
     { name = "pandas" },
+    { name = "python-dotenv" },
 ]
 
 [package.metadata]
@@ -554,6 +555,7 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.141.1" },
     { name = "openai", specifier = ">=3.8.0" },
     { name = "pandas", specifier = ">=2.2.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
 ]
 
 [[package]]

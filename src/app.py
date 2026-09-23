@@ -1,4 +1,8 @@
-from ai import LlmManager
+from pathlib import Path
+
+from mvp import LlmManager
+
+DATA_DIR = Path(__file__).resolve().parents[1] / "data-repo" / "ilmastolaki_lausunnot" / "mvp_data"
 
 def instructions():
     print("0. Quit")
@@ -17,7 +21,10 @@ def choose_file():
     print("Choose file")
 
 def prompts():
-    manager = LlmManager()
+    manager = LlmManager(
+        DATA_DIR / "001-AKAVA.txt",
+        DATA_DIR / "concept.csv",
+    )
     chat_completions = manager.call_aitta()
 
     for chunk in chat_completions:
