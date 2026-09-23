@@ -10,9 +10,12 @@ DATABASE_URL = os.getenv(
     "postgresql://postgres:postgres@localhost:5432/lobbytracker",
 )
 
-DATA_REPO_PATH = Path(os.getenv("DATA_REPO_PATH", "../ilmastolaki_lausunnot"))
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DATA_REPO_PATH = Path(
+    os.getenv("DATA_REPO_PATH", PROJECT_ROOT / "data-repo" / "ilmastolaki_lausunnot")
+)
 METADATA_FILENAME = os.getenv("METADATA_FILENAME", "documents.csv")
-DOCUMENTS_DIR = os.getenv("DOCUMENTS_DIR", ".")
+DOCUMENTS_DIR = os.getenv("DOCUMENTS_DIR", "plain")
 
 REQUIRED_COLUMNS = {"author", "filename"}
 
@@ -31,7 +34,9 @@ def get_data_paths() -> tuple[Path, Path]:
 
 
 def read_documents(metadata_path: Path, documents_path: Path) -> list[tuple]:
-    dataframe = pd.read_csv(metadata_path, usecols=lambda column: column in REQUIRED_COLUMNS)
+    dataframe = pd.read_csv(
+        metadata_path, usecols=lambda column: column in REQUIRED_COLUMNS
+    )
     missing = REQUIRED_COLUMNS - set(dataframe.columns)
     if missing:
         raise ValueError(
@@ -63,6 +68,7 @@ def read_documents(metadata_path: Path, documents_path: Path) -> list[tuple]:
         )
 
     return records
+
 
 async def import_documents():
     metadata_path, documents_path = get_data_paths()
