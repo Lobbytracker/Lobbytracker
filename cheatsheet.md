@@ -1,5 +1,13 @@
 # Cheat sheet
 
+## Access PostgreSQL
+docker compose exec db psql -U postgres -d lobbytracker
+
+Inside PostgreSQL: 
+ show tables
+\dt SELECT * FROM concepts LIMIT 10;  
+
+
 ## CHECK DATABASE 
 
 docker exec -it lobbytracker-postgres psql -U postgres -d lobbytracker
