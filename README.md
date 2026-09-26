@@ -20,32 +20,60 @@ cp .env.example .env
 ```
 Fill required fields with your own credentials.
 
-### Start the application with Docker Compose
-```
-docker compose up -d --build
-```
-The application is available at: http://localhost:8000
+### Start the application
 
-### Checking running containers
+The application uses Docker Compose.
+
+Start the application with:
 ```
-docker compose ps
+make start
+```
+The application is available at:
+
+http://localhost:8000
+
+The FastAPI documentation is available at:
+
+http://localhost:8000/docs
+
+### Check running containers
+```
+make status
+```
+### View backend logs
+```
+make logs
+``
+### Access PostgreSQL
+
+Open an interactive PostgreSQL session:
+```
+make db
+```
+Useful PostgreSQL commands:
+
+Show the tables.
+```
+\dt
+``
+
+Show the first 10 concepts.
+```
+SELECT * FROM concepts LIMIT 10;
 ```
 
-### How to see current postgres tables
+### Exit PostgreSQL.
 ```
-docker compose exec db \
-  psql -U postgres -d lobbytracker -c '\dt'
+\q
 ```
-
-### Accesing database interactively
-
+### Show PostgreSQL tables directly
 ```
- docker compose exec -it db psql -U postgres -d lobbytracker
+make tables
 ```
 
-### Stopping the application
+### Stop the application
 ```
-docker compose down
+make stop
 ```
 
 ## Backlog
