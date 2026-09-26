@@ -43,7 +43,7 @@ make status
 ### View backend logs
 ```
 make logs
-``
+```
 ### Access PostgreSQL
 
 Open an interactive PostgreSQL session:
@@ -55,7 +55,7 @@ Useful PostgreSQL commands:
 Show the tables.
 ```
 \dt
-``
+```
 
 Show the first 10 concepts.
 ```
