@@ -1,5 +1,4 @@
 # Lobbytracker
-This is the repository for Lobbytracker, a public platform that will aggregate and analyse Finnish lobbying data. It's goal is to be an web application that lets a researcher answer the question *"which model and which prompting strategy should I use for this coding task?"* without writing code.
 
 ## Installing the application
 
