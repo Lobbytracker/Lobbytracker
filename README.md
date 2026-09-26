@@ -19,6 +19,15 @@ cp .env.example .env
 ```
 Fill required fields with your own credentials.
 
+### Install make utility
+
+linux ubuntu
+
+```
+sudo apt install make
+```
+
+
 ### Start the application
 
 The application uses Docker Compose.
