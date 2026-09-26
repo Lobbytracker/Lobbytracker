@@ -1,5 +1,10 @@
+.PHONY: start app stop status db tables logs
+
 start:
 	docker compose up -d --build
+
+app:
+	uv run src/app.py
 
 stop:
 	docker compose down
