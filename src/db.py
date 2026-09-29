@@ -49,6 +49,15 @@ async def get_concepts():
         await conn.close()
 
 
+async def get_documents():
+    conn = await asyncpg.connect(DATABASE_URL)
+    try:
+        rows = await conn.fetch("SELECT * FROM files")
+        return rows
+    finally:
+        await conn.close()
+
+
 if __name__ == "__main__":
     asyncio.run(init_db())
 
