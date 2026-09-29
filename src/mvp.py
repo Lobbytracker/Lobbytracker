@@ -1,25 +1,24 @@
 import openai
 import os
-from pathlib import Path
 from dotenv import load_dotenv
 
 
 class LlmManager:
-    def __init__(self, text_path, data):
+    def __init__(self, documents, concepts):
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = "openai/gpt-oss-120b"
-        self.text_path = Path(text_path)
-        self.data = data[0:2]  # Limit to first two concepts for testing
+        self.documents = documents[0]["content"] # first document for testing
+        self.concepts = concepts[0:2]  # Limit to first two concepts for testing
         self.session_list = []
 
     def call_aitta(self):
         load_dotenv()
 
         key = os.getenv("AITTA_API_KEY")
-        document = self.text_path.read_text(encoding="utf-8")
+        document = self.documents
 
         client = openai.OpenAI(api_key=key, base_url=self.url)
-        for row in self.data:
+        for row in self.concepts:
             concept = row["concept"]
             instructions = (
                 "Determine whether the following concept appears in the document. "
