@@ -42,11 +42,9 @@ def choose_file():
 async def prompts():
     data = await get_data()
     manager = LlmManager(DATA_DIR / "001-AKAVA.txt", data)
-    chat_completions = manager.call_aitta()
-
-    for chunk in chat_completions:
-        if chunk.choices[0].delta.content is not None:
-            print(chunk.choices[0].delta.content, end="", flush=True)
+    session_list = manager.call_aitta()
+    print(session_list)
+    return session_list
 
 
 def main():
