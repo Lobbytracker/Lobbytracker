@@ -6,28 +6,24 @@ from dotenv import load_dotenv
 
 
 class LlmManager:
-    def __init__(self, text_path, concept_path):
+    def __init__(self, text_path, data):
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = "openai/gpt-oss-120b"
         self.text_path = Path(text_path)
-        self.concept_path = Path(concept_path)
+        self.data = data
 
     def call_aitta(self):
         load_dotenv()
 
         key = os.getenv("AITTA_API_KEY")
         document = self.text_path.read_text(encoding="utf-8")
-        with self.concept_path.open(newline="", encoding="utf-8") as concept_file:
-            concepts = [
-                f'{row["concept_id"]}: {row["concept"]}'
-                for row in csv.DictReader(concept_file)
-            ]
+        concepts = [row["concept"] for row in self.data]
+        concepts = concepts[:3]  # Limit to first 3 concepts for demonstration
 
         instructions = (
             "Determine whether the concept appears in the document. "
             "Answer with the concept_id, a yes/no decision, and a short quote "
-            "from the document as evidence. Concepts:\n"
-            + "\n".join(concepts)
+            "from the document as evidence. Concepts:\n" + "\n".join(concepts)
         )
 
         client = openai.OpenAI(api_key=key, base_url=self.url)
@@ -41,4 +37,3 @@ class LlmManager:
         )
 
         return chat_completion
-
