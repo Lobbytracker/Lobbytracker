@@ -8,47 +8,40 @@ DATABASE_URL = os.getenv(
     "postgresql://postgres:postgres@localhost:5432/lobbytracker",
 )
 
-async def connect_db():
+
+async def init_db():
     conn = await asyncpg.connect(DATABASE_URL)
 
     try:
-        await conn.execute(
-            """
+        await conn.execute("""
             CREATE TABLE IF NOT EXISTS concepts (
                 id SERIAL PRIMARY KEY,
                 concept TEXT,
                 definition TEXT
             )
-            """
-        )
-        await conn.execute(
-            """
+            """)
+        await conn.execute("""
             CREATE TABLE IF NOT EXISTS files (
                 id SERIAL PRIMARY KEY,
                 filename TEXT,
                 author TEXT,
                 content TEXT
             )
-            """
-        )
-        await conn.execute(
-            """
+            """)
+        await conn.execute("""
             CREATE TABLE IF NOT EXISTS goldenStandard (
                 id SERIAL PRIMARY KEY, 
                 fileName TEXT, 
                 content TEXT, 
                 statementCount INTEGER
             )
-            """
-        )
+            """)
     finally:
         await conn.close()
 
 
-
-
 if __name__ == "__main__":
-    asyncio.run(connect_db())
+    asyncio.run(init_db())
 
 
 # docker run --name lobbytracker-postgres \
