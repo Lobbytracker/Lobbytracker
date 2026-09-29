@@ -27,8 +27,9 @@ def codebooks():
     pass
 
 
-def choose_file():
-    pass
+def choose_file(documents: list, file_id: int) -> list:
+    selected_ids = [int(value.strip()) for value in str(file_id).split(",")]
+    return [document for document in documents if document["id"] in selected_ids]
 
 
 def choose_concepts(concepts: list, concept_ids: str) -> list:
@@ -41,17 +42,34 @@ def choose_concepts(concepts: list, concept_ids: str) -> list:
 
     return selected_concepts
 
-async def run_selected_concepts():
+#async def run_selected_concepts():
+#    documents, concepts = await get_data()
+
+#    concept_ids = input("Anna konseptien ID numerot (esim. 1, 2, 3): ")
+#    selected_concepts = choose_concepts(concepts, concept_ids)
+
+#    manager = LlmManager(documents, selected_concepts)
+#    session_list = manager.call_aitta()
+#    print(session_list)
+#    return session_list
+
+async def select_and_run():
     documents, concepts = await get_data()
+
+    file_ids = input("Anna tiedoston ID numerot (esim. 1, 2, 3): ")
+    selected_documents = choose_file(documents, file_ids)
 
     concept_ids = input("Anna konseptien ID numerot (esim. 1, 2, 3): ")
     selected_concepts = choose_concepts(concepts, concept_ids)
 
-    manager = LlmManager(documents, selected_concepts)
+    if not selected_documents:
+        print("Ei valittuja tiedostoja.")
+        return
+
+    manager = LlmManager(selected_documents, selected_concepts)
     session_list = manager.call_aitta()
     print(session_list)
     return session_list
-
 
 async def prompts():
     documents, concepts = await get_data()
@@ -64,7 +82,7 @@ async def prompts():
 
 
 def main():
-    commands = {1: print_files, 2: codebooks, 3: run_selected_concepts, 4: prompts}
+    commands = {1: print_files, 2: codebooks, 3: select_and_run, 4: prompts}
     instructions()
     while True:
         command = int(input("\nAnna komento: "))
