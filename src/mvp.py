@@ -10,7 +10,7 @@ class LlmManager:
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = "openai/gpt-oss-120b"
         self.documents = documents[0]["content"]  # first document for testing
-        self.concepts = concepts[0:2]  # Limit to first two concepts for testing
+        self.concepts = concepts[0:5]  # Limit to first two concepts for testing
         self.session_list = []
 
     def call_aitta(self):
@@ -25,14 +25,19 @@ class LlmManager:
             concept_id = row["id"]
             instructions = (f"""
                 Determine whether the following concept appears in the document.
-                Answer with a yes/no decision and a short quote from the document
-                as evidence. Concept: {concept}.
-                Give the output in json form
-                {{
-                    {concept_id}: {concept},
-                    "decision": yes/no,
-                    "passage": "coded_passage"
+                Answer with a yes/no decision and a passage from the document
+                which matches the concept as evidence. Concept: {concept}.
+                Give the output in json form. Do not return "yes" unless you can
+                provide a supporting passage.
 
+                Output format:
+
+                {{
+                    "{concept_id}:": {{
+                    "concept": "{concept}",
+                    "decision": "yes" or "no",
+                    "passage": "verbatim supported passage" or null
+                    }}
                 }}
             """
             )
