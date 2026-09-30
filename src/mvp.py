@@ -1,3 +1,5 @@
+from ntpath import join
+
 import openai
 import os
 from dotenv import load_dotenv
@@ -7,7 +9,7 @@ class LlmManager:
     def __init__(self, documents, concepts):
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = "openai/gpt-oss-120b"
-        self.documents = documents[0]["content"] # first document for testing
+        self.documents = documents[0]["content"]  # first document for testing
         self.concepts = concepts[0:2]  # Limit to first two concepts for testing
         self.session_list = []
 
@@ -35,4 +37,4 @@ class LlmManager:
             )
             self.session_list.append(response.choices[0].message.content)
 
-        return self.session_list
+        return "\n".join(self.session_list)
