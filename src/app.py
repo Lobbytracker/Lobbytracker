@@ -16,15 +16,22 @@ def instructions():
     print("1. Etsi valitut konseptit tiedostosta")
     print("2. Aitta prompti")
 
+def format_document(filename: str):
+    name = filename.removesuffix(".txt")
+    if "-" in name:
+        name = name.split("-", 1)[1]
+    return name
+
 def print_documents(documents: list):
     print("\nEnsimmäiset 10 dokumenttia:")
     for document in documents[:10]:
-        print(f"ID: {document['id']}, Nimi: {document['filename']}")
+        name = format_document(document["filename"])
+        print(f"ID: {document['id']}, Nimi: {name}")
 
 def print_concepts(concepts: list):
-    print("\n10 ensimmäistä konseptia:")
-    for concept in concepts[:10]:
-        print(f"ID: {concept['id']}, Konsepti: {concept['concept']}")
+    print("\nKonseptit:")
+    for concept in concepts:
+        print(f"ID: {concept['id']}, {concept['concept']}")
 
 def choose_file(documents: list, file_id: int) -> list:
     selected_ids = [int(value.strip()) for value in str(file_id).split(",")]
