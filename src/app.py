@@ -16,6 +16,15 @@ def instructions():
     print("1. Etsi valitut konseptit tiedostosta")
     print("2. Aitta prompti")
 
+def print_documents(documents: list):
+    print("\nEnsimmäiset 10 dokumenttia:")
+    for document in documents[:10]:
+        print(f"ID: {document['id']}, Nimi: {document['filename']}")
+
+def print_concepts(concepts: list):
+    print("\n10 ensimmäistä konseptia:")
+    for concept in concepts[:10]:
+        print(f"ID: {concept['id']}, Konsepti: {concept['concept']}")
 
 def choose_file(documents: list, file_id: int) -> list:
     selected_ids = [int(value.strip()) for value in str(file_id).split(",")]
@@ -33,24 +42,15 @@ def choose_concepts(concepts: list, concept_ids: str) -> list:
     return selected_concepts
 
 
-# async def run_selected_concepts():
-#    documents, concepts = await get_data()
-
-#    concept_ids = input("Anna konseptien ID numerot (esim. 1, 2, 3): ")
-#    selected_concepts = choose_concepts(concepts, concept_ids)
-
-#    manager = LlmManager(documents, selected_concepts)
-#    session_list = manager.call_aitta()
-#    print(session_list)
-#    return session_list
-
-
 async def select_and_run():
     documents, concepts = await get_data()
+
+    print_documents(documents)
 
     file_ids = input("Anna tiedoston ID numerot (esim. 1, 2, 3): ")
     selected_documents = choose_file(documents, file_ids)
 
+    print_concepts(concepts)
     concept_ids = input("Anna konseptien ID numerot (esim. 1, 2, 3): ")
     selected_concepts = choose_concepts(concepts, concept_ids)
 
