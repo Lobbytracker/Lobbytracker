@@ -22,10 +22,19 @@ class LlmManager:
         client = openai.OpenAI(api_key=key, base_url=self.url)
         for row in self.concepts:
             concept = row["concept"]
-            instructions = (
-                "Determine whether the following concept appears in the document. "
-                "Answer with a yes/no decision and a short quote from the document "
-                f"as evidence. Concept: {concept}"
+            concept_id = row["id"]
+            instructions = (f"""
+                Determine whether the following concept appears in the document.
+                Answer with a yes/no decision and a short quote from the document
+                as evidence. Concept: {concept}.
+                Give the output in json form
+                {{
+                    {concept_id}: {concept},
+                    "decision": yes/no,
+                    "passage": "coded_passage"
+
+                }}
+            """
             )
 
             response = client.chat.completions.create(
