@@ -27,7 +27,6 @@ linux ubuntu
 sudo apt install make
 ```
 
-
 ### Start the application
 
 The application uses Docker Compose.
@@ -43,6 +42,12 @@ http://localhost:8000
 The FastAPI documentation is available at:
 
 http://localhost:8000/docs
+
+### Run the application locally
+
+```
+python run src/app.py
+```
 
 ### Check running containers
 ```
