@@ -46,7 +46,7 @@ http://localhost:8000/docs
 ### Run the application locally
 
 ```
-python run src/app.py
+uv run python src/app.py
 ```
 
 ### Check running containers
