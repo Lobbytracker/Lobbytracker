@@ -13,18 +13,8 @@ async def get_data():
 
 def instructions():
     print("0. Quit")
-    print("1. Dataset files")
-    print("2. Codebooks")
-    print("3. Etsi valitut konseptit tiedostosta")
-    print("4. Aitta prompti")
-
-
-def print_files():
-    pass
-
-
-def codebooks():
-    pass
+    print("1. Etsi valitut konseptit tiedostosta")
+    print("2. Aitta prompti")
 
 
 def choose_file(documents: list, file_id: int) -> list:
@@ -42,7 +32,8 @@ def choose_concepts(concepts: list, concept_ids: str) -> list:
 
     return selected_concepts
 
-#async def run_selected_concepts():
+
+# async def run_selected_concepts():
 #    documents, concepts = await get_data()
 
 #    concept_ids = input("Anna konseptien ID numerot (esim. 1, 2, 3): ")
@@ -52,6 +43,7 @@ def choose_concepts(concepts: list, concept_ids: str) -> list:
 #    session_list = manager.call_aitta()
 #    print(session_list)
 #    return session_list
+
 
 async def select_and_run():
     documents, concepts = await get_data()
@@ -71,6 +63,7 @@ async def select_and_run():
     print(session_list)
     return session_list
 
+
 async def prompts():
     documents, concepts = await get_data()
 
@@ -82,7 +75,7 @@ async def prompts():
 
 
 def main():
-    commands = {1: print_files, 2: codebooks, 3: select_and_run, 4: prompts}
+    commands = {1: select_and_run, 2: prompts}
     instructions()
     while True:
         command = int(input("\nAnna komento: "))
