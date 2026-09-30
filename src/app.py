@@ -12,6 +12,7 @@ async def get_data():
 
     return documents, concepts
 
+
 def instructions():
     print("0. Quit")
     print("1. Etsi valitut konseptit tiedostosta")
@@ -25,14 +26,16 @@ def format_document(filename: str):
         name = name.split("-", 1)[1]
     return name
 
+
 def print_documents(documents: list, start: int = 0):
-    files = documents[start:start + 10]
+    files = documents[start : start + 10]
 
     print(f"\nDokumentit {start + 1}-{start + len(files)}:")
     for document in files:
         name = format_document(document["filename"])
         print(f"ID: {document['id']}, Nimi: {name}")
     return start + 10 < len(documents)
+
 
 def select_documents(documents: list) -> list:
     start = 0
@@ -42,7 +45,7 @@ def select_documents(documents: list) -> list:
             prompt = "\nAnna tiedoston ID numerot (esim. 1, 2, 3), tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
         else:
             prompt = "\nAnna tiedoston ID numerot (esim. 1, 2, 3): "
-        
+
         answer = input(prompt).strip().lower()
 
         if answer == "x":
@@ -137,13 +140,13 @@ async def prompts():
 
 def main():
     commands = {1: select_and_run, 2: prompts, 3: change_model}
-    instructions()
     while True:
+        instructions()
         command = int(input("\nAnna komento: "))
         if command == 0:
             break
         if command not in commands:
-            instructions()
+            continue
         else:
             executable = commands[command]
             if asyncio.iscoroutinefunction(executable):
