@@ -10,7 +10,6 @@ async def get_data():
 
     return documents, concepts
 
-
 def instructions():
     print("0. Quit")
     print("1. Etsi valitut konseptit tiedostosta")
@@ -22,11 +21,33 @@ def format_document(filename: str):
         name = name.split("-", 1)[1]
     return name
 
-def print_documents(documents: list):
-    print("\nEnsimmäiset 10 dokumenttia:")
-    for document in documents[:10]:
+def print_documents(documents: list, start: int = 0):
+    files = documents[start:start + 10]
+
+    print(f"\nDokumentit {start + 1}-{start + len(files)}:")
+    for document in files:
         name = format_document(document["filename"])
         print(f"ID: {document['id']}, Nimi: {name}")
+    return start + 10 < len(documents)
+
+def select_documents(documents: list) -> list:
+    start = 0
+    while True:
+        has_more = print_documents(documents, start)
+        if has_more:
+            prompt = "\nAnna tiedoston ID numerot (esim. 1, 2, 3), tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
+        else:
+            prompt = "\nAnna tiedoston ID numerot (esim. 1, 2, 3): "
+        
+        answer = input(prompt).strip().lower()
+
+        if answer == "x":
+            if has_more:
+                start += 10
+            else:
+                print("Ei enempää tiedostoja.")
+            continue
+        return choose_file(documents, answer)
 
 def print_concepts(concepts: list):
     print("\nKonseptit:")
@@ -51,11 +72,7 @@ def choose_concepts(concepts: list, concept_ids: str) -> list:
 
 async def select_and_run():
     documents, concepts = await get_data()
-
-    print_documents(documents)
-
-    file_ids = input("Anna tiedoston ID numerot (esim. 1, 2, 3): ")
-    selected_documents = choose_file(documents, file_ids)
+    selected_documents = select_documents(documents)
 
     print_concepts(concepts)
     concept_ids = input("Anna konseptien ID numerot (esim. 1, 2, 3): ")
