@@ -9,8 +9,8 @@ DATABASE_URL = os.getenv(
 )
 
 
-async def init_db():
-    conn = await asyncpg.connect(DATABASE_URL)
+async def init_db(database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
 
     try:
         await conn.execute("""
@@ -23,7 +23,7 @@ async def init_db():
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS files (
                 id SERIAL PRIMARY KEY,
-                filename TEXT,
+                fileName TEXT,
                 author TEXT,
                 content TEXT
             )
@@ -40,8 +40,8 @@ async def init_db():
         await conn.close()
 
 
-async def get_concepts():
-    conn = await asyncpg.connect(DATABASE_URL)
+async def get_concepts(database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
     try:
         rows = await conn.fetch("SELECT * FROM concepts")
         return rows
@@ -49,8 +49,8 @@ async def get_concepts():
         await conn.close()
 
 
-async def get_documents():
-    conn = await asyncpg.connect(DATABASE_URL)
+async def get_documents(database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
     try:
         rows = await conn.fetch("SELECT * FROM files")
         return rows
