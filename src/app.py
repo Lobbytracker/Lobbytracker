@@ -1,5 +1,5 @@
 import asyncio
-
+import json
 from mvp import DEFAULT_MODEL, LlmManager, get_available_models
 from db import get_documents, get_concepts
 
@@ -124,7 +124,7 @@ async def select_and_run():
 
     manager = LlmManager(selected_documents, selected_concepts, selected_model)
     session_list = manager.call_aitta()
-    print(session_list)
+    print(json.dumps(session_list, indent=2, ensure_ascii=False))
     return session_list
 
 
@@ -133,7 +133,7 @@ async def prompts():
 
     manager = LlmManager(documents, concepts, selected_model)
     session_list = manager.call_aitta()
-    print(session_list)
+    print(json.dumps(session_list, indent=2, ensure_ascii=False))
 
     return session_list
 

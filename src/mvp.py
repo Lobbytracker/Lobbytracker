@@ -3,10 +3,12 @@ import os
 from urllib.request import Request, urlopen
 import json
 from dotenv import load_dotenv
+from pydantic import BaseModel
+from typing import Literal
 
 AITTA_URL = "https://aitta-api.csc.fi"
 DEFAULT_MODEL = "openai/gpt-oss-120b"
-REQUEST_TIMEOUT_SECONDS = 120
+REQUEST_TIMEOUT_SECONDS = 300
 
 
 def get_available_models():
@@ -58,6 +60,10 @@ def get_available_models():
     return model_ids
 
 
+class ConceptResult(BaseModel):
+       decision: Literal["yes", "no"]
+       passage: str | None
+
 class LlmManager:
     def __init__(self, documents, concepts, model=DEFAULT_MODEL):
         self.url = "https://aitta-api.csc.fi/openai/v1"
@@ -81,31 +87,31 @@ class LlmManager:
         for row in self.concepts:
             concept = row["concept"]
             concept_id = row["id"]
-            instructions = f"""
-                Determine whether the following concept appears in the document.
-                Answer with a yes/no decision and a passage from the document
-                which matches the concept as evidence. Concept: {concept}.
-                Give the output in json form. Do not return "yes" unless you can
-                provide a supporting passage.
 
-                Output format:
+            instructions = (
+                "Determine whether the following concept appears in the document. "
+                "Give the passage from the document that expresses it, "
+                "or null if there is none. "
+                'Do not answer "yes" unless you can provide a supporting passage.\n'
+                f"Concept: {concept}"
+            )
 
-                {{
-                    "{concept_id}:": {{
-                    "concept": "{concept}",
-                    "decision": "yes" or "no",
-                    "passage": "verbatim supported passage" or null
-                    }}
-                }}
-            """
-
-            response = client.chat.completions.create(
+            response = client.beta.chat.completions.parse(
                 messages=[
                     {"role": "system", "content": instructions},
                     {"role": "user", "content": document},
                 ],
                 model=self.model,
+                response_format=ConceptResult,
             )
-            self.session_list.append(response.choices[0].message.content)
 
-        return "\n".join(self.session_list)
+            result = response.choices[0].message.parsed
+
+            self.session_list.append({
+                "concept_id": concept_id,
+                "concept": concept,
+                "decision": result.decision,
+                "passage": result.passage,
+            })
+
+        return self.session_list
