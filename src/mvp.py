@@ -91,6 +91,7 @@ class LlmManager:
             instructions = (
                 "Determine whether the following concept appears in the document. "
                 "Give the passage from the document that expresses it, "
+                "Quote the passage exactly as written, without markdown or ellipses, "
                 "or null if there is none. "
                 'Do not answer "yes" unless you can provide a supporting passage.\n'
                 f"Concept: {concept}"
