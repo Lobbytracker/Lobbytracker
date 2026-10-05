@@ -5,3 +5,6 @@ __pycache__/
 .vscode/
 /manifests/configmap.yaml
 /data-repo/
+.coverage
+.coveragerc
+/htmlcov/

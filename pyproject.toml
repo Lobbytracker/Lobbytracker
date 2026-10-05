@@ -13,3 +13,9 @@ dependencies = [
     "pydantic>=2.13.5",
     "python-dotenv>=1.0.0",
 ]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.16.2",
+    "pytest>=9.1.1",
+]

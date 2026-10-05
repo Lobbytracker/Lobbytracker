@@ -2,11 +2,12 @@ import asyncio
 import json
 from mvp import DEFAULT_MODEL, LlmManager, get_available_models
 from db import get_documents, get_concepts
+from tui.tui import Tui
 
 selected_model = DEFAULT_MODEL
 
 
-async def get_data():
+async def get_data(): # tarviiko olla async jos se alkuperäinen db kutsu on jo?
     documents = await get_documents()
     concepts = await get_concepts()
 
@@ -63,7 +64,7 @@ def print_concepts(concepts: list):
         print(f"ID: {concept['id']}, {concept['concept']}")
 
 
-def choose_file(documents: list, file_id: int) -> list:
+def choose_file(documents: list, file_id: str) -> list:  # toi file id on str ylempänä ????
     selected_ids = [int(value.strip()) for value in str(file_id).split(",")]
     return [document for document in documents if document["id"] in selected_ids]
 
@@ -155,5 +156,53 @@ def main():
                 executable()
 
 
+class App:
+    INSTRUCTIONS = {
+        0: "Quit",
+        1: "Etsi valitut konseptit tiedostosta",
+        2: "Aitta prompti",
+        3: "Vaihda tekoälymallia"
+    }
+
+    def __init__(self):
+        self.tui = Tui()
+        self.selected_model = DEFAULT_MODEL
+
+    def print_instructions(self):
+        self.tui.io.output(f"\nNykyinen tekoälymalli: {self.selected_model}\n")
+
+        for key, val in self.INSTRUCTIONS.items():
+            print((f"{key}. {val}"))
+
+    def search_from_file(self):
+        self.tui.search_concepts_from_file()
+
+    def change_model(self):
+        change_model()
+
+    def prompt_thing(self):
+        self.tui.prompts()
+
+    def main(self):
+        commands = {
+            1: self.search_from_file,
+            2: self.prompt_thing,
+            3: self.change_model
+        }
+
+        while True:
+            self.print_instructions()
+            command = int(input("\nAnna komento: "))
+            if command == 0:
+                break
+            if command not in self.INSTRUCTIONS:
+                continue
+            else:
+                executable = commands[command]
+                if asyncio.iscoroutinefunction(executable):
+                    asyncio.run(executable())
+                else:
+                    executable()
+        
 if __name__ == "__main__":
     main()
