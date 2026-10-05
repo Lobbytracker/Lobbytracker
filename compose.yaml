@@ -28,6 +28,7 @@ services:
       DATA_REPO_PATH: /data
       METADATA_FILENAME: ${METADATA_FILENAME:-documents.csv}
       DOCUMENTS_DIR: ${DOCUMENTS_DIR:-.}
+      CONCEPTDATA_FILENAME: ${CONCEPTDATA_FILENAME:-concepts.csv}
 
     volumes:
       - ${DATA_REPO_PATH:-../ilmastolaki_lausunnot}:/data:ro
