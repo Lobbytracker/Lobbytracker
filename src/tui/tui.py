@@ -1,7 +1,9 @@
+import json
+
 from tui.tui_io import TuiIO
 from documents.document_management import DocumentManager
 from concepts.concept_management import ConceptManager
-from mvp import LlmManager
+
 
 class Tui:
     """Class for managing the text user interface.
@@ -11,7 +13,6 @@ class Tui:
         self.io = io
         self.documents = DocumentManager()
         self.concepts = ConceptManager()
-        # self.llm = LlmManager()
 
     def print_documents(self, start: int = 0):
         """Prints the 10 first documents
@@ -61,26 +62,5 @@ class Tui:
         concept_ids = self.io.input("\nAnna konseptien ID numerot (esim. 1, 2, 3): ")
         return self.concepts.select_concepts(concept_ids)
 
-    def search_concepts_from_file(self):
-        selected_documents = self.get_document_by_ids()
-        self.print_concepts()
-        selected_concepts = self.get_concepts_by_ids()
-
-        if not selected_documents:
-            print("Ei valittuja tiedostoja.")
-            return
-
-        manager = LlmManager(selected_documents, selected_concepts)
-        session_list = manager.call_aitta()
-        self.io.output(session_list)
-        return session_list
-
-    def prompts(self):
-        documents = self.documents.all
-        concepts = self.concepts.all_concepts
-
-        manager = LlmManager(documents, concepts)
-        session_list = manager.call_aitta()
-        self.io.output(session_list)
-
-        return session_list
+    def print_output(self, output):
+        self.io.output(json.dumps(output, indent=2, ensure_ascii=False))
