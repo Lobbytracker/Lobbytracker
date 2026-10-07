@@ -1,11 +1,11 @@
 import pandas as pd
-from concepts.concept_management import ConceptManager
+from concept_management import ConceptManager
 
 def golden_standards_from_file():
     all = (ConceptManager().all_concepts)
     all = [(concept['id'], concept['concept']) for concept in all]
     
-    with open("./src/documents/testi.csv", "r") as file:
+    with open("./src/concepts/testi.csv", "r") as file:
         data = pd.read_csv(file)
 
     golden_standard = []
@@ -14,18 +14,19 @@ def golden_standards_from_file():
         concept_id = [con_id for (con_id, con_text) in all if concept_text == con_text][0]
 
         new_concept = {
+            # document_id
             "concept_id":concept_id,
             "concept": row['concept'],
-            "decision": row['agreement'],
+            "decision": "yes" if row['agreement'] == True else "no",
             "passage": row['coded_text']
         }
         golden_standard.append(new_concept)
 
     return golden_standard
 
-all = golden_standards_from_file()
+# all = golden_standards_from_file()
 
-for i in all:
-    for key, val in i.items():
-        print(f"{key}: {val}")
-    print()
+# for i in all:
+#     for key, val in i.items():
+#         print(f"{key}: {val}")
+#     print()
