@@ -1,10 +1,14 @@
-import openai
-import os
-from urllib.request import Request, urlopen
+import asyncio
 import json
+import os
+from typing import Literal
+from urllib.request import Request, urlopen
+
+import openai
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from typing import Literal
+
+from db import save_output
 
 AITTA_URL = "https://aitta-api.csc.fi"
 DEFAULT_MODEL = "openai/gpt-oss-120b"
@@ -68,7 +72,7 @@ class LlmManager:
     def __init__(self, documents, concepts, model=DEFAULT_MODEL):
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = model
-        self.documents = documents[0]["content"]  # first document for testing
+        self.documents = documents[0]  # first document for testing
         self.concepts = concepts[0:2]  # Limit to first two concepts for testing
         self.session_list = []
 
@@ -76,7 +80,8 @@ class LlmManager:
         load_dotenv()
 
         key = os.getenv("AITTA_API_KEY")
-        document = self.documents
+        document = self.documents["content"]
+        document_id = self.documents["id"]
 
         client = openai.OpenAI(
             api_key=key,
@@ -109,10 +114,16 @@ class LlmManager:
             result = response.choices[0].message.parsed
 
             self.session_list.append({
+                "document_id": document_id,
                 "concept_id": concept_id,
                 "concept": concept,
                 "decision": result.decision,
                 "passage": result.passage,
             })
 
+        self.output_to_db()
+
         return self.session_list
+
+    def output_to_db(self):
+        asyncio.run(save_output(self.session_list))
