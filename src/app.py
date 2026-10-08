@@ -1,6 +1,6 @@
 import asyncio
 
-from mvp import DEFAULT_MODEL, LlmManager, get_available_models
+from ai import DEFAULT_MODEL, LlmManager, get_available_models
 from tui.tui import Tui
 
 
