@@ -16,7 +16,6 @@ async def init_db(database_url=DATABASE_URL):
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS concepts (
                 id SERIAL PRIMARY KEY,
-                concept_id INTEGER NOT NULL,
                 stance_label TEXT,
                 concept TEXT
             )

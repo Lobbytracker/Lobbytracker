@@ -17,7 +17,7 @@ DATA_REPO_PATH = Path(
 )
 CONCEPTDATA_FILENAME = os.getenv("CONCEPTDATA_FILENAME", "concepts.csv")
 
-REQUIRED_COLUMNS = {"concept_id", "concept"}
+REQUIRED_COLUMNS = {"concept"}
 
 
 def get_concept_data_path() -> Path:
@@ -41,9 +41,6 @@ def read_concept_data(concept_data_path: Path) -> list[tuple]:
             f"Available columns: {list(dataframe.columns)}"
         )
 
-    dataframe["concept_id"] = (
-        dataframe["concept_id"].fillna("").astype(str).str.strip()
-    )
     dataframe["concept"] = dataframe["concept"].fillna("").astype(str).str.strip()
 
     records = []
@@ -62,7 +59,7 @@ def read_concept_data(concept_data_path: Path) -> list[tuple]:
         if not concept:
             raise ValueError(f"Missing concept on CSV row {row_number + 2}")
 
-        records.append((int(row["concept_id"]), stance_label, concept))
+        records.append((stance_label, concept))
 
     return records
 
@@ -74,24 +71,21 @@ def remove_prefix(concept: str) -> str:
 async def import_concepts():
     concept_path = get_concept_data_path()
     concepts = read_concept_data(concept_path)
-    print(concepts)
-
     conn = await asyncpg.connect(DATABASE_URL)
 
     try:
         await conn.executemany(
             """
-            INSERT INTO concepts (concept_id, stance_label, concept)
-            VALUES ($1, $2, $3)
-            ON CONFLICT (concept_id) DO UPDATE
-            SET stance_label = EXCLUDED.stance_label,
-                concept = EXCLUDED.concept
+            INSERT INTO concepts (stance_label, concept)
+            VALUES ($1, $2)
             """,
             concepts,
         )
 
     finally:
         await conn.close()
+
+    print(f"Imported {len(concepts)} concepts from {concept_path}.")
 
 
 if __name__ == "__main__":
