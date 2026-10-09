@@ -17,7 +17,7 @@ DATA_REPO_PATH = Path(
 )
 CONCEPTDATA_FILENAME = os.getenv("CONCEPTDATA_FILENAME", "concepts.csv")
 
-REQUIRED_COLUMNS = {"concept"}
+REQUIRED_COLUMNS = {"concept_id", "concept"}
 
 
 def get_concept_data_path() -> Path:
@@ -41,15 +41,28 @@ def read_concept_data(concept_data_path: Path) -> list[tuple]:
             f"Available columns: {list(dataframe.columns)}"
         )
 
+    dataframe["concept_id"] = (
+        dataframe["concept_id"].fillna("").astype(str).str.strip()
+    )
     dataframe["concept"] = dataframe["concept"].fillna("").astype(str).str.strip()
 
     records = []
     for row_number, row in dataframe.iterrows():
-        concept = remove_prefix(row["concept"])
+        raw_concept = row["concept"]
+        if raw_concept.startswith("YES:"):
+            stance_label = "YES"
+        elif raw_concept.startswith("NO:"):
+            stance_label = "NO"
+        else:
+            raise ValueError(
+                f"Concept must start with 'YES:' or 'NO:' on CSV row {row_number + 2}"
+            )
+
+        concept = remove_prefix(raw_concept)
         if not concept:
             raise ValueError(f"Missing concept on CSV row {row_number + 2}")
 
-        records.append((concept,))
+        records.append((int(row["concept_id"]), stance_label, concept))
 
     return records
 
@@ -68,11 +81,18 @@ async def import_concepts():
     try:
         await conn.executemany(
             """
-            INSERT INTO concepts (concept)
-            VALUES ($1)
+            INSERT INTO concepts (concept_id, stance_label, concept)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (concept_id) DO UPDATE
+            SET stance_label = EXCLUDED.stance_label,
+                concept = EXCLUDED.concept
             """,
             concepts,
         )
 
     finally:
         await conn.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(import_concepts())
