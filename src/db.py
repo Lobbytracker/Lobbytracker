@@ -18,8 +18,7 @@ async def init_db(database_url=DATABASE_URL):
                 id SERIAL PRIMARY KEY,
                 concept_id INTEGER NOT NULL,
                 stance_label TEXT,
-                concept TEXT,
-                definition TEXT
+                concept TEXT
             )
             """)
         await conn.execute("""
@@ -34,8 +33,8 @@ async def init_db(database_url=DATABASE_URL):
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS goldenStandard (
                 id SERIAL PRIMARY KEY, 
-                document_id INT NOT NULL REFERENCES files(document_id),
-                concept_id INT NOT NULL REFERENCES concepts(concept_id), 
+                document_id INT NOT NULL REFERENCES files(id),
+                concept_id INT NOT NULL REFERENCES concepts(id), 
                 content TEXT,
                 agreement TEXT,
                 statementCount INTEGER
@@ -44,8 +43,8 @@ async def init_db(database_url=DATABASE_URL):
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS llmOutput (
                 id SERIAL PRIMARY KEY,
-                document_id INT NOT NULL REFERENCES files(document_id),
-                concept_id INT NOT NULL REFERENCES concepts(concept_id),
+                document_id INT NOT NULL REFERENCES files(id),
+                concept_id INT NOT NULL REFERENCES concepts(id),
                 concept TEXT NOT NULL,
                 decision TEXT NOT NULL,
                 passage TEXT
