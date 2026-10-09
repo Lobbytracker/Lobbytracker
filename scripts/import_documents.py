@@ -17,7 +17,7 @@ DATA_REPO_PATH = Path(
 METADATA_FILENAME = os.getenv("METADATA_FILENAME", "documents.csv")
 DOCUMENTS_DIR = os.getenv("DOCUMENTS_DIR", "plain")
 
-REQUIRED_COLUMNS = {"author", "filename"}
+REQUIRED_COLUMNS = {"id", "author", "filename"}
 
 
 def get_data_paths() -> tuple[Path, Path]:
@@ -44,6 +44,7 @@ def read_documents(metadata_path: Path, documents_path: Path) -> list[tuple]:
             f"Available columns: {list(dataframe.columns)}"
         )
 
+    dataframe["id"] = dataframe["id"].fillna("").astype(str).str.strip()
     dataframe["filename"] = dataframe["filename"].fillna("").astype(str).str.strip()
     dataframe["author"] = dataframe["author"].fillna("").astype(str).str.strip()
 
@@ -61,6 +62,7 @@ def read_documents(metadata_path: Path, documents_path: Path) -> list[tuple]:
 
         records.append(
             (
+                int(row["id"]),
                 filename,
                 row["author"],
                 document_path.read_text(encoding="utf-8"),
@@ -79,8 +81,8 @@ async def import_documents():
     try:
         await conn.executemany(
             """
-            INSERT INTO files (filename, author, content)
-            VALUES ($1, $2, $3)
+            INSERT INTO files (document_id, filename, author, content)
+            VALUES ($1, $2, $3, $4)
             """,
             documents,
         )
