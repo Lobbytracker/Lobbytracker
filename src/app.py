@@ -2,6 +2,7 @@ import asyncio
 
 from ai import DEFAULT_MODEL, LlmManager, get_available_models
 from tui.tui import Tui
+from goldenstandards.goldenstandard_manager import GoldenStandardManager
 
 
 class App:
@@ -37,6 +38,8 @@ class App:
         manager = LlmManager(
             selected_documents, selected_concepts, model=self.selected_model)
         session_list = manager.call_aitta()
+        golden_standard = GoldenStandardManager.get_by_document_id(selected_documents[0]["id"])
+        print(golden_standard)
         self.tui.print_output(session_list)
 
         return session_list
