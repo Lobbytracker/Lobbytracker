@@ -16,7 +16,7 @@ REQUEST_TIMEOUT_SECONDS = 300
 
 
 def get_available_models():
-    """Return model IDs advertised by Aitta's model endpoint."""
+    """Return model IDs from Aitta that support chat completion."""
     load_dotenv()
 
     headers = {}
@@ -28,38 +28,17 @@ def get_available_models():
     with urlopen(request, timeout=10) as response:
         payload = json.load(response)
 
-    if isinstance(payload, dict):
-        models = payload.get("data", payload.get("models"))
-        if models is None:
-            models = payload.get("_links", {}).get("item", [])
-    else:
-        models = payload
-
     model_ids = []
-    for model in models:
-        if isinstance(model, str):
-            model_id = model
-            model_info = {}
-        else:
-            model_id = model.get("id") or model.get("name")
-            model_info = model
+    for item in payload.get("_links", {}).get("item", []):
+        details_request = Request(f"{AITTA_URL}{item['href']}", headers=headers)
+        try:
+            with urlopen(details_request, timeout=10) as response:
+                details = json.load(response)
+        except OSError:
+            continue
 
-        if not model_info.get("capabilities") and isinstance(model, dict):
-            href = model.get("href")
-            if href:
-                details_request = Request(f"{AITTA_URL}{href}", headers=headers)
-                try:
-                    with urlopen(details_request, timeout=10) as response:
-                        model_info = json.load(response)
-                except OSError:
-                    continue
-
-        if (
-            model_id
-            and "openai-chat-completion" in model_info.get("capabilities", [])
-            and model_id not in model_ids
-        ):
-            model_ids.append(model_id)
+        if "openai-chat-completion" in details.get("capabilities", []):
+            model_ids.append(item["name"])
 
     return model_ids
 
