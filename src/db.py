@@ -78,6 +78,15 @@ async def get_golden_standard(database_url=DATABASE_URL):
     finally:
         await conn.close()
 
+async def get_golden_standard_by_document_id(document_id, database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
+    try:
+        rows = await conn.fetch(
+            "SELECT * FROM goldenStandard WHERE document_id = $1 ORDER BY id", document_id)
+        return rows
+    finally:
+        await conn.close()
+
 
 async def get_llm_output(database_url=DATABASE_URL):
     conn = await asyncpg.connect(database_url)
