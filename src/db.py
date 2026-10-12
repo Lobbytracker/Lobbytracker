@@ -70,6 +70,24 @@ async def get_documents(database_url=DATABASE_URL):
         await conn.close()
 
 
+async def get_golden_standard(database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
+    try:
+        rows = await conn.fetch("SELECT * FROM goldenStandard ORDER BY id")
+        return rows
+    finally:
+        await conn.close()
+
+
+async def get_llm_output(database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
+    try:
+        rows = await conn.fetch("SELECT * FROM llmOutput ORDER BY id")
+        return rows
+    finally:
+        await conn.close()
+
+
 async def save_output(output, database_url=DATABASE_URL):
     rows = [(
         row["document_id"],
