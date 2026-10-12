@@ -35,8 +35,7 @@ async def init_db(database_url=DATABASE_URL):
                 document_id INT NOT NULL REFERENCES files(id),
                 concept_id INT NOT NULL REFERENCES concepts(id), 
                 content TEXT,
-                agreement TEXT,
-                statementCount INTEGER
+                agreement TEXT
             )
             """)
         await conn.execute("""
@@ -66,6 +65,33 @@ async def get_documents(database_url=DATABASE_URL):
     conn = await asyncpg.connect(database_url)
     try:
         rows = await conn.fetch("SELECT * FROM files ORDER BY id")
+        return rows
+    finally:
+        await conn.close()
+
+
+async def get_golden_standard(database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
+    try:
+        rows = await conn.fetch("SELECT * FROM goldenStandard ORDER BY id")
+        return rows
+    finally:
+        await conn.close()
+
+async def get_golden_standard_by_document_id(document_id, database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
+    try:
+        rows = await conn.fetch(
+            "SELECT * FROM goldenStandard WHERE document_id = $1 ORDER BY id", document_id)
+        return rows
+    finally:
+        await conn.close()
+
+
+async def get_llm_output(database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
+    try:
+        rows = await conn.fetch("SELECT * FROM llmOutput ORDER BY id")
         return rows
     finally:
         await conn.close()
