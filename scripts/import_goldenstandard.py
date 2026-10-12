@@ -8,7 +8,7 @@ import pandas as pd
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "******localhost:5432/lobbytracker",
+    "postgresql://postgres:postgres@localhost:5432/lobbytracker",
 )
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
