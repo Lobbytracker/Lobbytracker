@@ -35,8 +35,7 @@ async def init_db(database_url=DATABASE_URL):
                 document_id INT NOT NULL REFERENCES files(id),
                 concept_id INT NOT NULL REFERENCES concepts(id), 
                 content TEXT,
-                agreement TEXT,
-                statementCount INTEGER
+                agreement TEXT
             )
             """)
         await conn.execute("""

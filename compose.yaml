@@ -27,11 +27,11 @@ services:
       AITTA_API_KEY: ${AITTA_API_KEY}
       DATA_REPO_PATH: /data
       METADATA_FILENAME: ${METADATA_FILENAME:-documents.csv}
-      DOCUMENTS_DIR: ${DOCUMENTS_DIR:-.}
+      DOCUMENTS_DIR: ${DOCUMENTS_DIR:-plain}
       CONCEPTDATA_FILENAME: ${CONCEPTDATA_FILENAME:-concepts.csv}
 
     volumes:
-      - ${DATA_REPO_PATH:-../ilmastolaki_lausunnot}:/data:ro
+      - ${DATA_REPO_PATH:-../data-repo/ilmastolaki_lausunnot}:/data:ro
 
     ports:
       - "8000:8000"
