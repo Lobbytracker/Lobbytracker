@@ -54,48 +54,65 @@ class LlmManager:
         self.documents = documents[0]  # first document for testing
         self.concepts = concepts[0:2]  # Limit to first two concepts for testing
         self.session_list = []
+        self.client = self.create_client()
 
-    def call_aitta(self):
+    def create_client(self) -> openai.OpenAI:
         load_dotenv()
 
         key = os.getenv("AITTA_API_KEY")
-        document = self.documents["content"]
-        document_id = self.documents["id"]
 
-        client = openai.OpenAI(
+        return openai.OpenAI(
             api_key=key,
             base_url=self.url,
             timeout=REQUEST_TIMEOUT_SECONDS,
             max_retries=0,
         )
-        for row in self.concepts:
-            concept = row["concept"]
-            concept_id = row["id"]
 
-            instructions = (
-                "Determine whether the following concept appears in the document. "
-                "If it does, give the passage from the document that expresses it, "
-                "quoted exactly as written, without markdown or ellipses. "
-                "If it does not, give null. "
-                'Do not answer "yes" unless you can provide a supporting passage.\n'
-                f"Concept: {concept}"
-            )       
+    def API_call(self, concept, document):
+        concept_definition = concept["concept"]
+       # concept_id = concept["id"]
 
-            response = client.beta.chat.completions.parse(
-                messages=[
-                    {"role": "system", "content": instructions},
-                    {"role": "user", "content": document},
-                ],
-                model=self.model,
-                response_format=ConceptResult,
-            )
+        instructions = (
+            "Determine whether the following concept appears in the document. "
+            "If it does, give the passage from the document that expresses it, "
+            "quoted exactly as written, without markdown or ellipses. "
+            "If it does not, give null. "
+            'Do not answer "yes" unless you can provide a supporting passage.\n'
+            f"Concept: {concept_definition}"
+        )                  
 
-            result = response.choices[0].message.parsed
+        self.create_client()
+
+        response = self.client.beta.chat.completions.parse(
+            messages=[
+                {"role": "system", "content": instructions},
+                {"role": "user", "content": document},
+            ],
+            model=self.model,
+            response_format=ConceptResult,
+        )
+
+        result = response.choices[0].message.parsed
+
+        return result
+    
+
+    def call_aitta(self):
+
+        if not self.client:
+            self.create_client()
+
+        document = self.documents["content"]
+        document_id = self.documents["id"]
+
+    
+        for concept in self.concepts:
+            result = self.API_call(concept, document)
 
             self.session_list.append({
                 "document_id": document_id,
-                "concept_id": concept_id,
-                "concept": concept,
+                "concept_id": concept["id"],
+                "concept": concept["concept"],
                 "decision": result.decision,
                 "passage": result.passage,
             })
