@@ -18,10 +18,7 @@ class App:
         self.selected_model = DEFAULT_MODEL
 
     def print_instructions(self):
-        self.tui.io.output(f"\nNykyinen tekoälymalli: {self.selected_model}\n")
-
-        for key, val in self.INSTRUCTIONS.items():
-            print((f"{key}. {val}"))
+        self.tui.print_instructions(self.INSTRUCTIONS, self.selected_model)
 
     def search_from_file(self):
         selected_documents = self.tui.get_document_by_ids()

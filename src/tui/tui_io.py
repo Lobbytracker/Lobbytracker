@@ -1,6 +1,14 @@
-class TuiIO:
-    def input(message: str):
-        return input(message)
+from rich.console import Console
 
-    def output(message: str):
-        return print(message)
+
+console = Console()
+
+class TuiIO:
+    @staticmethod
+    def input(message: str):
+        return console.input(message)
+
+    @staticmethod
+    def output(message, style=None, markup=False, highlight=False):
+        return console.print(
+            message, style=style, markup=markup, highlight=highlight)

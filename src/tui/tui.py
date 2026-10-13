@@ -1,5 +1,9 @@
 import json
 
+from rich import print as rprint
+from rich.table import Table
+from rich.text import Text
+
 from tui.tui_io import TuiIO
 from documents.document_management import DocumentManager
 from concepts.concept_management import ConceptManager
@@ -13,6 +17,20 @@ class Tui:
         self.io = io
         self.documents = DocumentManager()
         self.concepts = ConceptManager()
+
+    def print_instructions(self, instructions: dict, selected_model: str):
+        self.io.output(
+            f"\nNykyinen tekoälymalli: [bold green]{selected_model}[/bold green]\n",
+            markup=True)
+
+        table = Table(title="Lobbytracker", show_header=True, header_style="bold magenta")
+        table.add_column("Komento", style="dim", justify="right")
+        table.add_column("Toiminto")
+
+        for key, val in instructions.items():
+            table.add_row(str(key), Text(val))
+
+        self.io.output(table)
 
     def print_documents(self, start: int = 0):
         """Prints the 10 first documents
@@ -36,7 +54,7 @@ class Tui:
     def get_document_by_ids(self):
         """Asks user for document ids and returns the documents
         """
-        
+
         start = 0
         while True:
             documents = self.documents.get_next_ten_docs(start)
