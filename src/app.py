@@ -38,9 +38,9 @@ class App:
         manager = LlmManager(
             selected_documents, selected_concepts, model=self.selected_model)
         session_list = manager.call_aitta()
-        golden_standard = GoldenStandardManager.get_by_document_id(selected_documents[0]["id"])
-        print(golden_standard)
-        self.tui.print_output(session_list)
+        # golden_standard = GoldenStandardManager.get_by_document_id(selected_documents[0]["id"])
+        # print(golden_standard)
+        # self.tui.print_output(session_list)
 
         return session_list
 
@@ -50,7 +50,7 @@ class App:
 
         manager = LlmManager(documents, concepts, model=self.selected_model)
         session_list = manager.call_aitta()
-        self.tui.print_output(session_list)
+        # self.tui.print_output(session_list)
 
         return session_list
 
@@ -78,6 +78,8 @@ class App:
         except (ValueError, IndexError):
             self.tui.io.output("Virheellinen valinta.")
             return
+
+        
 
         self.selected_model = models[choice - 1]
         self.tui.io.output(f"Käytettävä malli: {self.selected_model}")

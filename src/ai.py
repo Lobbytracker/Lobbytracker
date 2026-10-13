@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 
 from db import save_output
+from tui.tui_io import TuiIO
 
 AITTA_URL = "https://aitta-api.csc.fi"
 DEFAULT_MODEL = "openai/gpt-oss-120b"
@@ -48,7 +49,8 @@ class ConceptResult(BaseModel):
        passage: str | None
 
 class LlmManager:
-    def __init__(self, documents, concepts, model=DEFAULT_MODEL):
+    def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
+        self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = model
         self.documents = documents[0]  # first document for testing
@@ -70,7 +72,6 @@ class LlmManager:
 
     def API_call(self, concept, document):
         concept_definition = concept["concept"]
-       # concept_id = concept["id"]
 
         instructions = (
             "Determine whether the following concept appears in the document. "
@@ -107,15 +108,19 @@ class LlmManager:
 
     
         for concept in self.concepts:
-            result = self.API_call(concept, document)
+            api_call_result = self.API_call(concept, document)
 
-            self.session_list.append({
+            result = {
                 "document_id": document_id,
                 "concept_id": concept["id"],
                 "concept": concept["concept"],
-                "decision": result.decision,
-                "passage": result.passage,
-            })
+                "decision": api_call_result.decision,
+                "passage": api_call_result.passage,
+            }
+
+            self.io.output((json.dumps(result, indent=2, ensure_ascii=False)))
+
+            self.session_list.append(result)
 
         self.output_to_db()
 
