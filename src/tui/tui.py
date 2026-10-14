@@ -1,8 +1,7 @@
-import json
-
-from rich import print as rprint
+from rich import box
 from rich.table import Table
 from rich.text import Text
+from rich.json import JSON
 
 from tui.tui_io import TuiIO
 from documents.document_management import DocumentManager
@@ -36,20 +35,48 @@ class Tui:
         """Prints the 10 first documents
         """
         files = self.documents.all[start : start + 10]
-        self.io.output(f"\nDokumentit {start + 1}-{start + len(files)}:")
+
+        table = Table(title=f"\nDokumentit {start + 1}-{start + len(files)}:",
+                      box=box.SIMPLE, header_style="bold cyan")
+        table.add_column("Dokumentin ID", style="dim", justify="right")
+        table.add_column("Nimi")
 
         for document in files:
             name = self.documents.format(document["filename"])
-            self.io.output(f"ID: {document['id']}, Nimi: {name}")
+            table.add_row(str(document['id']), name)
+
+        self.io.output(table)
 
         return start + 10 < len(self.documents.all)
 
     def print_concepts(self):
         """Prints all concepts
         """
-        self.io.output("\nKonseptit:")
+        table = Table(title="\nKonseptit:",
+                      box=box.SIMPLE, header_style="bold blue")
+        table.add_column("Konseptin ID", style="dim", justify="right")
+        table.add_column("Konsepti")
+
         for concept in self.concepts.all_concepts:
-            self.io.output(f"ID: {concept['id']}, {concept['concept']}")
+            table.add_row(str(concept['id']), concept['concept'])
+
+        self.io.output(table)
+
+    def print_available_models(self, models: list, selected_model: str):
+        """Prints the available models in a table.
+        """
+        table = Table(title="\nSaatavilla olevat mallit:",
+                      box=box.SIMPLE, header_style="bold yellow")
+        table.add_column("Mallin ID", style="dim", justify="right")
+        table.add_column("Mallin nimi")
+
+        for index, model in enumerate(models, start=1):
+            if model == selected_model:
+                table.add_row(str(index), Text(model + " (käytössä)", style="bold green"))
+            else:
+                table.add_row(str(index), Text(model))
+
+        self.io.output(table)
 
     def get_document_by_ids(self):
         """Asks user for document ids and returns the documents
@@ -81,4 +108,5 @@ class Tui:
         return self.concepts.select_concepts(concept_ids)
 
     def print_output(self, output):
-        self.io.output(json.dumps(output, indent=2, ensure_ascii=False))
+        self.io.output(
+            JSON.from_data(output, indent=2, ensure_ascii=False, highlight=True))

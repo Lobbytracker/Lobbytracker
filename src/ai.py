@@ -98,7 +98,7 @@ class LlmManager:
         return result
     
 
-    def call_aitta(self):
+    def call_aitta(self, on_result=None):
 
         if not self.client:
             self.create_client()
@@ -106,7 +106,7 @@ class LlmManager:
         document = self.documents["content"]
         document_id = self.documents["id"]
 
-    
+
         for concept in self.concepts:
             try:
                 api_call_result = self.API_call(concept, document)
@@ -123,8 +123,10 @@ class LlmManager:
                 "passage": api_call_result.passage,
             }
 
-            self.io.output((json.dumps(result, indent=2, ensure_ascii=False)))
             self.session_list.append(result)
+
+            if on_result is not None:
+                on_result(result)
 
         self.output_to_db()
 

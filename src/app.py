@@ -34,7 +34,7 @@ class App:
 
         manager = LlmManager(
             selected_documents, selected_concepts, model=self.selected_model)
-        session_list = manager.call_aitta()
+        session_list = manager.call_aitta(on_result=self.tui.print_output)
         # golden_standard = GoldenStandardManager.get_by_document_id(selected_documents[0]["id"])
         # print(golden_standard)
         # self.tui.print_output(session_list)
@@ -46,7 +46,7 @@ class App:
         concepts = self.tui.concepts.all_concepts
 
         manager = LlmManager(documents, concepts, model=self.selected_model)
-        session_list = manager.call_aitta()
+        session_list = manager.call_aitta(on_result=self.tui.print_output)
         # self.tui.print_output(session_list)
 
         return session_list
@@ -65,10 +65,7 @@ class App:
         if self.selected_model not in models:
             self.tui.io.output(f"Nykyinen malli ei ole Aittan katalogissa: {self.selected_model}")
 
-        self.tui.io.output("\nSaatavilla olevat mallit:")
-        for index, model in enumerate(models, start=1):
-            marker = " (käytössä)" if model == self.selected_model else ""
-            self.tui.io.output(f"{index}. {model}{marker}")
+        self.tui.print_available_models(models, self.selected_model)
 
         try:
             choice = int(input("Valitse mallin numero: "))
@@ -76,7 +73,6 @@ class App:
             self.tui.io.output("Virheellinen valinta.")
             return
 
-        
 
         self.selected_model = models[choice - 1]
         self.tui.io.output(f"Käytettävä malli: {self.selected_model}")
