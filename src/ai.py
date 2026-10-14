@@ -108,8 +108,13 @@ class LlmManager:
 
     
         for concept in self.concepts:
-            api_call_result = self.API_call(concept, document)
-
+            try:
+                api_call_result = self.API_call(concept, document)
+            except Exception as e:
+                self.io.output(f"Konseptin {concept["id"]} käsittely epäonnistui:")
+                self.io.output((json.dumps(f"{e}", indent=4, ensure_ascii=False)))
+                continue
+            
             result = {
                 "document_id": document_id,
                 "concept_id": concept["id"],
@@ -119,7 +124,6 @@ class LlmManager:
             }
 
             self.io.output((json.dumps(result, indent=2, ensure_ascii=False)))
-
             self.session_list.append(result)
 
         self.output_to_db()
