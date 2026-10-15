@@ -49,13 +49,12 @@ class ConceptResult(BaseModel):
        passage: str | None
 
 class LlmManager:
-    def __init__(self, documents=None, concepts=None,
-                    model=DEFAULT_MODEL, io=TuiIO):
+    def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
         self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = model
-        self.documents = documents[0]  # first document for testing
-        self.concepts = concepts[0:3]  # Limit to first 3 concepts for testing
+        self.documents = documents[0] if documents else None  # first document for testing
+        self.concepts = concepts[0:3] if concepts else None  # Limit to first 3 concepts for testing
         self.session_list = []
         self.client = self.create_client()
 
