@@ -49,12 +49,13 @@ class ConceptResult(BaseModel):
        passage: str | None
 
 class LlmManager:
-    def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
+    def __init__(self, documents=None, concepts=None,
+                    model=DEFAULT_MODEL, io=TuiIO):
         self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = model
         self.documents = documents[0]  # first document for testing
-        self.concepts = concepts[0:2]  # Limit to first two concepts for testing
+        self.concepts = concepts[0:3]  # Limit to first 3 concepts for testing
         self.session_list = []
         self.client = self.create_client()
 
@@ -69,6 +70,26 @@ class LlmManager:
             timeout=REQUEST_TIMEOUT_SECONDS,
             max_retries=0,
         )
+
+    def create_connection(self):
+        try:
+            # instruction = "say hello"
+            response = self.client.beta.chat.completions.parse(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": "when i say ping, you say pong"},
+                    {"role": "user", "content": "ping"},
+                ],
+                timeout=(60*2),)
+
+            result = response.choices[0].message.content
+            # print(result)
+            if result:
+                return True
+            return False
+        except:
+            # print("here")
+            return False
 
     def API_call(self, concept, document):
         concept_definition = concept["concept"]

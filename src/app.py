@@ -69,13 +69,19 @@ class App:
 
         try:
             choice = int(input("Valitse mallin numero: "))
+            connect = LlmManager(None, None, models[choice - 1]).create_connection()
+            if not connect:
+                self.tui.io.output("Valittuun malliin ei saatu yhteyttä.")
+            else:
+                self.selected_model = models[choice - 1]
+                self.tui.io.output(f"Käytettävä malli: {self.selected_model}")
         except (ValueError, IndexError):
             self.tui.io.output("Virheellinen valinta.")
             return
 
 
-        self.selected_model = models[choice - 1]
-        self.tui.io.output(f"Käytettävä malli: {self.selected_model}")
+        # self.selected_model = models[choice - 1]
+        # self.tui.io.output(f"Käytettävä malli: {self.selected_model}")
 
     def main(self):
         commands = {
