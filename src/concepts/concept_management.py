@@ -22,3 +22,8 @@ class ConceptManager:
         selected_concepts = [concept for concept in self.all_concepts if concept["id"] in selected_ids]
 
         return selected_concepts
+
+    def get_all_ids(self):
+        """Returns the ids of all concepts as a set.
+        """
+        return {concept["id"] for concept in self.all_concepts}

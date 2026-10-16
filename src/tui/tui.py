@@ -105,7 +105,7 @@ class Tui:
             except ValueError:
                 self.io.output("Väärä syöte. Anna ID-numerot pilkulla erotettuna tai x.")
                 continue
-            
+
             valid_ids = self.documents.get_all_ids()
             invalid = [i for i in ids if i not in valid_ids]
             if invalid:
@@ -113,11 +113,25 @@ class Tui:
                 continue
             return self.documents.get_by_ids(answer)
 
-    def get_concepts_by_ids(self):
-        """TODO: virheenhallinta
+    def get_concepts_by_ids(self):   
+        """Asks user for concept ids and returns the concepts.
         """
-        concept_ids = self.io.input("\nAnna konseptien ID numerot (esim. 1, 2, 3): ")
-        return self.concepts.select_concepts(concept_ids)
+
+        while True:
+            concept_ids = self.io.input("\nAnna konseptien ID numerot pilkulla erotettuna (esim. 1, 2, 3): ")
+
+            try:
+                ids = [int(part) for part in concept_ids.split(",")]
+            except ValueError:
+                self.io.output("Väärä syöte. Anna ID-numerot pilkulla erotettuna.")
+                continue
+            valid_ids = self.concepts.get_all_ids()
+            invalid  = [i for i in ids if i not in valid_ids]
+            if invalid:
+                self.io.output(f"Tuntemattomat ID:t: {invalid}")
+                continue
+            
+            return self.concepts.select_concepts(concept_ids)
 
     def print_output(self, output):
         self.io.output(
