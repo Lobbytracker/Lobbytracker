@@ -39,3 +39,8 @@ class DocumentManager:
         """
         ids_to_list = [int(value.strip()) for value in str(selected_ids).split(",")]
         return [document for document in self.all if document["id"] in ids_to_list]
+
+    def get_all_ids(self):
+        """Returns the ids of all documents as a set.
+        """
+        return {document["id"] for document in self.all}

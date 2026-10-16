@@ -99,6 +99,18 @@ class Tui:
                 else:
                     self.io.output("Ei enempää tiedostoja.")
                 continue
+
+            try:
+                ids = [int(part) for part in answer.split(",")]
+            except ValueError:
+                self.io.output("Väärä syöte. Anna ID-numerot pilkulla erotettuna tai x.")
+                continue
+            
+            valid_ids = self.documents.get_all_ids()
+            invalid = [i for i in ids if i not in valid_ids]
+            if invalid:
+                self.io.output(f"Tuntemattomat ID:t: {invalid}")
+                continue
             return self.documents.get_by_ids(answer)
 
     def get_concepts_by_ids(self):

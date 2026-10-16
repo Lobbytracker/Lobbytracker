@@ -92,10 +92,15 @@ class App:
 
         while True:
             self.print_instructions()
-            command = int(input("\nAnna komento: "))
+            try:
+                command = int(input("\nAnna komento: "))
+            except ValueError:
+                print("Väärä syöte. Syötä vain jokin komentonumero.")
+                continue
             if command == 0:
                 break
             if command not in self.INSTRUCTIONS:
+                print("Tuntematon komento, syötä jokin ohjelman komennoista.")
                 continue
             else:
                 executable = commands[command]
