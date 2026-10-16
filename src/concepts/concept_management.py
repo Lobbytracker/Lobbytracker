@@ -5,8 +5,11 @@ class ConceptManager:
     """Class for managing concept infromations.
     """
 
-    def __init__(self):
-        self.all_concepts = self.get_all_from_db()
+    def __init__(self, all_concepts=None):
+        if not all_concepts:
+            self.all_concepts = self.get_all_from_db()
+        else:
+            self.all_concepts = all_concepts
 
     def get_all_from_db(self): # pitääkö olla async?
         """Returns all concepts from the database.
