@@ -5,7 +5,10 @@ import asyncio
 class GoldenStandardManager:
     """Loads and prepares golden-standard annotations for documents."""
 
-    def get_by_document_id(document_id):
+    def __init__(self):
+        pass
+
+    def get_by_document_id(self,document_id):
         rows = asyncio.run(db.get_golden_standard_by_document_id(document_id))
         #concepts_by_id = {concept["id"]: concept["concept"] for concept in concepts}
 

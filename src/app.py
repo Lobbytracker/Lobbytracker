@@ -10,7 +10,8 @@ class App:
         0: "Quit",
         1: "Etsi valitut konseptit tiedostosta",
         2: "Aitta prompti",
-        3: "Vaihda tekoälymallia"
+        3: "Vaihda tekoälymallia",
+        4: "Tulosta golden standard tiedostoille"
     }
 
     def __init__(self):
@@ -83,11 +84,15 @@ class App:
         # self.selected_model = models[choice - 1]
         # self.tui.io.output(f"Käytettävä malli: {self.selected_model}")
 
+    def print_golden_standard(self):
+        self.tui.golden_standards_for_documents()
+
     def main(self):
         commands = {
             1: self.search_from_file,
             2: self.prompt_thing,
-            3: self.change_model
+            3: self.change_model,
+            4: self.print_golden_standard
         }
 
         while True:

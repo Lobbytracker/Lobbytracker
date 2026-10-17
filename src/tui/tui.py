@@ -6,6 +6,7 @@ from rich.json import JSON
 from tui.tui_io import TuiIO
 from documents.document_management import DocumentManager
 from concepts.concept_management import ConceptManager
+from goldenstandards.goldenstandard_manager import GoldenStandardManager
 
 
 class Tui:
@@ -16,6 +17,7 @@ class Tui:
         self.io = io
         self.documents = DocumentManager()
         self.concepts = ConceptManager()
+        self.golden_standard = GoldenStandardManager()
 
     def print_instructions(self, instructions: dict, selected_model: str):
         self.io.output(
@@ -37,7 +39,7 @@ class Tui:
         files = self.documents.all[start : start + 10]
 
         table = Table(title=f"\nDokumentit {start + 1}-{start + len(files)}:",
-                      box=box.SIMPLE, header_style="bold cyan")
+                    box=box.SIMPLE, header_style="bold cyan")
         table.add_column("Dokumentin ID", style="dim", justify="right")
         table.add_column("Nimi")
 
@@ -53,7 +55,7 @@ class Tui:
         """Prints all concepts
         """
         table = Table(title="\nKonseptit:",
-                      box=box.SIMPLE, header_style="bold blue")
+                    box=box.SIMPLE, header_style="bold blue")
         table.add_column("Konseptin ID", style="dim", justify="right")
         table.add_column("Konsepti")
 
@@ -62,11 +64,30 @@ class Tui:
 
         self.io.output(table)
 
+    def print_golden_standard(self, standards:list):
+        """Prints golden standards for given files
+        TODO: virheenhallinta
+        """
+        table = Table(title="\nTiedostojen Golden Standard:",
+                    box=box.SIMPLE, header_style="bold blue")
+        table.add_column("Konseptin ID", style="dim", justify="right")
+        table.add_column("Konsepti")
+
+        for document in standards:
+            table.add_section()
+            table.add_row("", Text((f"Document ID: {str(document[0]["document_id"])}"), style="bold cyan"))
+            table.add_section()
+
+            for standard in document:
+                table.add_row(str(standard['concept_id']), standard['content'])
+
+        self.io.output(table)
+
     def print_available_models(self, models: list, selected_model: str):
         """Prints the available models in a table.
         """
         table = Table(title="\nSaatavilla olevat mallit:",
-                      box=box.SIMPLE, header_style="bold yellow")
+                    box=box.SIMPLE, header_style="bold yellow")
         table.add_column("Mallin ID", style="dim", justify="right")
         table.add_column("Mallin nimi")
 
@@ -132,6 +153,13 @@ class Tui:
                 continue
             
             return self.concepts.select_concepts(concept_ids)
+
+    def golden_standards_for_documents(self):
+        document_ids =  self.io.input("\nAnna tiedoston ID numerot (esim. 1, 2, 3), tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: ")
+        document_ids = [int(id) for id in document_ids.split(",")]
+        golden_standards = [self.golden_standard.get_by_document_id(id) for id in document_ids]
+        self.print_golden_standard(golden_standards)
+
 
     def print_output(self, output):
         self.io.output(
