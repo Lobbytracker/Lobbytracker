@@ -5,8 +5,11 @@ class DocumentManager:
     """Class for managing document infromation.
     """
 
-    def __init__(self):
-        self.all = asyncio.run(self.get_all_from_db())
+    def __init__(self, all_documents=None):
+        if not all_documents:
+            self.all = asyncio.run(self.get_all_from_db())
+        else:
+            self.all = all_documents
 
     async def get_all_from_db(self): # pitääkö olla async?
         """Returns all documents from the database.
