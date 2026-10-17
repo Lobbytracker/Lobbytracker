@@ -79,7 +79,7 @@ class Tui:
             table.add_section()
 
             for standard in document:
-                table.add_row(str(standard['concept_id']), standard['content'])
+                table.add_row(str(standard['concept_id']), standard['concept'])
 
         self.io.output(table)
 
@@ -155,6 +155,8 @@ class Tui:
             return self.concepts.select_concepts(concept_ids)
 
     def golden_standards_for_documents(self):
+        """Prints golden standard concepts for the chosen documents
+        """
         document_ids =  self.io.input("\nAnna tiedoston ID numerot (esim. 1, 2, 3), tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: ")
         document_ids = [int(id) for id in document_ids.split(",")]
         golden_standards = [self.golden_standard.get_by_document_id(id) for id in document_ids]

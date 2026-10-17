@@ -60,6 +60,15 @@ async def get_concepts(database_url=DATABASE_URL):
     finally:
         await conn.close()
 
+async def get_concepts_by_id(concept_id, database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
+    try:
+        rows = await conn.fetch("SELECT id, concept FROM concepts " \
+                                "WHERE id = $1", concept_id)
+        return rows
+    finally:
+        await conn.close()
+
 
 async def get_documents(database_url=DATABASE_URL):
     conn = await asyncpg.connect(database_url)
