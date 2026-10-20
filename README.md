@@ -1,14 +1,14 @@
 # Lobbytracker
+Lobbytracker is a prototype for analysing legal documents with AI. It lets a user select documents and predefined concepts, asks an AI model whether each concept appears in the document, and returns the answer together with an exact supporting passage.
 
 ## Installing the application
 
-### Clone the project on your own computer
-
+### Clone the project
 ```
 $ git clone git@github.com:Lobbytracker/Lobbytracker.git
 ```
 
-### Update the project's environment:
+### Update the project's environment
 ```
 uv sync
 ```
@@ -17,37 +17,36 @@ uv sync
 ```
 cp .env.example .env
 ```
-Fill required fields with your own credentials.
 
-### Install make utility
+*Fill required fields with your own credentials.*
 
-linux ubuntu
-
+### Install `make` utility
 ```
 sudo apt install make
 ```
 
-### Start the application
-
-The application uses Docker Compose.
-
-Start the application with:
+### Start docker
 ```
 make start
 ```
-The application is available at:
 
-http://localhost:8000
+### Run data import scripts
 
-The FastAPI documentation is available at:
-
-http://localhost:8000/docs
+```
+uv run python scripts/import_concepts.py
+uv run python scripts/import_documents.py
+uv run python scripts/import_goldenstandard.py
+```
 
 ### Run the application locally
 
 ```
 uv run python src/app.py
 ```
+
+Web-version is available at [http://localhost:8000](http://localhost:8000)
+
+## Docker commands
 
 ### Check running containers
 ```
@@ -57,36 +56,38 @@ make status
 ```
 make logs
 ```
+### Stop the application
+```
+make stop
+```
+
+## Database commands
+
 ### Access PostgreSQL
 
 Open an interactive PostgreSQL session:
 ```
 make db
 ```
-Useful PostgreSQL commands:
 
-Show the tables.
+### Show the tables
 ```
 \dt
 ```
 
-Show the first 10 concepts.
+### Show the first 10 concepts
 ```
 SELECT * FROM concepts LIMIT 10;
 ```
 
-### Exit PostgreSQL.
-```
-\q
-```
 ### Show PostgreSQL tables directly
 ```
 make tables
 ```
 
-### Stop the application
+### Exit PostgreSQL
 ```
-make stop
+\q
 ```
 
 ## Backlog
