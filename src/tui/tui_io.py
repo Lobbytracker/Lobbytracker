@@ -1,7 +1,7 @@
 from rich.console import Console
 
-
 console = Console()
+
 
 class TuiIO:
     @staticmethod
@@ -10,5 +10,4 @@ class TuiIO:
 
     @staticmethod
     def output(message, style=None, markup=False, highlight=False):
-        return console.print(
-            message, style=style, markup=markup, highlight=highlight)
+        return console.print(message, style=style, markup=markup, highlight=highlight)

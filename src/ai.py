@@ -45,16 +45,21 @@ def get_available_models():
 
 
 class ConceptResult(BaseModel):
-       decision: Literal["yes", "no"]
-       passage: str | None
+    decision: Literal["yes", "no"]
+    passage: str | None
+
 
 class LlmManager:
     def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
         self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = model
-        self.documents = documents[0] if documents else None  # first document for testing
-        self.concepts = concepts[0:3] if concepts else None  # Limit to first 3 concepts for testing
+        self.documents = (
+            documents[0] if documents else None
+        )  # first document for testing
+        self.concepts = (
+            concepts[0:3] if concepts else None
+        )  # Limit to first 3 concepts for testing
         self.session_list = []
         self.client = self.create_client()
 
@@ -79,7 +84,8 @@ class LlmManager:
                     {"role": "system", "content": "when i say ping, you say pong"},
                     {"role": "user", "content": "ping"},
                 ],
-                timeout=(60*2),)
+                timeout=(60 * 2),
+            )
 
             result = response.choices[0].message.content
             # print(result)
@@ -100,7 +106,7 @@ class LlmManager:
             "If it does not, give null. "
             'Do not answer "yes" unless you can provide a supporting passage.\n'
             f"Concept: {concept_definition}"
-        )                  
+        )
 
         self.create_client()
 
@@ -116,7 +122,6 @@ class LlmManager:
         result = response.choices[0].message.parsed
 
         return result
-    
 
     def call_aitta(self, on_result=None):
 
@@ -126,15 +131,14 @@ class LlmManager:
         document = self.documents["content"]
         document_id = self.documents["id"]
 
-
         for concept in self.concepts:
             try:
                 api_call_result = self.API_call(concept, document)
             except Exception as e:
-                self.io.output(f"Konseptin {concept["id"]} käsittely epäonnistui:")
-                self.io.output((json.dumps(f"{e}", indent=4, ensure_ascii=False)))
+                self.io.output(f"Konseptin {concept['id']} käsittely epäonnistui:")
+                self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
                 continue
-            
+
             result = {
                 "document_id": document_id,
                 "concept_id": concept["id"],

@@ -125,13 +125,18 @@ async def import_statements(concepts: list) -> None:
             source_document_id = file["document_id"]
             if source_document_id in file_ids:
                 raise ValueError(
-                    "Multiple files have the same document_id "
-                    f"{source_document_id}"
+                    f"Multiple files have the same document_id {source_document_id}"
                 )
             file_ids[source_document_id] = file["id"]
 
         rows = []
-        for source_document_id, concept_id, content, agreement, row_number in statements:
+        for (
+            source_document_id,
+            concept_id,
+            content,
+            agreement,
+            row_number,
+        ) in statements:
             document_id = file_ids.get(source_document_id)
             if document_id is None:
                 raise ValueError(

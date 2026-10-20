@@ -2,7 +2,6 @@ import asyncio
 
 from ai import DEFAULT_MODEL, LlmManager, get_available_models
 from tui.tui import Tui
-from goldenstandards.goldenstandard_manager import GoldenStandardManager
 
 
 class App:
@@ -11,7 +10,7 @@ class App:
         1: "Etsi valitut konseptit tiedostosta",
         2: "Aitta prompti",
         3: "Vaihda tekoälymallia",
-        4: "Tulosta golden standard tiedostoille"
+        4: "Tulosta golden standard tiedostoille",
     }
 
     def __init__(self):
@@ -34,7 +33,8 @@ class App:
             return
 
         manager = LlmManager(
-            selected_documents, selected_concepts, model=self.selected_model)
+            selected_documents, selected_concepts, model=self.selected_model
+        )
         session_list = manager.call_aitta(on_result=self.tui.print_output)
         # golden_standard = GoldenStandardManager.get_by_document_id(selected_documents[0]["id"])
         # print(golden_standard)
@@ -64,7 +64,9 @@ class App:
             return
 
         if self.selected_model not in models:
-            self.tui.io.output(f"Nykyinen malli ei ole Aittan katalogissa: {self.selected_model}")
+            self.tui.io.output(
+                f"Nykyinen malli ei ole Aittan katalogissa: {self.selected_model}"
+            )
 
         self.tui.print_available_models(models, self.selected_model)
 
@@ -80,7 +82,6 @@ class App:
             self.tui.io.output("Virheellinen valinta.")
             return
 
-
         # self.selected_model = models[choice - 1]
         # self.tui.io.output(f"Käytettävä malli: {self.selected_model}")
 
@@ -92,7 +93,7 @@ class App:
             1: self.search_from_file,
             2: self.prompt_thing,
             3: self.change_model,
-            4: self.print_golden_standard
+            4: self.print_golden_standard,
         }
 
         while True:
@@ -113,6 +114,7 @@ class App:
                     asyncio.run(executable())
                 else:
                     executable()
+
 
 if __name__ == "__main__":
     App().main()

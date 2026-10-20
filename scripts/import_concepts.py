@@ -1,5 +1,4 @@
 import asyncio
-
 import os
 from pathlib import Path
 
@@ -32,8 +31,8 @@ def get_concept_data_path() -> Path:
 
 def read_concept_data(concept_data_path: Path) -> list[tuple]:
     dataframe = pd.read_csv(
-            concept_data_path, usecols=lambda column: column in REQUIRED_COLUMNS
-        )
+        concept_data_path, usecols=lambda column: column in REQUIRED_COLUMNS
+    )
     missing = REQUIRED_COLUMNS - set(dataframe.columns)
     if missing:
         raise ValueError(
@@ -65,7 +64,7 @@ def read_concept_data(concept_data_path: Path) -> list[tuple]:
 
 
 def remove_prefix(concept: str) -> str:
-    return (concept.removeprefix("YES:").removeprefix("NO:").strip())
+    return concept.removeprefix("YES:").removeprefix("NO:").strip()
 
 
 async def import_concepts():

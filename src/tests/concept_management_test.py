@@ -1,14 +1,14 @@
 import unittest
-from concepts.concept_management import ConceptManager
 
+from concepts.concept_management import ConceptManager
 
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):
         self.concepts = [
-            {"id": 1,"stance_label": "Yes","concept": "This is a test"},
-            {"id": 2,"stance_label": "No","concept": "This is a test nro 2"},
-            {"id": 3,"stance_label": "Yes","concept": "This is another test"} 
+            {"id": 1, "stance_label": "Yes", "concept": "This is a test"},
+            {"id": 2, "stance_label": "No", "concept": "This is a test nro 2"},
+            {"id": 3, "stance_label": "Yes", "concept": "This is another test"},
         ]
         self.manager = ConceptManager(all_concepts=self.concepts)
 
@@ -22,4 +22,4 @@ class TestDatabase(unittest.TestCase):
 
     def test_get_all_ids(self):
         selected = self.manager.get_all_ids()
-        self.assertEqual({1,2,3}, selected)
+        self.assertEqual({1, 2, 3}, selected)

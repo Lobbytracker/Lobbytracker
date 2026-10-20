@@ -1,5 +1,6 @@
-import db
 import asyncio
+
+import db
 
 
 class GoldenStandardManager:
@@ -8,7 +9,7 @@ class GoldenStandardManager:
     def __init__(self):
         pass
 
-    def get_by_document_id(self,document_id):
+    def get_by_document_id(self, document_id):
         rows = asyncio.run(db.get_golden_standard_by_document_id(document_id))
         concepts_by_id = {}
         for row in rows:
