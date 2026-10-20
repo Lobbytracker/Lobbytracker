@@ -108,6 +108,18 @@ make logs
 
 ---
 
+## Pylint
+Fix available problems
+```
+uv run ruff check --fix .
+```
+
+Fix format
+
+```
+uv run ruff format .
+```
+
 ## Development workflow
 
 ```text
