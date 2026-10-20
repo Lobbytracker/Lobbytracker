@@ -32,3 +32,6 @@ tests:
 coverage:
 	uv run coverage run -m pytest src
 	uv run coverage report
+
+pylint:
+	uv run pylint src

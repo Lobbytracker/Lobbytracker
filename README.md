@@ -86,7 +86,7 @@ make tables
 \q
 ```
 
-## Tests
+## Other
 
 ### Run tests
 ```
@@ -96,6 +96,11 @@ make test
 ### Run coverage
 ```
 make coverage
+```
+
+### Run pylint
+```
+make pylint
 ```
 
 ## Backlog
