@@ -31,17 +31,13 @@ make start
 ```
 
 ### Run data import scripts
-
 ```
-uv run python scripts/import_concepts.py
-uv run python scripts/import_documents.py
-uv run python scripts/import_goldenstandard.py
+make data
 ```
 
 ### Run the application locally
-
 ```
-uv run python src/app.py
+make app
 ```
 
 Web-version is available at [http://localhost:8000](http://localhost:8000)
@@ -88,6 +84,18 @@ make tables
 ### Exit PostgreSQL
 ```
 \q
+```
+
+## Tests
+
+### Run tests
+```
+make test
+```
+
+### Run coverage
+```
+make coverage
 ```
 
 ## Backlog

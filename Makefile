@@ -3,6 +3,11 @@
 start:
 	docker compose up -d --build
 
+data:
+	uv run python scripts/import_concepts.py
+	uv run python scripts/import_documents.py
+	uv run python scripts/import_goldenstandard.py
+
 app:
 	uv run src/app.py
 
@@ -20,3 +25,10 @@ tables:
 
 logs:
 	docker compose logs backend
+
+tests:
+	uv run pytest src
+
+coverage:
+	uv run coverage run -m pytest src
+	uv run coverage report
