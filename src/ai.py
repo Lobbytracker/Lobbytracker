@@ -17,7 +17,7 @@ REQUEST_TIMEOUT_SECONDS = 300
 
 
 def get_available_models():
-    """Return model IDs from Aitta that support chat completion."""
+    """Return models from Aitta that are available for use."""
     load_dotenv()
 
     headers = {}
@@ -45,11 +45,15 @@ def get_available_models():
 
 
 class ConceptResult(BaseModel):
+    """Structured result returned when evaluating a concept against a document."""
+
     decision: Literal["yes", "no"]
     passage: str | None
 
 
 class LlmManager:
+    """Manage model requests and persist concept evaluation results."""
+
     def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
         self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
@@ -64,6 +68,7 @@ class LlmManager:
         self.client = self.create_client()
 
     def create_client(self) -> openai.OpenAI:
+        """Create and return an OpenAI client configured for Aitta."""
         load_dotenv()
 
         key = os.getenv("AITTA_API_KEY")
@@ -76,6 +81,7 @@ class LlmManager:
         )
 
     def create_connection(self):
+        """Check whether the configured Aitta connection is available."""
         try:
             # instruction = "say hello"
             response = self.client.beta.chat.completions.parse(
@@ -92,11 +98,12 @@ class LlmManager:
             if result:
                 return True
             return False
-        except:
+        except openai.OpenAIError:
             # print("here")
             return False
 
-    def API_call(self, concept, document):
+    def api_call(self, concept, document):
+        """Determine whether a concept appears in a document."""
         concept_definition = concept["concept"]
 
         instructions = (
@@ -124,6 +131,7 @@ class LlmManager:
         return result
 
     def call_aitta(self, on_result=None):
+        """Evaluate concepts against document."""
 
         if not self.client:
             self.create_client()
@@ -133,8 +141,8 @@ class LlmManager:
 
         for concept in self.concepts:
             try:
-                api_call_result = self.API_call(concept, document)
-            except Exception as e:
+                api_call_result = self.api_call(concept, document)
+            except openai.OpenAIError as e:
                 self.io.output(f"Konseptin {concept['id']} käsittely epäonnistui:")
                 self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
                 continue
@@ -157,4 +165,5 @@ class LlmManager:
         return self.session_list
 
     def output_to_db(self):
+        """Persist the current session results in the database."""
         asyncio.run(save_output(self.session_list))
