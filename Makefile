@@ -35,3 +35,7 @@ coverage:
 
 pylint:
 	uv run pylint src
+
+autofix:
+	uv run ruff check --fix .
+	uv run ruff format .

@@ -103,6 +103,11 @@ make coverage
 make pylint
 ```
 
+### Autofix pylint issues
+```
+make autofix
+```
+
 ## Backlog
 
 Product backlog and sprint backlog can be found [here.](https://github.com/orgs/Lobbytracker/projects/1)
