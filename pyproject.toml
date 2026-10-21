@@ -23,5 +23,8 @@ dev = [
     "ruff>=0.17.1",
 ]
 
+[tool.pylint.main]
+ignore-paths = ["^src/tests/"]
+
 [tool.pylint.messages_control]
 disable = ["missing-module-docstring"]
