@@ -107,11 +107,11 @@ class LlmManager:
         concept_definition = concept["concept"]
 
         instructions = (
-            "Determine whether the following concept appears in the document. "
-            "If it does, give the passage from the document that expresses it, "
-            "quoted exactly as written, without markdown or ellipses. "
-            "If it does not, give null. "
-            'Do not answer "yes" unless you can provide a supporting passage.\n'
+            "Determine whether the given concept appears in the document. "
+            "If it appears, return one passage from the document that expresses the concept, "
+            "quoted exactly as written. "
+            "If it does not appear, return null. "
+            "Do not answer yes unless you can provide a supporting passage.\n"
             f"Concept: {concept_definition}"
         )
 
