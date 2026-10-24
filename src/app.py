@@ -1,28 +1,35 @@
 import asyncio
 
 from ai import DEFAULT_MODEL, LlmManager, get_available_models
+from documents.document_management import DocumentManager
+from concepts.concept_management import ConceptManager
+from goldenstandards.goldenstandard_manager import GoldenStandardManager
 from tui.tui import Tui
 
 
 class App:
-    def __init__(self):
-        self.tui = Tui()
+    def __init__(self, tui, documents, concepts, golden_standards):
+        self.tui = tui
+        self.documents = documents
+        self.concepts = concepts
+        self.golden_standards = golden_standards
         self.selected_model = DEFAULT_MODEL
 
     def print_instructions(self):
         self.tui.print_instructions(self.selected_model)
 
     def search_from_file(self):
-        selected_documents = self.tui.get_document_by_ids()
-        if not selected_documents:
-            self.tui.io.output("Ei valittuja tiedostoja.")
+        document_ids = self.tui.ask_document_ids(self.documents.all_documents)
+        if document_ids is None:
             return
 
-        self.tui.print_concepts()
-        selected_concepts = self.tui.get_concepts_by_ids()
-        if not selected_concepts:
-            self.tui.io.output("Ei valittuja konsepteja.")
+        selected_documents = self.documents.get_by_ids(document_ids)
+
+        concept_ids = self.tui.ask_concept_ids(self.concepts.all_concepts)
+        if concept_ids is None:
             return
+
+        selected_concepts = self.concepts.select_concepts(concept_ids)
 
         manager = LlmManager(
             selected_documents, selected_concepts, model=self.selected_model
@@ -32,8 +39,8 @@ class App:
         return session_list
 
     def prompt_thing(self):
-        documents = self.tui.documents.all
-        concepts = self.tui.concepts.all_concepts
+        documents = self.documents.all_documents
+        concepts = self.concepts.all_concepts
 
         manager = LlmManager(documents, concepts, model=self.selected_model)
         session_list = manager.call_aitta(on_result=self.tui.print_output)
@@ -102,4 +109,11 @@ class App:
 
 
 if __name__ == "__main__":
-    App().main()
+    app = App(
+        tui=Tui(),
+        documents=DocumentManager(),
+        concepts=ConceptManager(),
+        golden_standards=GoldenStandardManager()
+    )
+
+    app.main()

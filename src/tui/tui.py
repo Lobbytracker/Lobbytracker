@@ -3,9 +3,6 @@ from rich.json import JSON
 from rich.table import Table
 from rich.text import Text
 
-from concepts.concept_management import ConceptManager
-from documents.document_management import DocumentManager
-from goldenstandards.goldenstandard_manager import GoldenStandardManager
 from tui.tui_io import TuiIO
 
 
@@ -14,9 +11,6 @@ class Tui:
 
     def __init__(self, io=TuiIO):
         self.io = io
-        self.documents = DocumentManager()
-        self.concepts = ConceptManager()
-        self.golden_standard = GoldenStandardManager()
 
     def print_instructions(self, selected_model: str):
         instructions = {
@@ -43,33 +37,37 @@ class Tui:
 
         self.io.output(table)
 
-    def print_documents(self, start: int = 0):
-        """Prints the 10 first documents"""
-        files = self.documents.all[start : start + 10]
+    def format_document_name(self, filename: str):
+        """Returns the given filename without the .txt -suffix."""
 
+        name = filename.removesuffix(".txt")
+        if "-" in name:
+            name = name.split("-", 1)[1]
+        return name
+
+    def print_documents(self, documents, start: int = 0):
+        """Prints the 10 first documents"""
         table = Table(
-            title=f"\nDokumentit {start + 1}-{start + len(files)}:",
+            title=f"\nDokumentit {start + 1}-{start + len(documents)}:",
             box=box.SIMPLE,
             header_style="bold cyan",
         )
         table.add_column("Dokumentin ID", style="dim", justify="right")
         table.add_column("Nimi")
 
-        for document in files:
-            name = self.documents.format(document["filename"])
+        for document in documents:
+            name = self.format_document_name(document["filename"])
             table.add_row(str(document["id"]), name)
 
         self.io.output(table)
 
-        return start + 10 < len(self.documents.all)
-
-    def print_concepts(self):
+    def print_concepts(self, concepts):
         """Prints all concepts"""
         table = Table(title="\nKonseptit:", box=box.SIMPLE, header_style="bold blue")
         table.add_column("Konseptin ID", style="dim", justify="right")
         table.add_column("Konsepti")
 
-        for concept in self.concepts.all_concepts:
+        for concept in concepts:
             table.add_row(str(concept["id"]), concept["concept"])
 
         self.io.output(table)
@@ -121,44 +119,57 @@ class Tui:
 
         self.io.output(table)
 
-    def get_document_by_ids(self):
-        """Asks user for document ids and returns the documents"""
+    def ask_document_ids(self, documents, start=0):
+        """Shows documents and returns the selected document ids"""
 
-        start = 0
+        if not documents:
+            self.io.output("Ei valittavia tiedostoja")
+            return None
+
+        valid_ids = {document["id"] for document in documents}
+
         while True:
-            documents = self.documents.get_next_ten_docs(start)
-            self.print_documents(start)
-            if len(documents) >= 10:
+            page = documents[start:start + 10]
+            self.print_documents(page, start)
+
+            if start + 10 < len(documents):
                 prompt = "\nAnna tiedoston ID numerot (esim. 1, 2, 3), tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
             else:
                 prompt = "\nAnna tiedoston ID numerot (esim. 1, 2, 3): "
 
-            answer = self.io.input(prompt).strip().lower()
+            document_ids = self.io.input(prompt).strip().lower()
 
-            if answer == "x":
-                if len(documents) >= 10:
+            if document_ids == "x":
+                if start + 10 < len(documents):
                     start += 10
                 else:
                     self.io.output("Ei enempää tiedostoja.")
                 continue
 
             try:
-                ids = [int(part) for part in answer.split(",")]
+                ids = [int(part) for part in document_ids.split(",")]
             except ValueError:
                 self.io.output(
                     "Väärä syöte. Anna ID-numerot pilkulla erotettuna tai x."
                 )
                 continue
 
-            valid_ids = self.documents.get_all_ids()
             invalid = [i for i in ids if i not in valid_ids]
             if invalid:
                 self.io.output(f"Tuntemattomat ID:t: {invalid}")
                 continue
-            return self.documents.get_by_ids(answer)
 
-    def get_concepts_by_ids(self):
-        """Asks user for concept ids and returns the concepts."""
+            return document_ids
+
+    def ask_concept_ids(self, concepts):
+        """Shows concepts and returns the concept ids."""
+
+        if not concepts:
+            self.io.output("Ei valittavia konsepteja")
+            return None
+
+        self.print_concepts(concepts)
+        valid_ids = {concept["id"] for concept in concepts}
 
         while True:
             concept_ids = self.io.input(
@@ -170,13 +181,13 @@ class Tui:
             except ValueError:
                 self.io.output("Väärä syöte. Anna ID-numerot pilkulla erotettuna.")
                 continue
-            valid_ids = self.concepts.get_all_ids()
+
             invalid = [i for i in ids if i not in valid_ids]
             if invalid:
                 self.io.output(f"Tuntemattomat ID:t: {invalid}")
                 continue
 
-            return self.concepts.select_concepts(concept_ids)
+            return concept_ids
 
     def golden_standards_for_documents(self):
         """Prints golden standard concepts for the chosen documents"""

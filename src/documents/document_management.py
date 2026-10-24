@@ -8,37 +8,29 @@ class DocumentManager:
 
     def __init__(self, all_documents=None):
         if not all_documents:
-            self.all = asyncio.run(self.get_all_from_db())
+            self.all_documents = asyncio.run(self.get_all_from_db())
         else:
-            self.all = all_documents
+            self.all_documents = all_documents
 
     async def get_all_from_db(self):  # pitääkö olla async?
         """Returns all documents from the database."""
         return await db.get_documents()
 
-    def format(self, filename: str):
-        """Returns the given filename without the .txt -suffix."""
-
-        name = filename.removesuffix(".txt")
-        if "-" in name:
-            name = name.split("-", 1)[1]
-        return name
-
     def get_next_ten_docs(self, start):
         """Returns 10 documents starting from the given index."""
 
-        if len(self.all[start:]) >= 10:
+        if len(self.all_documents[start:]) >= 10:
             end = start + 10
         else:
-            end = len(self.all) - start
+            end = len(self.all_documents) - start
 
-        return self.all[start:end]
+        return self.all_documents[start:end]
 
     def get_by_ids(self, selected_ids: str):
         """Returns all documents that contain the given ids."""
         ids_to_list = [int(value.strip()) for value in str(selected_ids).split(",")]
-        return [document for document in self.all if document["id"] in ids_to_list]
+        return [document for document in self.all_documents if document["id"] in ids_to_list]
 
     def get_all_ids(self):
         """Returns the ids of all documents as a set."""
-        return {document["id"] for document in self.all}
+        return {document["id"] for document in self.all_documents}
