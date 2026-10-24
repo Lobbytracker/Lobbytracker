@@ -18,7 +18,15 @@ class Tui:
         self.concepts = ConceptManager()
         self.golden_standard = GoldenStandardManager()
 
-    def print_instructions(self, instructions: dict, selected_model: str):
+    def print_instructions(self, selected_model: str):
+        instructions = {
+            0: "Quit",
+            1: "Etsi valitut konseptit tiedostosta",
+            2: "Aitta prompti",
+            3: "Vaihda tekoälymallia",
+            4: "Tulosta golden standard tiedostoille",
+        }
+
         self.io.output(
             f"\nNykyinen tekoälymalli: [bold green]{selected_model}[/bold green]\n",
             markup=True,

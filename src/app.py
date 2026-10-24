@@ -5,20 +5,12 @@ from tui.tui import Tui
 
 
 class App:
-    INSTRUCTIONS = {
-        0: "Quit",
-        1: "Etsi valitut konseptit tiedostosta",
-        2: "Aitta prompti",
-        3: "Vaihda tekoälymallia",
-        4: "Tulosta golden standard tiedostoille",
-    }
-
     def __init__(self):
         self.tui = Tui()
         self.selected_model = DEFAULT_MODEL
 
     def print_instructions(self):
-        self.tui.print_instructions(self.INSTRUCTIONS, self.selected_model)
+        self.tui.print_instructions(self.selected_model)
 
     def search_from_file(self):
         selected_documents = self.tui.get_document_by_ids()
@@ -36,9 +28,6 @@ class App:
             selected_documents, selected_concepts, model=self.selected_model
         )
         session_list = manager.call_aitta(on_result=self.tui.print_output)
-        # golden_standard = GoldenStandardManager.get_by_document_id(selected_documents[0]["id"])
-        # print(golden_standard)
-        # self.tui.print_output(session_list)
 
         return session_list
 
@@ -48,7 +37,6 @@ class App:
 
         manager = LlmManager(documents, concepts, model=self.selected_model)
         session_list = manager.call_aitta(on_result=self.tui.print_output)
-        # self.tui.print_output(session_list)
 
         return session_list
 
@@ -82,9 +70,6 @@ class App:
             self.tui.io.output("Virheellinen valinta.")
             return
 
-        # self.selected_model = models[choice - 1]
-        # self.tui.io.output(f"Käytettävä malli: {self.selected_model}")
-
     def print_golden_standard(self):
         self.tui.golden_standards_for_documents()
 
@@ -105,7 +90,7 @@ class App:
                 continue
             if command == 0:
                 break
-            if command not in self.INSTRUCTIONS:
+            if command not in commands:
                 print("Tuntematon komento, syötä jokin ohjelman komennoista.")
                 continue
             else:

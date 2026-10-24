@@ -2,8 +2,6 @@
 
 - App alustaa dokumentit ja konseptit.
   - App alustaa Manager luokat ja hoitaa injektiot.
-  - Turhat kommentit pois.
-  - Instructionsit kanssa Tui:lle
 - Tui hoitaa vain printtauksen.
   - Kaikki toiminnallisuus muihin luokkiin.
 - db-tiedoston jakaminen pienempiin tiedostoihin. Tietokannan alustus omanaan (schema.sql/oma ajettava skripti "init_db.py", joka ajetaan skeeman muutoksen jälkeen.)
