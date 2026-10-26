@@ -45,7 +45,7 @@ def get_available_models():
 
 
 class ConceptResult(BaseModel):
-       decision: Literal["yes", "no"]
+       present: bool
        passage: str | None
        agreement: bool | None
 
@@ -92,19 +92,28 @@ class LlmManager:
             return False
 
     def API_call(self, concept, document):
+        print(f"{concept}")
         concept_definition = concept["concept"]
+        stance_label = concept["stance_label"]
 
         instructions = (
             "Determine whether the following concept appears in the document. "
+            "The stance label (Yes/No) in front of the concept tells you whether"
+            "the concept promotes or opposes the climate law."
             "If it does, give the passage from the document that expresses it, "
             "quoted exactly as written, without markdown or ellipses. "
             "The passage can express agremeent or disagreement about the concept. "
+<<<<<<< HEAD
             "Return into the agreement field whether the passage is "
             "brought up to agree or disgagree with the concept. If concept is not found, "
             "the agremeent field is null by default."
+=======
+            "Return into the agreement field whether the passage is"
+            "brought up to agree or disagree with the concept."
+>>>>>>> ae2143a (prompt muuttaus sekä tietokannan muuttausta)
             "If the concept is not found in the document, give null. "
             'Do not answer "yes" unless you can provide a supporting passage.\n'
-            f"Concept: {concept_definition}"
+            f"Concept: {stance_label}: {concept_definition}"
         )                  
 
         self.create_client()
@@ -142,7 +151,7 @@ class LlmManager:
                 "document_id": document_id,
                 "concept_id": concept["id"],
                 "concept": concept["concept"],
-                "decision": api_call_result.decision,
+                "present": api_call_result.present,
                 "passage": api_call_result.passage,
                 "agremeent": api_call_result.agreement,
             }

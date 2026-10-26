@@ -43,9 +43,9 @@ async def init_db(database_url=DATABASE_URL):
                 id SERIAL PRIMARY KEY,
                 document_id INT NOT NULL REFERENCES files(id),
                 concept_id INT NOT NULL REFERENCES concepts(id),
-                concept TEXT NOT NULL,
-                decision TEXT NOT NULL,
-                passage TEXT
+                present BOOLEAN,
+                passage TEXT,
+                agreement BOOLEAN OR None
             )
             """)
     finally:
@@ -65,7 +65,7 @@ async def get_concepts_by_id(concept_id, database_url=DATABASE_URL):
     conn = await asyncpg.connect(database_url)
     try:
         rows = await conn.fetch(
-            "SELECT id, concept FROM concepts WHERE id = $1", concept_id
+            "SELECT id, concept, stance_label FROM concepts WHERE id = $1", concept_id
         )
         return rows
     finally:
