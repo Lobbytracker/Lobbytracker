@@ -47,7 +47,7 @@ def get_available_models():
 class ConceptResult(BaseModel):
        decision: Literal["yes", "no"]
        passage: str | None
-       agreement: bool
+       agreement: bool | None
 
 class LlmManager:
     def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
@@ -99,8 +99,9 @@ class LlmManager:
             "If it does, give the passage from the document that expresses it, "
             "quoted exactly as written, without markdown or ellipses. "
             "The passage can express agremeent or disagreement about the concept. "
-            "Return into the agreement field whether the passage is"
-            "brought up to agree or disgagree with the concept."
+            "Return into the agreement field whether the passage is "
+            "brought up to agree or disgagree with the concept. If concept is not found, "
+            "the agremeent field is null by default."
             "If the concept is not found in the document, give null. "
             'Do not answer "yes" unless you can provide a supporting passage.\n'
             f"Concept: {concept_definition}"
