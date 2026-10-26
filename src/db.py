@@ -43,9 +43,10 @@ async def init_db(database_url=DATABASE_URL):
                 id SERIAL PRIMARY KEY,
                 document_id INT NOT NULL REFERENCES files(id),
                 concept_id INT NOT NULL REFERENCES concepts(id),
-                present BOOLEAN,
+                present BOOLEAN NOT NULL,
                 passage TEXT,
-                agreement BOOLEAN OR None
+                agreement BOOLEAN, 
+                CHECK (present OR agreement IS NULL)
             )
             """)
     finally:
@@ -116,9 +117,9 @@ async def save_output(output, database_url=DATABASE_URL):
         (
             row["document_id"],
             row["concept_id"],
-            row["concept"],
-            row["decision"],
+            row["present"],
             row["passage"],
+            row["agreement"]
         )
         for row in output
     ]
@@ -127,7 +128,7 @@ async def save_output(output, database_url=DATABASE_URL):
     try:
         await conn.executemany(
             """INSERT INTO llmOutput (
-            document_id, concept_id, concept, decision, passage)
+            document_id, concept_id, present, passage, agreement)
             VALUES ($1, $2, $3, $4, $5)""",
             rows,
         )

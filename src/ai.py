@@ -147,7 +147,7 @@ class LlmManager:
                 "concept": concept["concept"],
                 "present": api_call_result.present,
                 "passage": api_call_result.passage,
-                "agremeent": api_call_result.agreement,
+                "agreement": api_call_result.agreement,
             }
 
             self.session_list.append(result)
