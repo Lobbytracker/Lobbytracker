@@ -92,7 +92,6 @@ class LlmManager:
             return False
 
     def API_call(self, concept, document):
-        print(f"{concept}")
         concept_definition = concept["concept"]
         stance_label = concept["stance_label"]
 
@@ -102,16 +101,11 @@ class LlmManager:
             "the concept promotes or opposes the climate law."
             "If it does, give the passage from the document that expresses it, "
             "quoted exactly as written, without markdown or ellipses. "
-            "The passage can express agremeent or disagreement about the concept. "
-<<<<<<< HEAD
-            "Return into the agreement field whether the passage is "
-            "brought up to agree or disgagree with the concept. If concept is not found, "
-            "the agremeent field is null by default."
-=======
-            "Return into the agreement field whether the passage is"
-            "brought up to agree or disagree with the concept."
->>>>>>> ae2143a (prompt muuttaus sekä tietokannan muuttausta)
-            "If the concept is not found in the document, give null. "
+            "The passage may endorse or reject the argument. "
+            "Set agreement to true if the author endorses the argument, "
+            "and false if the author rejects it. "
+            "If the concept is not found, set present to false, passage to null, "
+            "and agreement to null. "
             'Do not answer "yes" unless you can provide a supporting passage.\n'
             f"Concept: {stance_label}: {concept_definition}"
         )                  
