@@ -79,7 +79,15 @@ class App:
             return
 
     def print_golden_standard(self):
-        self.tui.golden_standards_for_documents()
+        document_ids = self.tui.ask_golden_standards_for_documents(
+            self.golden_standards.all_golden_standards
+            )
+
+        golden_standards = [
+            self.golden_standards.get_by_document_id(id) for id in document_ids
+            ]
+
+        self.tui.print_golden_standard(golden_standards)
 
     def call_batch(self):
         documents = self.documents.all_documents

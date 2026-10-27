@@ -190,16 +190,19 @@ class Tui:
 
             return concept_ids
 
-    def golden_standards_for_documents(self):
-        """Prints golden standard concepts for the chosen documents"""
+    def ask_golden_standards_for_documents(self, golden_standards):
+        """Asks user which documents to search golden standards from"""
+
+        if not golden_standards:
+            self.io.output("Ei valittavia golden standardeja")
+            return None
+
         document_ids = self.io.input(
-            "\nAnna tiedoston ID numerot (esim. 1, 2, 3), tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
+            "\nAnna tiedoston ID numerot (esim. 1, 2, 3): "
         )
         document_ids = [int(id) for id in document_ids.split(",")]
-        golden_standards = [
-            self.golden_standard.get_by_document_id(id) for id in document_ids
-        ]
-        self.print_golden_standard(golden_standards)
+
+        return document_ids
 
     def print_output(self, output):
         self.io.output(
