@@ -1,4 +1,4 @@
-from ai import LlmManager
+from ai import LlmManager, DEFAULT_MODEL
 
 
 class BatchManager:
