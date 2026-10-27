@@ -148,7 +148,7 @@ async def import_statements(concepts: list) -> None:
         async with conn.transaction():
             await conn.executemany(
                 """
-                INSERT INTO goldenStandard (document_id, concept_id, content, agreement)
+                INSERT INTO goldenStandard (document_id, concept_id, passage, agreement)
                 VALUES ($1, $2, $3, $4)
                 """,
                 rows,
