@@ -34,7 +34,7 @@ async def init_db(database_url=DATABASE_URL):
                 id SERIAL PRIMARY KEY, 
                 document_id INT NOT NULL REFERENCES files(id),
                 concept_id INT NOT NULL REFERENCES concepts(id), 
-                content TEXT,
+                passage TEXT,
                 agreement TEXT
             )
             """)
