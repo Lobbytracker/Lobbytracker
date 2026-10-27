@@ -82,7 +82,9 @@ class App:
         self.tui.golden_standards_for_documents()
 
     def call_batch(self):
-        batch_manager = BatchManager(self.documents, self.concepts, self.selected_model)
+        documents = self.documents.all_documents
+        concepts = self.concepts.all_concepts
+        batch_manager = BatchManager(documents, concepts, self.selected_model)
         result = batch_manager.batch_call()
         self.tui.print_output(result)
 

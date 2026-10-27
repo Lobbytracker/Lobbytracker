@@ -12,7 +12,7 @@ from db import save_output
 from tui.tui_io import TuiIO
 
 AITTA_URL = "https://aitta-api.csc.fi"
-DEFAULT_MODEL = "openai/gpt-oss-120b"
+DEFAULT_MODEL = "swiss-ai/Apertus-70B-Instruct-2509"
 REQUEST_TIMEOUT_SECONDS = 300
 
 
@@ -130,7 +130,9 @@ class LlmManager:
         if not self.client:
             self.create_client()
 
+        #print(f"virhe:", self.documents)
         document = self.documents["content"]
+        
         document_id = self.documents["id"]
 
         for concept in self.concepts:
