@@ -19,6 +19,7 @@ class Tui:
             2: "Aitta prompti",
             3: "Vaihda tekoälymallia",
             4: "Tulosta golden standard tiedostoille",
+            5: "Suorita batch-prosessointi"
         }
 
         self.io.output(

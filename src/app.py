@@ -5,6 +5,7 @@ from documents.document_management import DocumentManager
 from concepts.concept_management import ConceptManager
 from goldenstandards.goldenstandard_manager import GoldenStandardManager
 from tui.tui import Tui
+from batch import BatchManager
 
 
 class App:
@@ -80,12 +81,18 @@ class App:
     def print_golden_standard(self):
         self.tui.golden_standards_for_documents()
 
+    def call_batch(self):
+        batch_manager = BatchManager(self.documents, self.concepts, self.selected_model)
+        result = batch_manager.batch_call()
+        self.tui.print_output(result)
+
     def main(self):
         commands = {
             1: self.search_from_file,
             2: self.prompt_thing,
             3: self.change_model,
             4: self.print_golden_standard,
+            5: self.call_batch
         }
 
         while True:
