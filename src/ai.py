@@ -45,17 +45,22 @@ def get_available_models():
 
 
 class ConceptResult(BaseModel):
-       present: bool
-       passage: str | None
-       agreement: bool | None
+    present: bool
+    passage: str | None
+    agreement: bool | None
+
 
 class LlmManager:
     def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
         self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = model
-        self.documents = documents[0] if documents else None  # first document for testing
-        self.concepts = concepts[0:3] if concepts else None  # Limit to first 3 concepts for testing
+        self.documents = (
+            documents[0] if documents else None
+        )  # first document for testing
+        self.concepts = (
+            concepts[0:3] if concepts else None
+        )  # Limit to first 3 concepts for testing
         self.session_list = []
         self.client = self.create_client()
 
@@ -80,7 +85,8 @@ class LlmManager:
                     {"role": "system", "content": "when i say ping, you say pong"},
                     {"role": "user", "content": "ping"},
                 ],
-                timeout=(60*2),)
+                timeout=(60 * 2),
+            )
 
             result = response.choices[0].message.content
             # print(result)
@@ -97,8 +103,8 @@ class LlmManager:
 
         instructions = (
             "Determine whether the following concept appears in the document. "
-            "The stance label (Yes/No) in front of the concept tells you whether"
-            "the concept promotes or opposes the climate law."
+            "The stance label (Yes/No) in front of the concept tells you whether "
+            "the concept promotes or opposes the climate law. "
             "If it does, give the passage from the document that expresses it, "
             "quoted exactly as written, without markdown or ellipses. "
             "The passage may endorse or reject the argument. "
@@ -108,7 +114,7 @@ class LlmManager:
             "and agreement to null. "
             'Do not answer "yes" unless you can provide a supporting passage.\n'
             f"Concept: {stance_label}: {concept_definition}"
-        )                  
+        )
 
         self.create_client()
 
@@ -130,9 +136,9 @@ class LlmManager:
         if not self.client:
             self.create_client()
 
-        #print(f"virhe:", self.documents)
+        # print(f"virhe:", self.documents)
         document = self.documents["content"]
-        
+
         document_id = self.documents["id"]
 
         for concept in self.concepts:
@@ -142,7 +148,7 @@ class LlmManager:
                 self.io.output(f"Konseptin {concept["id"]} käsittely epäonnistui:")
                 self.io.output((json.dumps(f"{e}", indent=4, ensure_ascii=False)))
                 continue
-            
+
             result = {
                 "document_id": document_id,
                 "concept_id": concept["id"],
