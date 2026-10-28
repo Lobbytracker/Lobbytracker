@@ -29,7 +29,7 @@ class GoldenStandardManager:
                 "document_id": row["document_id"],
                 "concept_id": row["concept_id"],
                 "concept": concepts_by_id[row["concept_id"]],
-                "content": row["content"],
+                "passage": row["passage"],
                 "agreement": row["agreement"],
             }
             for row in rows
