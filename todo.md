@@ -13,3 +13,5 @@
 - :white_check_mark: Argumentin kanta (Yes/No) kielimallille. Eli puoltaako dokumentin lause annettua konseptia.
 - :white_check_mark: Agreement arvo kielimallin tulosteeseen.
 - :white_check_mark: Golden standardin agreement tietokantaan. (Ei saa antaa kielimallille --> annetaan valitut sarakkeet)
+- Pylint virheiden korjaaminen
+- Testipipeline GitHubiin
