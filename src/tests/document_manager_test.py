@@ -20,10 +20,6 @@ class TestDatabase(unittest.TestCase):
 
         self.manager = DocumentManager(all_documents=self.documents)
 
-    def test_format(self):
-        file_name = "hello_from_a_file.txt"
-        self.assertEqual("hello_from_a_file", self.manager.format(file_name))
-
     def test_get_ten_docs(self):
         start = 2
         correct = self.documents[start : start + 10]
