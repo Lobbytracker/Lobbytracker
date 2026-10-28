@@ -59,7 +59,7 @@ class LlmManager:
             documents[0] if documents else None
         )  # first document for testing
         self.concepts = (
-            concepts[0:3] if concepts else None
+            concepts if concepts else None
         )  # Limit to first 3 concepts for testing
         self.session_list = []
         self.client = self.create_client()
@@ -154,7 +154,7 @@ class LlmManager:
                 "concept_id": concept["id"],
                 "concept": concept["concept"],
                 "present": api_call_result.present,
-                "passage": api_call_result.passage,
+                "passage": api_call_result.passage if api_call_result.present else None,
                 "agreement": api_call_result.agreement,
             }
 
