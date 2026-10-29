@@ -4,7 +4,10 @@ from ai import DEFAULT_MODEL, LlmManager, get_available_models
 from batch import BatchManager
 from concepts.concept_management import ConceptManager
 from documents.document_management import DocumentManager
+from evaluations.encoding import DataEncoding
+from evaluations.f1_calculation import F1Calculator
 from goldenstandards.goldenstandard_manager import GoldenStandardManager
+from populate_test_data import populate_evaluations_test_data
 from tui.tui import Tui
 
 
@@ -97,6 +100,22 @@ class App:
         result = batch_manager.batch_call()
         self.tui.print_output(result)
 
+    # NOT FINAL IMPLEMENTATION!! JUST FOR EASIER TESTING OF F1 CALCULATION AND ENCODING
+    def f1_mvp(self):
+        llm_output, golden_standard = populate_evaluations_test_data()
+        f1_calculator = F1Calculator(llm_output, golden_standard)
+        self.tui.io.output(f"F1 score (micro): {f1_calculator.calculate_f1_micro()}")
+        self.tui.io.output(f"F1 score (macro): {f1_calculator.calculate_f1_macro()}")
+        self.tui.io.output(f"Precision: {f1_calculator.calculate_precision()}")
+        self.tui.io.output(f"Recall: {f1_calculator.calculate_recall()}")
+
+    def encoding_test(self):
+        llm_output, golden_standard = populate_evaluations_test_data()
+        encoder = DataEncoding(llm_output, golden_standard)
+        result = encoder.encode_data()
+        for row in result:
+            self.tui.io.output(row)
+
     def main(self):
         commands = {
             1: self.search_from_file,
@@ -104,6 +123,8 @@ class App:
             3: self.change_model,
             4: self.print_golden_standard,
             5: self.call_batch,
+            6: self.f1_mvp,
+            7: self.encoding_test,
         }
 
         while True:

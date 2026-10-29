@@ -20,6 +20,8 @@ class Tui:
             3: "Vaihda tekoälymallia",
             4: "Tulosta golden standard tiedostoille",
             5: "Suorita batch-prosessointi",
+            6: "F1 MVP",
+            7: "Encoding test",
         }
 
         self.io.output(
