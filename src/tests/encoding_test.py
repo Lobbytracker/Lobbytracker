@@ -3,7 +3,7 @@ import unittest
 from evaluations.encoding import DataEncoding
 
 
-class TestEvaluations(unittest.TestCase):
+class TestEncoding(unittest.TestCase):
     def setUp(self):
         llm_output = [(1, 1), (1, 2), (2, 2)]
         golden_standard = [(1, 1), (2, 2), (3, 3)]
