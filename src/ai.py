@@ -88,12 +88,11 @@ class LlmManager:
             )
 
             result = response.choices[0].message.content
-            # print(result)
-            if result:
-                return True
-            return False
-        except Exception:
-            # print("here")
+            return bool(result)
+        except openai.APIError as error:
+            self.io.output(
+                f"Connection failed ({type(error).__name__}): {error}"
+            )
             return False
 
     def API_call(self, concept, document):
