@@ -6,7 +6,7 @@ class BatchManager:
         self.documents = documents[0:2]
         self.concepts = concepts[0:2]
         self.model = model
-    
+
     def batch_call(self):
         batch_list = []
         for document in self.documents:

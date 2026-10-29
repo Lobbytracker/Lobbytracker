@@ -20,15 +20,16 @@ class App:
         self.tui.print_instructions(self.selected_model)
 
     def search_from_file(self):
+        """Search selected documents using selected concepts."""
         document_ids = self.tui.ask_document_ids(self.documents.all_documents)
         if document_ids is None:
-            return
+            return None
 
         selected_documents = self.documents.get_by_ids(document_ids)
 
         concept_ids = self.tui.ask_concept_ids(self.concepts.all_concepts)
         if concept_ids is None:
-            return
+            return None
 
         selected_concepts = self.concepts.select_concepts(concept_ids)
 
@@ -51,7 +52,7 @@ class App:
     def change_model(self):
         try:
             models = get_available_models()
-        except Exception as error:
+        except (ConnectionError, TimeoutError, OSError) as error:
             self.tui.io.output(f"Mallien hakeminen epäonnistui: {error}")
             return
 
@@ -81,11 +82,11 @@ class App:
     def print_golden_standard(self):
         document_ids = self.tui.ask_golden_standards_for_documents(
             self.golden_standards.all_golden_standards
-            )
+        )
 
         golden_standards = [
             self.golden_standards.get_by_document_id(id) for id in document_ids
-            ]
+        ]
 
         self.tui.print_golden_standard(golden_standards)
 
@@ -102,7 +103,7 @@ class App:
             2: self.prompt_thing,
             3: self.change_model,
             4: self.print_golden_standard,
-            5: self.call_batch
+            5: self.call_batch,
         }
 
         while True:
@@ -130,7 +131,7 @@ if __name__ == "__main__":
         tui=Tui(),
         documents=DocumentManager(),
         concepts=ConceptManager(),
-        golden_standards=GoldenStandardManager()
+        golden_standards=GoldenStandardManager(),
     )
 
     app.main()

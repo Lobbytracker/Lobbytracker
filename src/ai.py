@@ -5,7 +5,7 @@ from urllib.request import Request, urlopen
 
 import openai
 from dotenv import load_dotenv
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from db import save_output
 from tui.tui_io import TuiIO
@@ -92,7 +92,7 @@ class LlmManager:
             if result:
                 return True
             return False
-        except:
+        except Exception:
             # print("here")
             return False
 
@@ -143,7 +143,7 @@ class LlmManager:
         for concept in self.concepts:
             try:
                 api_call_result = self.API_call(concept, document)
-            except Exception as e:
+            except (openai.APIError, ValidationError) as e:
                 self.io.output(f"Konseptin {concept["id"]} käsittely epäonnistui:")
                 self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
                 continue

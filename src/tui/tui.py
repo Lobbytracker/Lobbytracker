@@ -19,7 +19,7 @@ class Tui:
             2: "Aitta prompti",
             3: "Vaihda tekoälymallia",
             4: "Tulosta golden standard tiedostoille",
-            5: "Suorita batch-prosessointi"
+            5: "Suorita batch-prosessointi",
         }
 
         self.io.output(
@@ -130,7 +130,7 @@ class Tui:
         valid_ids = {document["id"] for document in documents}
 
         while True:
-            page = documents[start:start + 10]
+            page = documents[start : start + 10]
             self.print_documents(page, start)
 
             if start + 10 < len(documents):
@@ -197,9 +197,7 @@ class Tui:
             self.io.output("Ei valittavia golden standardeja")
             return None
 
-        document_ids = self.io.input(
-            "\nAnna tiedoston ID numerot (esim. 1, 2, 3): "
-        )
+        document_ids = self.io.input("\nAnna tiedoston ID numerot (esim. 1, 2, 3): ")
         document_ids = [int(id) for id in document_ids.split(",")]
 
         return document_ids
