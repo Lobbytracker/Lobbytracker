@@ -40,7 +40,7 @@ jobs:
         run: uv run ruff format --check .
 
       - name: Run Pylint
-        run: uv run pylint src/ --fail-under=8
+        run: uv run pylint src/ --fail-under=8.1 --exclude src/tests
 
       - name: Run tests with coverage
         run: uv run coverage run --branch -m pytest src
