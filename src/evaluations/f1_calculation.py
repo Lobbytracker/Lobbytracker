@@ -1,22 +1,38 @@
-from sklearn.metrics import precision_recall_fscore_support
-import db
-
-from encoding import DataEncoding
+try:
+    from .encoding import DataEncoding
+except ImportError:
+    from encoding import DataEncoding
+from sklearn.metrics import f1_score, precision_score, recall_score
 
 
 class F1Calculator:
-    def __init__(self, golden_standard, llm_output):
-        self.golden_standard = golden_standard
-        self.llm_output = llm_output
+    """Calculates F1 score, precision and recall for the given LLM output and goldenstandard."""
 
-    def encode_data(self):
-        pass
+    def __init__(self, llm_output, golden_standard):
+        self.llm_output = self.encode_data(llm_output, golden_standard)[0]
+        self.golden_standard = self.encode_data(llm_output, golden_standard)[1]
 
-    def calculate_f1(self):
-        pass
+    def encode_data(self, llm_output, golden_standard):
+        """Encodes the given llm output and goldenstandard data."""
+        encoded_data = DataEncoding(llm_output, golden_standard).encode_data()
+        encoded_llm = encoded_data[1]
+        encoded_golden_standard = encoded_data[2]
+        return encoded_llm, encoded_golden_standard
+
+    def calculate_f1_micro(self):
+        """Calculates the F1 score for the given LLM output and goldenstandard
+        using micro averaging."""
+        return f1_score(self.golden_standard, self.llm_output, average="micro")
+
+    def calculate_f1_macro(self):
+        """Calculates the F1 score for the given LLM output and goldenstandard
+        using macro averaging."""
+        return f1_score(self.golden_standard, self.llm_output, average="macro")
 
     def calculate_precision(self):
-        pass
+        """Calculates the precision for the given LLM output and goldenstandard."""
+        return precision_score(self.golden_standard, self.llm_output, average="binary")
 
     def calculate_recall(self):
-        pass
+        """Calculates the recall for the given LLM output and goldenstandard."""
+        return recall_score(self.golden_standard, self.llm_output, average="binary")
