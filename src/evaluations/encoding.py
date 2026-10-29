@@ -17,19 +17,19 @@ class DataEncoding:
         encoded_goldestandard = []
         pair = []
 
-        while len(llm_output) > 0: # Finds true positives and false positives
+        while len(llm_output) > 0:  # Finds true positives and false positives
             first = llm_output.pop(0)
             encoded_output.append(1)
             pair.append(first)
             if first in golden_standart:
-                encoded_goldestandard.append(1) 
+                encoded_goldestandard.append(1)
                 golden_standart.remove(first)
             else:
                 encoded_goldestandard.append(0)
 
-        if len(golden_standart) > 0: # Finds false negatives
-            encoded_output += len(golden_standart)*[0]
-            encoded_goldestandard += len(golden_standart)*[1]
+        if len(golden_standart) > 0:  # Finds false negatives
+            encoded_output += len(golden_standart) * [0]
+            encoded_goldestandard += len(golden_standart) * [1]
             pair += golden_standart
 
         return (pair, encoded_output, encoded_goldestandard)

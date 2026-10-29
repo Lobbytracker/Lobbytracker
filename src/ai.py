@@ -1,7 +1,6 @@
 import asyncio
 import json
 import os
-from typing import Literal
 from urllib.request import Request, urlopen
 
 import openai
@@ -146,7 +145,7 @@ class LlmManager:
                 api_call_result = self.API_call(concept, document)
             except Exception as e:
                 self.io.output(f"Konseptin {concept["id"]} käsittely epäonnistui:")
-                self.io.output((json.dumps(f"{e}", indent=4, ensure_ascii=False)))
+                self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
                 continue
 
             result = {
