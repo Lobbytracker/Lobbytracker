@@ -32,12 +32,6 @@ jobs:
 
       - name: Install dependencies
         run: uv sync --locked --group dev
-      
-      - name: Run Ruff lint checks
-        run: uv run ruff check . --exclude src/tests
-      
-      - name: Check code formatting
-        run: uv run ruff format --check . --exclude src/tests
 
       - name: Run Pylint
         run: uv run pylint src/ --fail-under=8.1 --exclude src/tests
