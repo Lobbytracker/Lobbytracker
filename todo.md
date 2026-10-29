@@ -7,6 +7,7 @@
 - Ai tiedoston yhdenmukaistaminen
 - Pylint virheiden korjaaminen
 - Testipipeline GitHubiin
+- Nimeämisen yhteinäistäminen ja järkevöittäminen
 
 ## Done
 
