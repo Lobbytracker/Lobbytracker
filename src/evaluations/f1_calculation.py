@@ -36,3 +36,14 @@ class F1Calculator:
     def calculate_recall(self):
         """Calculates the recall for the given LLM output and goldenstandard."""
         return recall_score(self.golden_standard, self.llm_output, average="binary")
+
+
+if __name__ == "__main__":
+    from src.populate_test_data import populate_evaluations_test_data
+
+    llm_output, golden_standard = populate_evaluations_test_data()
+    f1_calculator = F1Calculator(llm_output, golden_standard)
+    print("F1 score (micro):", f1_calculator.calculate_f1_micro())
+    print("F1 score (macro):", f1_calculator.calculate_f1_macro())
+    print("Precision:", f1_calculator.calculate_precision())
+    print("Recall:", f1_calculator.calculate_recall())

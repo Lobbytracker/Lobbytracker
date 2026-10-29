@@ -33,3 +33,13 @@ class DataEncoding:
             pair += self.goldenstandard
 
         return (pair, encoded_output, encoded_goldestandard)
+
+
+if __name__ == "__main__":
+    from src.populate_test_data import populate_evaluations_test_data
+
+    llm_output, golden_standard = populate_evaluations_test_data()
+    encoder = DataEncoding(llm_output, golden_standard)
+    result = encoder.encode_data()
+    for row in result:
+        print(row)
