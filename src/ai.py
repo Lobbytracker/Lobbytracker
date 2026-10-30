@@ -11,7 +11,7 @@ from db import save_output
 from tui.tui_io import TuiIO
 
 AITTA_URL = "https://aitta-api.csc.fi"
-DEFAULT_MODEL = "swiss-ai/Apertus-70B-Instruct-2509"
+DEFAULT_MODEL = "openai/gpt-oss-120b"
 REQUEST_TIMEOUT_SECONDS = 300
 
 
@@ -90,9 +90,7 @@ class LlmManager:
             result = response.choices[0].message.content
             return bool(result)
         except openai.APIError as error:
-            self.io.output(
-                f"Connection failed ({type(error).__name__}): {error}"
-            )
+            self.io.output(f"Connection failed ({type(error).__name__}): {error}")
             return False
 
     def API_call(self, concept, document):
