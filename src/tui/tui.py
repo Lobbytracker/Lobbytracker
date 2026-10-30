@@ -123,7 +123,7 @@ class Tui:
         self.io.output(table)
 
     def ask_document_ids(self, documents, start=0):
-        """Shows documents and returns the selected document ids"""
+        """Shows documents and returns the selected document id."""
 
         if not documents:
             self.io.output("Ei valittavia tiedostoja")
@@ -136,13 +136,13 @@ class Tui:
             self.print_documents(page, start)
 
             if start + 10 < len(documents):
-                prompt = "\nAnna tiedoston ID numerot (esim. 1, 2, 3), tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
+                prompt = "\nAnna tiedoston ID tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
             else:
-                prompt = "\nAnna tiedoston ID numerot (esim. 1, 2, 3): "
+                prompt = "\nAnna tiedoston ID: "
 
-            document_ids = self.io.input(prompt).strip().lower()
+            document_id = self.io.input(prompt).strip().lower()
 
-            if document_ids == "x":
+            if document_id == "x":
                 if start + 10 < len(documents):
                     start += 10
                 else:
@@ -150,19 +150,16 @@ class Tui:
                 continue
 
             try:
-                ids = [int(part) for part in document_ids.split(",")]
+                document_id = int(document_id)
             except ValueError:
-                self.io.output(
-                    "Väärä syöte. Anna ID-numerot pilkulla erotettuna tai x."
-                )
+                self.io.output("Väärä syöte. Anna yhden tiedoston ID tai x.")
                 continue
 
-            invalid = [i for i in ids if i not in valid_ids]
-            if invalid:
-                self.io.output(f"Tuntemattomat ID:t: {invalid}")
+            if document_id not in valid_ids:
+                self.io.output(f"Tuntematon ID: {document_id}")
                 continue
 
-            return document_ids
+            return document_id
 
     def ask_concept_ids(self, concepts):
         """Shows concepts and returns the concept ids."""
