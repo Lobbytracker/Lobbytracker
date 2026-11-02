@@ -2,7 +2,7 @@
 
 ## To be done
 
-- db-tiedoston jakaminen pienempiin tiedostoihin. Tietokannan alustus omanaan (schema.sql/oma ajettava skripti "init_db.py", joka ajetaan skeeman muutoksen jälkeen.)
+- Tietokannan alustus omanaan (schema.sql/oma ajettava skripti "init_db.py", joka ajetaan skeeman muutoksen jälkeen.)
   - db schema muuttuu --> docker vois hoitaa kontin käynnistyessä init_db:n voluumin poiston jälkeen
 - Ai tiedoston yhdenmukaistaminen
 - Pylint virheiden korjaaminen
@@ -21,3 +21,4 @@
 - :white_check_mark: Argumentin kanta (Yes/No) kielimallille. Eli puoltaako dokumentin lause annettua konseptia.
 - :white_check_mark: Agreement arvo kielimallin tulosteeseen.
 - :white_check_mark: Golden standardin agreement tietokantaan. (Ei saa antaa kielimallille --> annetaan valitut sarakkeet)
+- :white_check_mark: db-tiedoston jakaminen pienempiin tiedostoihin.
