@@ -1,6 +1,6 @@
 import asyncio
 
-import db.db as db
+import db.db_calls as db
 
 
 class GoldenStandardManager:
