@@ -7,7 +7,7 @@ import openai
 from dotenv import load_dotenv
 from pydantic import BaseModel, ValidationError
 
-from db import save_output
+from db.db import save_output
 from tui.tui_io import TuiIO
 
 AITTA_URL = "https://aitta-api.csc.fi"
