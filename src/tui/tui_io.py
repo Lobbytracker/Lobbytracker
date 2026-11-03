@@ -2,8 +2,6 @@ from rich.console import Console
 
 console = Console()
 
-class BackToMenu(Exception):
-    """Raised when the user wants to return to the main menu."""
 
 class TuiIO:
     @staticmethod
