@@ -3,10 +3,8 @@ from rich.json import JSON
 from rich.table import Table
 from rich.text import Text
 
-from tui.tui_io import TuiIO, BackToMenu
+from tui.tui_io import TuiIO
 
-
-BACK_TO_MENU_COMMANDS = {"b"}
 
 class Tui:
     """Class for managing the text user interface."""
@@ -32,14 +30,8 @@ class Tui:
         )
 
         self.io.output(
-            "\nType [bold green]b[/bold green] to return to the main menu "
-            "when the program asks for input.\n",
-            markup=True,
-        )
-
-        self.io.output(
-            f"\nTo cancel a running operation, press [bold green]Ctrl+C, (on Windows, Ctrl+Break) [/bold green]\n",
-            markup=True    
+            "\nTo go back to the main menu or to cancel a running operation, press [bold green]Ctrl+C[/bold green]\n",
+            markup=True
         )
 
         table = Table(
@@ -53,19 +45,8 @@ class Tui:
 
         self.io.output(table)
 
-    def ask(self, prompt: str):
-        while True:
-            try:
-                value = self.io.input(prompt)
-            except KeyboardInterrupt:
-                self.io.output("\nCtrl+C does not work here. Type b to go back.")
-                continue
-            if value.strip().lower() in BACK_TO_MENU_COMMANDS:
-                raise BackToMenu
-            return value
-
     def print_cancel_hint(self):
-        self.io.output("To cancel, press [bold green]Ctrl+C, (on Windows, Ctrl+Break)[/bold green]", markup=True, style="dim")
+        self.io.output("To cancel, press [bold green]Ctrl+C[/bold green]", markup=True, style="dim")
 
     def format_document_name(self, filename: str):
         """Returns the given filename without the .txt -suffix."""
@@ -167,7 +148,7 @@ class Tui:
             else:
                 prompt = "\nAnna tiedoston ID: "
 
-            document_id = self.ask(prompt).strip().lower()
+            document_id = self.io.input(prompt).strip().lower()
 
             if document_id == "x":
                 if start + 10 < len(documents):
@@ -199,7 +180,7 @@ class Tui:
         valid_ids = {concept["id"] for concept in concepts}
 
         while True:
-            concept_ids = self.ask(
+            concept_ids = self.io.input(
                 "\nAnna konseptien ID numerot pilkulla erotettuna (esim. 1, 2, 3): "
             )
 
@@ -223,12 +204,10 @@ class Tui:
             self.io.output("Ei valittavia golden standardeja")
             return None
 
-        while True:
-            raw = self.ask("\nAnna tiedoston ID numerot (esim. 1, 2, 3): ")
-            try:
-                return [int(part) for part in raw.split(",")]
-            except ValueError:
-                self.io.output("Väärä syöte. Anna ID-numerot pilkulla erotettuna.")
+        document_ids = self.io.input("\nAnna tiedoston ID numerot (esim. 1, 2, 3): ")
+        document_ids = [int(id) for id in document_ids.split(",")]
+
+        return document_ids
 
     def print_output(self, output):
         self.io.output(

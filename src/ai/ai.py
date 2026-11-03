@@ -54,7 +54,7 @@ class LlmManager:
         self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = model
-        self.documents = documents[0] if documents else None
+        self.documents = documents if documents else None
         self.concepts = concepts if concepts else None
         self.session_list = []
         self.client = self.create_client()

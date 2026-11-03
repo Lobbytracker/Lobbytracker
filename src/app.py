@@ -5,8 +5,6 @@ from ai.batch import BatchManager
 from evaluations.encoding import DataEncoding
 from evaluations.f1_calculation import F1Calculator
 from populate_test_data import populate_evaluations_test_data
-from tui.tui import Tui
-from tui.tui_io import BackToMenu
 
 
 class App:
@@ -35,7 +33,7 @@ class App:
         selected_concepts = self.concepts.select_concepts(concept_ids)
         self.tui.print_cancel_hint()
         manager = LlmManager(
-            selected_documents, selected_concepts, model=self.selected_model
+            selected_documents[0], selected_concepts, model=self.selected_model
         )
         session_list = manager.call_aitta(on_result=self.tui.print_output)
 
@@ -43,12 +41,8 @@ class App:
 
     def prompt_thing(self):
         self.tui.print_cancel_hint()
-        documents = self.documents.all_documents[
-            0
-        ]  # limit to first document for testing
-        concepts = self.concepts.all_concepts[
-            0:2
-        ]  # limit to first two concepts for testing
+        documents = self.documents.all_documents[0]  # limit to first document for testing
+        concepts = self.concepts.all_concepts[0:2]  # limit to first two concepts for testing
 
         manager = LlmManager(documents, concepts, model=self.selected_model)
         session_list = manager.call_aitta(on_result=self.tui.print_output)
@@ -74,7 +68,7 @@ class App:
         self.tui.print_available_models(models, self.selected_model)
 
         try:
-            choice = int(self.tui.ask("Valitse mallin numero: "))
+            choice = int(input("Valitse mallin numero: "))
             connect = LlmManager(None, None, models[choice - 1]).create_connection()
             if not connect:
                 self.tui.io.output("Valittuun malliin ei saatu yhteyttä.")
@@ -89,9 +83,6 @@ class App:
         document_ids = self.tui.ask_golden_standards_for_documents(
             self.golden_standards.all_golden_standards
         )
-
-        if document_ids is None:
-            return
 
         golden_standards = [
             self.golden_standards.get_by_document_id(id) for id in document_ids
@@ -146,24 +137,11 @@ class App:
             if command not in commands:
                 print("Tuntematon komento, syötä jokin ohjelman komennoista.")
                 continue
-            else:
-                executable = commands[command]
-                try:
-                    if asyncio.iscoroutinefunction(executable):
-                        asyncio.run(executable())
-                    else:
-                        executable()
-                except BackToMenu:
-                    self.tui.io.output("Returning to the main menu.")
-                except KeyboardInterrupt:
-                    self.tui.io.output("Operation cancelled.")
-
-if __name__ == "__main__":
-    app = App(
-        tui=Tui(),
-        documents=DocumentManager(),
-        concepts=ConceptManager(),
-        golden_standards=GoldenStandardManager(),
-    )
-
-    app.main()
+            executable = commands[command]
+            try:
+                if asyncio.iscoroutinefunction(executable):
+                    asyncio.run(executable())
+                else:
+                    executable()
+            except KeyboardInterrupt:
+                self.tui.io.output("Back to the main menu.")
