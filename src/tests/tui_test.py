@@ -58,6 +58,13 @@ class TestTui(unittest.TestCase):
         correct.append(capture.get())
 
         with self.console.capture() as capture:
+            self.console.print(
+                "\nTo go back to the main menu or to cancel a running operation, press [bold green]Ctrl+C[/bold green]\n",
+                markup=True,
+            )
+        correct.append(capture.get())
+
+        with self.console.capture() as capture:
             self.console.print(correct_table)
         correct.append(capture.get())
 
