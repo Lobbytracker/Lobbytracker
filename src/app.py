@@ -5,7 +5,6 @@ from ai.batch import BatchManager
 from evaluations.encoding import DataEncoding
 from evaluations.f1_calculation import F1Calculator
 from populate_test_data import populate_evaluations_test_data
-from tui.tui_io import BackToMenu
 
 class App:
     def __init__(self, tui, back_to_menu , documents, concepts, golden_standards):
@@ -148,7 +147,7 @@ class App:
                         asyncio.run(executable())
                     else:
                         executable()
-                except BackToMenu:
+                except self.back_to_menu:
                     self.tui.io.output("Returning to the main menu.")
                 except KeyboardInterrupt:
                     self.tui.io.output("Operation cancelled.")
