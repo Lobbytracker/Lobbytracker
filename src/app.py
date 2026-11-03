@@ -140,10 +140,14 @@ class App:
                 continue
             else:
                 executable = commands[command]
-                if asyncio.iscoroutinefunction(executable):
-                    asyncio.run(executable())
-                else:
-                    executable()
+                try:
+                    if asyncio.iscoroutinefunction(executable):
+                        asyncio.run(executable())
+                    else:
+                        executable()
+                except (KeyboardInterrupt):
+                    self.tui.io.output("Back to the main menu.")
+                
 
 
 if __name__ == "__main__":
