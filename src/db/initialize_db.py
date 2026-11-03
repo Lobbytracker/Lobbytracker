@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 import asyncpg
@@ -51,3 +52,7 @@ async def init_db(database_url=DATABASE_URL):
             """)
     finally:
         await conn.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(init_db())
