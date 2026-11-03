@@ -6,6 +6,7 @@ from evaluations.encoding import DataEncoding
 from evaluations.f1_calculation import F1Calculator
 from populate_test_data import populate_evaluations_test_data
 from tui.tui import Tui
+from tui.tui_io import BackToMenu
 
 
 class App:
@@ -73,7 +74,7 @@ class App:
         self.tui.print_available_models(models, self.selected_model)
 
         try:
-            choice = int(input("Valitse mallin numero: "))
+            choice = int(self.tui.ask("Valitse mallin numero: "))
             connect = LlmManager(None, None, models[choice - 1]).create_connection()
             if not connect:
                 self.tui.io.output("Valittuun malliin ei saatu yhteyttä.")
@@ -88,6 +89,9 @@ class App:
         document_ids = self.tui.ask_golden_standards_for_documents(
             self.golden_standards.all_golden_standards
         )
+
+        if document_ids is None:
+            return
 
         golden_standards = [
             self.golden_standards.get_by_document_id(id) for id in document_ids
@@ -149,9 +153,10 @@ class App:
                         asyncio.run(executable())
                     else:
                         executable()
+                except BackToMenu:
+                    self.tui.io.output("Returning to the main menu.")
                 except KeyboardInterrupt:
-                    self.tui.io.output("Back to the main menu.")
-
+                    self.tui.io.output("Operation cancelled.")
 
 if __name__ == "__main__":
     app = App(
