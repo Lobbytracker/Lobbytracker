@@ -4,6 +4,7 @@ from rich.table import Table
 from rich.text import Text
 from rich.console import Console
 
+
 class IoStub:
     def __init__(self):
         self.inputs = []
@@ -40,7 +41,9 @@ class TestTui(unittest.TestCase):
 
         correct = []
 
-        correct_table = Table(title="Lobbytracker", show_header=True, header_style="bold magenta")
+        correct_table = Table(
+            title="Lobbytracker", show_header=True, header_style="bold magenta"
+        )
         correct_table.add_column("Komento", style="dim", justify="right")
         correct_table.add_column("Toiminto")
 
@@ -48,7 +51,10 @@ class TestTui(unittest.TestCase):
             correct_table.add_row(str(key), Text(val))
 
         with self.console.capture() as capture:
-            self.console.print(f"\nNykyinen tekoälymalli: [bold green]testmodel[/bold green]\n", markup=True)
+            self.console.print(
+                f"\nNykyinen tekoälymalli: [bold green]testmodel[/bold green]\n",
+                markup=True,
+            )
         correct.append(capture.get())
 
         with self.console.capture() as capture:
