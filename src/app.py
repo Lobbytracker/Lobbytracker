@@ -33,7 +33,7 @@ class App:
         selected_concepts = self.concepts.select_concepts(concept_ids)
         self.tui.print_cancel_hint()
         manager = LlmManager(
-            selected_documents, selected_concepts, model=self.selected_model
+            selected_documents[0], selected_concepts, model=self.selected_model
         )
         session_list = manager.call_aitta(on_result=self.tui.print_output)
 

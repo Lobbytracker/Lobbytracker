@@ -11,6 +11,6 @@ class BatchManager:
         batch_list = []
         for document in self.documents:
             for concept in self.concepts:
-                batch_run = LlmManager([document], [concept], self.model)
+                batch_run = LlmManager(document, [concept], self.model)
                 batch_list.append(batch_run.call_aitta())
         return batch_list
