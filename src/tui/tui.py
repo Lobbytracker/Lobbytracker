@@ -34,7 +34,7 @@ class Tui:
         self.io.output(
             "\nType [bold green]b[/bold green] to return to the main menu "
             "when the program asks for input.\n"
-            "To cancel a running operation, press [bold green]Ctrl+C[/bold green] "
+            "\nTo cancel a running operation, press [bold green]Ctrl+C[/bold green] "
             "[bold green](on Windows, Ctrl+Break if needed)[/bold green].\n",
             markup=True,
         )
