@@ -28,10 +28,10 @@ class Tui:
             f"\nNykyinen tekoälymalli: [bold green]{selected_model}[/bold green]\n",
             markup=True,
         )
-        
+
         self.io.output(
-            f"\nTo go back to the main menu or to cancel a running operation, press [bold green]Ctrl+C[/bold green]\n",
-            markup=True    
+            "\nTo go back to the main menu or to cancel a running operation, press [bold green]Ctrl+C[/bold green]\n",
+            markup=True
         )
 
         table = Table(

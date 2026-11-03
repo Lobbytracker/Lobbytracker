@@ -5,7 +5,6 @@ from ai.batch import BatchManager
 from evaluations.encoding import DataEncoding
 from evaluations.f1_calculation import F1Calculator
 from populate_test_data import populate_evaluations_test_data
-from tui.tui import Tui
 
 
 class App:
@@ -42,12 +41,8 @@ class App:
 
     def prompt_thing(self):
         self.tui.print_cancel_hint()
-        documents = self.documents.all_documents[
-            0
-        ]  # limit to first document for testing
-        concepts = self.concepts.all_concepts[
-            0:2
-        ]  # limit to first two concepts for testing
+        documents = self.documents.all_documents[0]  # limit to first document for testing
+        concepts = self.concepts.all_concepts[0:2]  # limit to first two concepts for testing
 
         manager = LlmManager(documents, concepts, model=self.selected_model)
         session_list = manager.call_aitta(on_result=self.tui.print_output)
@@ -142,23 +137,11 @@ class App:
             if command not in commands:
                 print("Tuntematon komento, syötä jokin ohjelman komennoista.")
                 continue
-            else:
-                executable = commands[command]
-                try:
-                    if asyncio.iscoroutinefunction(executable):
-                        asyncio.run(executable())
-                    else:
-                        executable()
-                except KeyboardInterrupt:
-                    self.tui.io.output("Back to the main menu.")
-
-
-if __name__ == "__main__":
-    app = App(
-        tui=Tui(),
-        documents=DocumentManager(),
-        concepts=ConceptManager(),
-        golden_standards=GoldenStandardManager(),
-    )
-
-    app.main()
+            executable = commands[command]
+            try:
+                if asyncio.iscoroutinefunction(executable):
+                    asyncio.run(executable())
+                else:
+                    executable()
+            except KeyboardInterrupt:
+                self.tui.io.output("Back to the main menu.")
