@@ -5,9 +5,7 @@ from ai.batch import BatchManager
 from evaluations.encoding import DataEncoding
 from evaluations.f1_calculation import F1Calculator
 from populate_test_data import populate_evaluations_test_data
-from tui.tui import Tui
 from tui.tui_io import BackToMenu
-
 
 class App:
     def __init__(self, tui, documents, concepts, golden_standards):
