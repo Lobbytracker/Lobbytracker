@@ -1,7 +1,7 @@
 import asyncio
 
-from ai import DEFAULT_MODEL, LlmManager, get_available_models
-from batch import BatchManager
+from ai.ai import DEFAULT_MODEL, LlmManager, get_available_models
+from ai.batch import BatchManager
 from evaluations.encoding import DataEncoding
 from evaluations.f1_calculation import F1Calculator
 from populate_test_data import populate_evaluations_test_data
@@ -40,8 +40,12 @@ class App:
         return session_list
 
     def prompt_thing(self):
-        documents = self.documents.all_documents
-        concepts = self.concepts.all_concepts
+        documents = self.documents.all_documents[
+            0
+        ]  # limit to first document for testing
+        concepts = self.concepts.all_concepts[
+            0:2
+        ]  # limit to first two concepts for testing
 
         manager = LlmManager(documents, concepts, model=self.selected_model)
         session_list = manager.call_aitta(on_result=self.tui.print_output)

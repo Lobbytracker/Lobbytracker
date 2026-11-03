@@ -1,13 +1,12 @@
 import unittest
 from unittest.mock import patch
 
-from batch import BatchManager
-
 import populate_test_data
+from ai.batch import BatchManager
 
 
 class TestBatchManager(unittest.TestCase):
-    @patch("batch.LlmManager")
+    @patch("ai.batch.LlmManager")
     def test_batch_call_passes_one_document_and_concept(self, llm_manager):
         document = populate_test_data.populate_documents_test_data()[
             :1
@@ -28,7 +27,7 @@ class TestBatchManager(unittest.TestCase):
         concepts = populate_test_data.populate_concepts_test_data()[:2]
         model = "test-model"
 
-        with patch("batch.LlmManager") as llm_manager:
+        with patch("ai.batch.LlmManager") as llm_manager:
             llm_manager.return_value.call_aitta.return_value = ["result"]
 
             result = BatchManager(documents, concepts, model).batch_call()

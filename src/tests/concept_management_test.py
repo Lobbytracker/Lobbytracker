@@ -1,7 +1,7 @@
 import unittest
 
-from concepts.concept_management import ConceptManager
 import populate_test_data
+from concepts.concept_management import ConceptManager
 
 
 class TestConceptManager(unittest.TestCase):

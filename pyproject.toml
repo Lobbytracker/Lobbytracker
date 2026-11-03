@@ -32,3 +32,6 @@ max-line-length = 120
 
 [tool.pylint.messages_control]
 disable = ["missing-module-docstring"]
+
+[tool.ruff]
+exclude = ["src/tests/"]

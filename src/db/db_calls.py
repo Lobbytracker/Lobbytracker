@@ -1,4 +1,3 @@
-import asyncio
 import os
 
 import asyncpg
@@ -75,7 +74,7 @@ async def save_output(output, database_url=DATABASE_URL):
             row["concept_id"],
             row["present"],
             row["passage"],
-            row["agreement"]
+            row["agreement"],
         )
         for row in output
     ]

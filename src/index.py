@@ -1,5 +1,4 @@
 from app import App
-
 from concepts.concept_management import ConceptManager
 from documents.document_management import DocumentManager
 from goldenstandards.goldenstandard_manager import GoldenStandardManager

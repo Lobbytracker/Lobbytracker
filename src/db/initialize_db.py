@@ -7,6 +7,7 @@ DATABASE_URL = os.getenv(
     "postgresql://postgres:postgres@localhost:5432/lobbytracker",
 )
 
+
 async def init_db(database_url=DATABASE_URL):
     """Initializes the database."""
     conn = await asyncpg.connect(database_url)
