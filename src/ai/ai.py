@@ -54,12 +54,8 @@ class LlmManager:
         self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = model
-        self.documents = (
-            documents[0] if documents else None
-        )  # first document for testing
-        self.concepts = (
-            concepts if concepts else None
-        )  # Limit to first 3 concepts for testing
+        self.documents = documents[0] if documents else None
+        self.concepts = concepts if concepts else None
         self.session_list = []
         self.client = self.create_client()
 
@@ -141,7 +137,7 @@ class LlmManager:
             try:
                 api_call_result = self.API_call(concept, document)
             except (openai.APIError, ValidationError) as e:
-                self.io.output(f"Konseptin {concept["id"]} käsittely epäonnistui:")
+                self.io.output(f"Konseptin {concept['id']} käsittely epäonnistui:")
                 self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
                 continue
 
