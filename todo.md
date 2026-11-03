@@ -9,6 +9,7 @@
 - Pylint virheiden korjaaminen
 - Testipipeline GitHubiin
 - Nimeämisen yhteinäistäminen ja järkevöittäminen
+- Kaikki app-tiedostossa tapahtuva printtaaminen tuihin.
 
 ## Done
 
