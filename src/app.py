@@ -5,11 +5,11 @@ from ai.batch import BatchManager
 from evaluations.encoding import DataEncoding
 from evaluations.f1_calculation import F1Calculator
 from populate_test_data import populate_evaluations_test_data
+from error_handling import BackToMenu
 
 class App:
-    def __init__(self, tui, back_to_menu , documents, concepts, golden_standards):
+    def __init__(self, tui , documents, concepts, golden_standards):
         self.tui = tui
-        self.back_to_menu = back_to_menu
         self.documents = documents
         self.concepts = concepts
         self.golden_standards = golden_standards
@@ -147,8 +147,8 @@ class App:
                         asyncio.run(executable())
                     else:
                         executable()
-                except self.back_to_menu:
-                    self.tui.io.output("Returning to the main menu.")
+                except BackToMenu as e:
+                    self.tui.handle_error(e)
                 except KeyboardInterrupt:
                     self.tui.io.output("Operation cancelled.")
 

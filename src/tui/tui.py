@@ -3,7 +3,8 @@ from rich.json import JSON
 from rich.table import Table
 from rich.text import Text
 
-from tui.tui_io import TuiIO, BackToMenu
+from tui.tui_io import TuiIO
+from error_handling import BackToMenu
 
 
 BACK_TO_MENU_COMMANDS = {"b"}
@@ -41,6 +42,10 @@ class Tui:
             table.add_row(str(key), Text(val))
 
         self.io.output(table)
+
+    def handle_error(self, error):
+        """Prints an error message for the given error."""
+        self.io.output(str(error))
 
     def ask(self, prompt: str):
         while True:
