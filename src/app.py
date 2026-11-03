@@ -8,8 +8,9 @@ from populate_test_data import populate_evaluations_test_data
 from tui.tui_io import BackToMenu
 
 class App:
-    def __init__(self, tui, documents, concepts, golden_standards):
+    def __init__(self, tui, back_to_menu , documents, concepts, golden_standards):
         self.tui = tui
+        self.back_to_menu = back_to_menu
         self.documents = documents
         self.concepts = concepts
         self.golden_standards = golden_standards
@@ -152,12 +153,4 @@ class App:
                 except KeyboardInterrupt:
                     self.tui.io.output("Operation cancelled.")
 
-if __name__ == "__main__":
-    app = App(
-        tui=Tui(),
-        documents=DocumentManager(),
-        concepts=ConceptManager(),
-        golden_standards=GoldenStandardManager(),
-    )
 
-    app.main()
