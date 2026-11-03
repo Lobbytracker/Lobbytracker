@@ -2,13 +2,11 @@ import asyncio
 
 from ai import DEFAULT_MODEL, LlmManager, get_available_models
 from batch import BatchManager
-from concepts.concept_management import ConceptManager
-from documents.document_management import DocumentManager
 from evaluations.encoding import DataEncoding
 from evaluations.f1_calculation import F1Calculator
-from goldenstandards.goldenstandard_manager import GoldenStandardManager
 from populate_test_data import populate_evaluations_test_data
 from tui.tui import Tui
+
 
 class App:
     def __init__(self, tui, documents, concepts, golden_standards):
@@ -142,14 +140,10 @@ class App:
                 continue
             else:
                 executable = commands[command]
-                try:
-                    if asyncio.iscoroutinefunction(executable):
-                        asyncio.run(executable())
-                    else:
-                        executable()
-                except (KeyboardInterrupt):
-                    self.tui.io.output("Back to the main menu.")
-                
+                if asyncio.iscoroutinefunction(executable):
+                    asyncio.run(executable())
+                else:
+                    executable()
 
 
 if __name__ == "__main__":

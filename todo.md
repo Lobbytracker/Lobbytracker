@@ -5,6 +5,7 @@
 - Tietokannan alustus omanaan (schema.sql/oma ajettava skripti "init_db.py", joka ajetaan skeeman muutoksen jälkeen.)
   - db schema muuttuu --> docker vois hoitaa kontin käynnistyessä init_db:n voluumin poiston jälkeen
 - Ai tiedoston yhdenmukaistaminen
+- BUG: Alarajan poistaminen rikkoo sovelluksen komennon 2 (Esim. alarajan poistaminen ai.py-tiedostosta)
 - Pylint virheiden korjaaminen
 - Testipipeline GitHubiin
 - Nimeämisen yhteinäistäminen ja järkevöittäminen

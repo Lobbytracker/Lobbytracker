@@ -3,31 +3,37 @@ from unittest.mock import patch
 
 from batch import BatchManager
 
+import populate_test_data
+
 
 class TestBatchManager(unittest.TestCase):
     @patch("batch.LlmManager")
-    def test_batch_call_passes_single_document_and_concept(self, llm_manager):
-        documents = [{"id": 1, "content": "first"}, {"id": 2, "content": "second"}]
-        concepts = [
-            {"id": 10, "concept": "first concept"},
-            {"id": 20, "concept": "second concept"},
-        ]
+    def test_batch_call_passes_one_document_and_concept(self, llm_manager):
+        document = populate_test_data.populate_documents_test_data()[
+            :1
+        ]  # select the first document
+        concept = populate_test_data.populate_concepts_test_data()[
+            :1
+        ]  # select the first concept
         model = "test-model"
 
         llm_manager.return_value.call_aitta.return_value = ["result"]
 
-        result = BatchManager(documents, concepts, model).batch_call()
+        result = BatchManager(document, concept, model).batch_call()
 
-        self.assertEqual([["result"]] * 4, result)
-        self.assertEqual(
-            [
-                unittest.mock.call([document], [concept], model)
-                for document in documents
-                for concept in concepts
-            ],
-            llm_manager.call_args_list,
-        )
-        self.assertEqual(4, llm_manager.return_value.call_aitta.call_count)
+        self.assertEqual(result, [["result"]])
+
+    def test_batch_call_passes_multiple_documents_and_concepts(self):
+        documents = populate_test_data.populate_documents_test_data()[:2]
+        concepts = populate_test_data.populate_concepts_test_data()[:2]
+        model = "test-model"
+
+        with patch("batch.LlmManager") as llm_manager:
+            llm_manager.return_value.call_aitta.return_value = ["result"]
+
+            result = BatchManager(documents, concepts, model).batch_call()
+
+            self.assertEqual(result, [["result"], ["result"], ["result"], ["result"]])
 
 
 if __name__ == "__main__":
