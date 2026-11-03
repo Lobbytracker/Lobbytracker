@@ -9,7 +9,7 @@ data:
 	uv run python scripts/import_goldenstandard.py
 
 app:
-	uv run src/app.py
+	uv run src/index.py
 
 stop:
 	docker compose down
