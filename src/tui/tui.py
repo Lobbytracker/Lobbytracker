@@ -31,14 +31,6 @@ class Tui:
             markup=True,
         )
 
-        self.io.output(
-            "\nType [bold green]b[/bold green] to return to the main menu "
-            "when the program asks for input.\n"
-            "\nTo cancel a running operation, press [bold green]Ctrl+C[/bold green] "
-            "[bold green](on Windows, Ctrl+Break if needed)[/bold green].\n",
-            markup=True,
-        )
-
         table = Table(
             title="Lobbytracker", show_header=True, header_style="bold magenta"
         )
@@ -53,6 +45,7 @@ class Tui:
     def ask(self, prompt: str):
         while True:
             try:
+                self.print_go_back_hint()
                 value = self.io.input(prompt)
             except KeyboardInterrupt:
                 self.io.output("\nCtrl+C does not work here. Type b to go back.")
@@ -62,7 +55,15 @@ class Tui:
             return value
 
     def print_cancel_hint(self):
-        self.io.output("To cancel, press [bold green]Ctrl+C, (on Windows, Ctrl+Break)[/bold green]", markup=True, style="dim")
+        """Print instruction for cancellation"""
+        self.io.output("To cancel, press [bold green]Ctrl+C, (on Windows, Ctrl+Break)[/bold green]",
+                        markup=True, style="dim")
+
+    def print_go_back_hint(self):
+        """Print instruction for going back to menu."""
+        self.io.output("To get back to menu, press [bold green]b[/bold green]",
+                    markup=True, style="dim")
+
 
     def format_document_name(self, filename: str):
         """Returns the given filename without the .txt -suffix."""
