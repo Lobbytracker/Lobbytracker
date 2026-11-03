@@ -10,7 +10,6 @@ from goldenstandards.goldenstandard_manager import GoldenStandardManager
 from populate_test_data import populate_evaluations_test_data
 from tui.tui import Tui
 
-
 class App:
     def __init__(self, tui, documents, concepts, golden_standards):
         self.tui = tui
@@ -35,7 +34,7 @@ class App:
             return None
 
         selected_concepts = self.concepts.select_concepts(concept_ids)
-
+        self.tui.print_cancel_hint()
         manager = LlmManager(
             selected_documents, selected_concepts, model=self.selected_model
         )
@@ -44,6 +43,7 @@ class App:
         return session_list
 
     def prompt_thing(self):
+        self.tui.print_cancel_hint()
         documents = self.documents.all_documents
         concepts = self.concepts.all_concepts
 
@@ -94,6 +94,7 @@ class App:
         self.tui.print_golden_standard(golden_standards)
 
     def call_batch(self):
+        self.tui.print_cancel_hint()
         documents = self.documents.all_documents
         concepts = self.concepts.all_concepts
         batch_manager = BatchManager(documents, concepts, self.selected_model)
@@ -141,10 +142,14 @@ class App:
                 continue
             else:
                 executable = commands[command]
-                if asyncio.iscoroutinefunction(executable):
-                    asyncio.run(executable())
-                else:
-                    executable()
+                try:
+                    if asyncio.iscoroutinefunction(executable):
+                        asyncio.run(executable())
+                    else:
+                        executable()
+                except (KeyboardInterrupt):
+                    self.tui.io.output("Back to the main menu.")
+                
 
 
 if __name__ == "__main__":

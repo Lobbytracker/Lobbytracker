@@ -29,6 +29,11 @@ class Tui:
             markup=True,
         )
 
+        self.io.output(
+            f"\nTo go back to the main menu or to cancel a running operation, press [bold green]Ctrl+C[/bold green]\n",
+            markup=True    
+        )
+
         table = Table(
             title="Lobbytracker", show_header=True, header_style="bold magenta"
         )
@@ -39,6 +44,9 @@ class Tui:
             table.add_row(str(key), Text(val))
 
         self.io.output(table)
+
+    def print_cancel_hint(self):
+        self.io.output("To cancel, press [bold green]Ctrl+C[/bold green]", markup=True, style="dim")
 
     def format_document_name(self, filename: str):
         """Returns the given filename without the .txt -suffix."""
