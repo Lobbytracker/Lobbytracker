@@ -42,12 +42,24 @@ async def init_db(database_url=DATABASE_URL):
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS llmOutput (
                 id SERIAL PRIMARY KEY,
+                run_id INT NOT NULL REFERENCES evaluationRuns(id),
                 document_id INT NOT NULL REFERENCES files(id),
                 concept_id INT NOT NULL REFERENCES concepts(id),
-                present BOOLEAN NOT NULL,
+                present BOOLEAN,
                 passage TEXT,
                 agreement BOOLEAN, 
                 CHECK (present OR agreement IS NULL)
+            )
+            """)
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS evaluationRuns (
+                id SERIAL PRIMARY KEY,
+                model TEXT NOT NULL REFERENCES files(id),
+                prompt TEXT NOT NULL REFERENCES concepts(id),
+                start_time TIMESTAMP NOT NULL,
+                end_time TIMESTAMP NOT NULL,
+                repetitions INT, 
+                completed_all BOOLEAN NOT NULL
             )
             """)
     finally:
