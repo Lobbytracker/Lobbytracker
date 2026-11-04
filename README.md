@@ -1,6 +1,11 @@
 # Lobbytracker
 Lobbytracker is a prototype for analysing legal documents with AI. It lets a user select documents and predefined concepts, asks an AI model whether each concept appears in the document, and returns the answer together with an exact supporting passage.
 
+## Documentation
+
+- [Architecture](documentation/architecture.md): project structure, technologies, and database.
+- [User guide](documentation/user_guide.md): terminology, starting the application, menu commands, and interpreting results.
+
 ## Installing the application
 
 ### Clone the project
@@ -40,7 +45,7 @@ make data
 make app
 ```
 
-Web-version is available at [http://localhost:8000](http://localhost:8000)
+The terminal application starts with `make app`. Web-version is available at [http://localhost:8000](http://localhost:8000) which currently does not provide same functionality as terminal application.
 
 ## Docker commands
 
@@ -90,7 +95,7 @@ make tables
 
 ### Run tests
 ```
-make test
+make tests
 ```
 
 ### Run coverage
@@ -103,7 +108,7 @@ make coverage
 make pylint
 ```
 
-### Autofix pylint issues
+### Apply Ruff fixes and formatting
 ```
 make autofix
 ```
