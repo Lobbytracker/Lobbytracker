@@ -101,12 +101,12 @@ class App:
         self.tui.print_golden_standard(golden_standards)
 
     def call_batch(self):
+        """Calls the BatchManager to process documents and concepts in batch mode."""
         self.tui.print_cancel_hint()
         documents = self.documents.all_documents
         concepts = self.concepts.all_concepts
-        batch_manager = BatchManager(documents, concepts, self.selected_model)
-        result = batch_manager.batch_call()
-        self.tui.print_output(result)
+        batch_manager = BatchManager(self.tui, documents, concepts, self.selected_model)
+        batch_manager.batch_call()
 
     # NOT FINAL IMPLEMENTATION!! JUST FOR EASIER TESTING OF F1 CALCULATION AND ENCODING
     def f1_mvp(self):
