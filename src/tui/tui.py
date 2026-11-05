@@ -3,11 +3,11 @@ from rich.json import JSON
 from rich.table import Table
 from rich.text import Text
 
-from tui.tui_io import TuiIO
 from error_handling import BackToMenu
-
+from tui.tui_io import TuiIO
 
 BACK_TO_MENU_COMMANDS = {"b"}
+
 
 class Tui:
     """Class for managing the text user interface."""
@@ -61,14 +61,19 @@ class Tui:
 
     def print_cancel_hint(self):
         """Print instruction for cancellation"""
-        self.io.output("To cancel, press [bold green]Ctrl+C, (on Windows, Ctrl+Break)[/bold green]",
-                        markup=True, style="dim")
+        self.io.output(
+            "To cancel, press [bold green]Ctrl+C, (on Windows, Ctrl+Break)[/bold green]",
+            markup=True,
+            style="dim",
+        )
 
     def print_go_back_hint(self):
         """Print instruction for going back to menu."""
-        self.io.output("To get back to menu, press [bold green]b[/bold green]",
-                    markup=True, style="dim")
-
+        self.io.output(
+            "To get back to menu, press [bold green]b[/bold green]",
+            markup=True,
+            style="dim",
+        )
 
     def format_document_name(self, filename: str):
         """Returns the given filename without the .txt -suffix."""

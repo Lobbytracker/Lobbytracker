@@ -2,13 +2,14 @@ import asyncio
 
 from ai.ai import DEFAULT_MODEL, LlmManager, get_available_models
 from ai.batch import BatchManager
+from error_handling import BackToMenu
 from evaluations.encoding import DataEncoding
 from evaluations.f1_calculation import F1Calculator
 from populate_test_data import populate_evaluations_test_data
-from error_handling import BackToMenu
+
 
 class App:
-    def __init__(self, tui , documents, concepts, golden_standards):
+    def __init__(self, tui, documents, concepts, golden_standards):
         self.tui = tui
         self.documents = documents
         self.concepts = concepts
@@ -35,17 +36,23 @@ class App:
         manager = LlmManager(
             selected_documents[0], selected_concepts, model=self.selected_model
         )
-        session_list = manager.call_aitta(on_result=self.tui.print_output)
+        run_id = manager.create_evaluation_run()
+        session_list = manager.call_aitta(run_id, on_result=self.tui.print_output)
 
         return session_list
 
     def prompt_thing(self):
         self.tui.print_cancel_hint()
-        documents = self.documents.all_documents[0]  # limit to first document for testing
-        concepts = self.concepts.all_concepts[0:2]  # limit to first two concepts for testing
+        documents = self.documents.all_documents[
+            0
+        ]  # limit to first document for testing
+        concepts = self.concepts.all_concepts[
+            0:2
+        ]  # limit to first two concepts for testing
 
         manager = LlmManager(documents, concepts, model=self.selected_model)
-        session_list = manager.call_aitta(on_result=self.tui.print_output)
+        run_id = manager.create_evaluation_run()
+        session_list = manager.call_aitta(run_id, on_result=self.tui.print_output)
 
         return session_list
 
@@ -151,5 +158,3 @@ class App:
                     self.tui.handle_error(e)
                 except KeyboardInterrupt:
                     self.tui.io.output("Operation cancelled.")
-
-

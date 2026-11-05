@@ -70,6 +70,7 @@ async def get_llm_output(database_url=DATABASE_URL):
 async def save_output(output, database_url=DATABASE_URL):
     rows = [
         (
+            row["run_id"],
             row["document_id"],
             row["concept_id"],
             row["present"],
@@ -83,9 +84,41 @@ async def save_output(output, database_url=DATABASE_URL):
     try:
         await conn.executemany(
             """INSERT INTO llmOutput (
-            document_id, concept_id, present, passage, agreement)
-            VALUES ($1, $2, $3, $4, $5)""",
+            run_id, document_id, concept_id, present, passage, agreement)
+            VALUES ($1, $2, $3, $4, $5, $6)""",
             rows,
+        )
+    finally:
+        await conn.close()
+
+
+async def create_evaluation_run(model, prompt, database_url=DATABASE_URL):
+    """Creates a new evaluation run in the database and returns the run ID."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        return await conn.fetchval(
+            """INSERT INTO evaluationRuns (model, prompt, start_time, end_time, completed_all)
+            VALUES ($1, $2, NOW(), NOW(), FALSE)
+            RETURNING id""",
+            model,
+            prompt,
+        )
+    finally:
+        await conn.close()
+
+
+async def save_evaluation_run(
+    run_id, repetitions, completed_all, database_url=DATABASE_URL
+):
+    """Updates the evaluation run with the given ID in the database."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        await conn.execute(
+            """UPDATE evaluationRuns SET end_time = NOW(), repetitions = $2, completed_all = $3
+            WHERE id = $1""",
+            run_id,
+            repetitions,
+            completed_all,
         )
     finally:
         await conn.close()

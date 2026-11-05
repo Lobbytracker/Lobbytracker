@@ -4,7 +4,6 @@ from documents.document_management import DocumentManager
 from goldenstandards.goldenstandard_manager import GoldenStandardManager
 from tui.tui import Tui
 
-
 if __name__ == "__main__":
     app = App(
         tui=Tui(),

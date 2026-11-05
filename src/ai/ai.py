@@ -7,7 +7,7 @@ import openai
 from dotenv import load_dotenv
 from pydantic import BaseModel, ValidationError
 
-from db.db_calls import save_output
+from db.db_calls import create_evaluation_run, save_output
 from tui.tui_io import TuiIO
 
 AITTA_URL = "https://aitta-api.csc.fi"
@@ -108,8 +108,6 @@ class LlmManager:
             f"Concept: {stance_label}: {concept_definition}"
         )
 
-        self.create_client()
-
         response = self.client.beta.chat.completions.parse(
             messages=[
                 {"role": "system", "content": instructions},
@@ -123,14 +121,14 @@ class LlmManager:
 
         return result
 
-    def call_aitta(self, on_result=None):
+    def create_evaluation_run(self):
+        """Creates a new evaluation run in the database and returns the run ID."""
+        prompt = "TEMPORARY PROMPT"
+        run_id = asyncio.run(create_evaluation_run(self.model, prompt))
+        return run_id
 
-        if not self.client:
-            self.create_client()
-
-        # print(f"virhe:", self.documents)
+    def call_aitta(self, run_id, on_result=None):
         document = self.documents["content"]
-
         document_id = self.documents["id"]
 
         for concept in self.concepts:
@@ -142,6 +140,7 @@ class LlmManager:
                 continue
 
             result = {
+                "run_id": run_id,
                 "document_id": document_id,
                 "concept_id": concept["id"],
                 "concept": concept["concept"],
