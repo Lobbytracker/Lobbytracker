@@ -97,3 +97,60 @@ def populate_documents_test_data():
         },
     ]
     return documents
+
+def populate_evaluation_runs_test_data():
+    """Populates the evaluation runs test data."""
+    evaluation_runs = [
+        {
+            "id": 1,
+            "model": "test-model",
+            "prompt": "TEST PROMPT",
+            "start_time": "2026-01-01 00:00:00",
+            "end_time": "2026-01-01 00:10:00",
+            "repetitions": 1,
+            "completed_all": True,
+        },
+        {
+            "id": 2,
+            "model": "test-model-2",
+            "prompt": "TEST PROMPT 2",
+            "start_time": "2026-01-01 00:00:00",
+            "end_time": "2026-01-01 00:10:00",
+            "repetitions": 2,
+            "completed_all": False,
+        },
+    ]
+    return evaluation_runs
+
+def populate_llm_output_test_data():
+    """Populates the llm output test data."""
+    llm_output = [
+        {
+            "id": 1,
+            "run_id": 1,
+            "document_id": 1,
+            "concept_id": 6,
+            "present": True,
+            "passage": "AI-generated slop is a valuable part of society and should be protected.",
+            "agreement": True,
+        },
+        {
+            "id": 2,
+            "run_id": 1,
+            "document_id": 1,
+            "concept_id": 2,
+            "present": False,
+            "passage": None,
+            "agreement": None,
+        },
+        {
+            "id": 3,
+            "run_id": 2,
+            "document_id": 3,
+            "concept_id": 3,
+            "present": True,
+            "passage": "Cat girls are a valuable part of society and should be protected.",
+            "agreement": True,
+        },
+    ]
+    return llm_output
