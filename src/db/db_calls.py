@@ -9,6 +9,7 @@ DATABASE_URL = os.getenv(
 
 
 async def get_concepts(database_url=DATABASE_URL):
+    """Retrieve all concepts, ordered by ID"""
     conn = await asyncpg.connect(database_url)
     try:
         rows = await conn.fetch("SELECT * FROM concepts ORDER BY id")
@@ -18,6 +19,7 @@ async def get_concepts(database_url=DATABASE_URL):
 
 
 async def get_concepts_by_id(concept_id, database_url=DATABASE_URL):
+    """Retrieve concepts by ID."""
     conn = await asyncpg.connect(database_url)
     try:
         rows = await conn.fetch(
@@ -29,6 +31,7 @@ async def get_concepts_by_id(concept_id, database_url=DATABASE_URL):
 
 
 async def get_documents(database_url=DATABASE_URL):
+    """Retrieve all documents, ordered by ID."""
     conn = await asyncpg.connect(database_url)
     try:
         rows = await conn.fetch("SELECT * FROM files ORDER BY id")
@@ -38,6 +41,7 @@ async def get_documents(database_url=DATABASE_URL):
 
 
 async def get_golden_standard(database_url=DATABASE_URL):
+    """Retrieve all golden standard records, ordered by ID."""
     conn = await asyncpg.connect(database_url)
     try:
         rows = await conn.fetch("SELECT * FROM goldenStandard ORDER BY id")
@@ -47,6 +51,7 @@ async def get_golden_standard(database_url=DATABASE_URL):
 
 
 async def get_golden_standard_by_document_id(document_id, database_url=DATABASE_URL):
+    """Retrieve golden standard rows for a document, ordered by ID."""
     conn = await asyncpg.connect(database_url)
     try:
         rows = await conn.fetch(
@@ -59,6 +64,7 @@ async def get_golden_standard_by_document_id(document_id, database_url=DATABASE_
 
 
 async def get_llm_output(database_url=DATABASE_URL):
+    """Retrieves all LLM output rows, ordered by ID."""
     conn = await asyncpg.connect(database_url)
     try:
         rows = await conn.fetch("SELECT * FROM llmOutput ORDER BY id")
@@ -68,6 +74,7 @@ async def get_llm_output(database_url=DATABASE_URL):
 
 
 async def save_output(output, database_url=DATABASE_URL):
+    """Saves the LLM output rows to the database."""
     rows = [
         (
             row["run_id"],
