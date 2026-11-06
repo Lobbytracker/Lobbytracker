@@ -7,7 +7,7 @@ import openai
 from dotenv import load_dotenv
 from pydantic import BaseModel, ValidationError
 
-from db.db_calls import create_evaluation_run, save_output
+from db.db_calls import create_evaluation_run, save_output, save_evaluation_run
 from tui.tui_io import TuiIO
 
 AITTA_URL = "https://aitta-api.csc.fi"
@@ -159,4 +159,6 @@ class LlmManager:
         return self.session_list
 
     def output_to_db(self):
+        """Saves LLM output to the database."""
         asyncio.run(save_output(self.session_list))
+        asyncio.run(save_evaluation_run(run_id=self.session_list[0]["run_id"], repetitions=1, completed_all=True))
