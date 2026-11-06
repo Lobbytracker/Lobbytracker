@@ -44,12 +44,14 @@ def get_available_models():
 
 
 class ConceptResult(BaseModel):
+    """Structured result of checking a concept in a document."""
     present: bool
     passage: str | None
     agreement: bool | None
 
 
 class LlmManager:
+    """Call the language model and store concept analysis results."""
     def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
         self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
@@ -61,6 +63,7 @@ class LlmManager:
         self.client = self.create_client()
 
     def create_client(self) -> openai.OpenAI:
+        """Create and return an OpenAI client configured for the Aitta API."""
         load_dotenv()
 
         key = os.getenv("AITTA_API_KEY")
@@ -73,6 +76,7 @@ class LlmManager:
         )
 
     def create_connection(self):
+        """Checks whether the selected model responds to a test request."""
         try:
             # instruction = "say hello"
             response = self.client.beta.chat.completions.parse(
@@ -91,6 +95,7 @@ class LlmManager:
             return False
 
     def API_call(self, concept, document):
+        """Asks the model if the concept appears in a document and returns the result."""
         concept_definition = concept["concept"]
         stance_label = concept["stance_label"]
 
@@ -130,6 +135,7 @@ class LlmManager:
         
 
     def call_aitta(self, run_id, on_result=None):
+        """Analyzes each concept in the selected document and returns results and failures."""
         document = self.documents["content"]
         document_id = self.documents["id"]
 
