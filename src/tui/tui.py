@@ -16,6 +16,7 @@ class Tui:
         self.io = io
 
     def print_instructions(self, selected_model: str):
+        """Display the application command menu."""
         instructions = {
             0: "Quit",
             1: "Etsi valitut konseptit tiedostosta",
@@ -48,6 +49,7 @@ class Tui:
         self.io.output(str(error))
 
     def ask(self, prompt: str):
+        """Prompt for user input"""
         while True:
             try:
                 self.print_go_back_hint()
@@ -239,6 +241,7 @@ class Tui:
                 self.io.output("Väärä syöte. Anna ID-numerot pilkulla erotettuna.")
 
     def print_output(self, output):
+        """Print output as formatted JSON."""
         self.io.output(
             JSON.from_data(output, indent=2, ensure_ascii=False, highlight=True)
         )
