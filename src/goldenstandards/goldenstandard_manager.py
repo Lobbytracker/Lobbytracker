@@ -17,6 +17,7 @@ class GoldenStandardManager:
         return await db.get_golden_standard()
 
     def get_by_document_id(self, document_id):
+        """Retrieves a document's golden standard records with their concept text."""
         rows = asyncio.run(db.get_golden_standard_by_document_id(document_id))
         concepts_by_id = {}
         for row in rows:
