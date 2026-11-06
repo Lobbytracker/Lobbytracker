@@ -57,6 +57,7 @@ class LlmManager:
         self.documents = documents if documents else None
         self.concepts = concepts if concepts else None
         self.session_list = []
+        self.failed_api_calls = []
         self.client = self.create_client()
 
     def create_client(self) -> openai.OpenAI:
@@ -126,6 +127,7 @@ class LlmManager:
         prompt = "TEMPORARY PROMPT"
         run_id = asyncio.run(create_evaluation_run(self.model, prompt))
         return run_id
+        
 
     def call_aitta(self, run_id, on_result=None):
         document = self.documents["content"]
@@ -135,6 +137,7 @@ class LlmManager:
             try:
                 api_call_result = self.API_call(concept, document)
             except (openai.APIError, ValidationError) as e:
+                self.failed_api_calls.append((run_id, concept, document))
                 self.io.output(f"Konseptin {concept['id']} käsittely epäonnistui:")
                 self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
                 continue
@@ -156,9 +159,16 @@ class LlmManager:
 
         self.output_to_db()
 
-        return self.session_list
+        return self.session_list, self.failed_api_calls
+
+    def completed_all(self):
+        """Returns True if all API calls were successful, False otherwise."""
+        if self.failed_api_calls == []:
+            return True
+        else:
+            return False
 
     def output_to_db(self):
         """Saves LLM output to the database."""
         asyncio.run(save_output(self.session_list))
-        asyncio.run(save_evaluation_run(run_id=self.session_list[0]["run_id"], repetitions=1, completed_all=True))
+        asyncio.run(save_evaluation_run(run_id=self.session_list[0]["run_id"], repetitions=1, completed_all=self.completed_all()))
