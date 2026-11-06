@@ -7,7 +7,7 @@ class BatchManager:
     def __init__(self, tui, documents, concepts, model=DEFAULT_MODEL):
         self.tui = tui  # for printing output in real-time
         self.documents = documents[0:2]  # Limit for testing
-        self.concepts = concepts[0:2]  # Limit for testing
+        self.concepts = concepts[0:15]  # Limit for testing
         self.model = model
 
     def batch_call(self):
