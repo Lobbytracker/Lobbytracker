@@ -9,6 +9,7 @@ from populate_test_data import populate_evaluations_test_data
 
 
 class App:
+    """Coordinates the application's menu actions and services."""
     def __init__(self, tui, documents, concepts, golden_standards):
         self.tui = tui
         self.documents = documents
@@ -17,6 +18,7 @@ class App:
         self.selected_model = DEFAULT_MODEL
 
     def print_instructions(self):
+        """Displays the command menu."""
         self.tui.print_instructions(self.selected_model)
 
     def search_from_file(self):
@@ -42,6 +44,7 @@ class App:
         return session_list
 
     def prompt_thing(self):
+        """Runs a test analysis on the first document and two concepts."""
         self.tui.print_cancel_hint()
         documents = self.documents.all_documents[
             0
@@ -57,6 +60,7 @@ class App:
         return session_list
 
     def change_model(self):
+        """Lets the user choose and test an available AI model."""
         try:
             models = get_available_models()
         except (ConnectionError, TimeoutError, OSError) as error:
@@ -87,6 +91,7 @@ class App:
             return
 
     def print_golden_standard(self):
+        """Displays golden standard records for selected documents."""
         document_ids = self.tui.ask_golden_standards_for_documents(
             self.golden_standards.all_golden_standards
         )
@@ -125,6 +130,7 @@ class App:
             self.tui.io.output(row)
 
     def main(self):
+        """Runs the application command loop."""
         commands = {
             1: self.search_from_file,
             2: self.prompt_thing,
