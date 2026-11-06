@@ -122,3 +122,17 @@ async def save_evaluation_run(
         )
     finally:
         await conn.close()
+
+async def retrieve_document_concept_pair(
+        run_id, database_url=DATABASE_URL
+):
+    """Retrieves run_id, document_id and concept_id pair from llmoutput table"""
+    conn = await asyncpg.connect(database_url)
+    try:
+        pairs = await conn.execute(
+            """SELECT run_id, document_id, concept_id FROM llmoutput WHERE run_id=$1""",
+            run_id,
+        )
+        return pairs
+    finally:
+        await conn.close()
