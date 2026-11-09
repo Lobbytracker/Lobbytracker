@@ -122,6 +122,9 @@ class App:
         self.tui.io.output(f"Precision: {f1_calculator.calculate_precision()}")
         self.tui.io.output(f"Recall: {f1_calculator.calculate_recall()}")
 
+    def calculate_f1(self):
+        self.tui.calculate_f1_score()
+
     def encoding_test(self):
         llm_output, golden_standard = populate_evaluations_test_data()
         encoder = DataEncoding(llm_output, golden_standard)
@@ -137,7 +140,7 @@ class App:
             3: self.change_model,
             4: self.print_golden_standard,
             5: self.call_batch,
-            6: self.f1_mvp,
+            6: self.calculate_f1,
             7: self.encoding_test,
         }
 

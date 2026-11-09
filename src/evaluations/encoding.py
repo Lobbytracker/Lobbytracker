@@ -6,13 +6,21 @@ class DataEncoding:
     """Encodes the given LLM outputs and goldenstandard."""
 
     def __init__(self, llm_output=None, goldenstandard=None):
-        self.llm_output = self.retrieve_llm_pairs() if not llm_output else self.remove_duplicates(llm_output)
-        self.goldenstandard = self.retrieve_golden_pairs(self.llm_output) if not goldenstandard else self.remove_duplicates(goldenstandard)
+        self.llm_output = self.retrieve_llm_pairs() #if not llm_output else self.remove_duplicates(llm_output)
+        self.goldenstandard = self.retrieve_golden_pairs(self.llm_output) # if not goldenstandard else self.remove_duplicates(goldenstandard)
+
+    async def get_run_id(self):
+        result = await db.get_latest_run_id()
+        return result[0]["max"]
+
+    async def get_pairs(self,run_id):
+        pairs = await db.get_golden_standard_by_document_id(run_id)
+        return pairs
 
     def retrieve_llm_pairs(self):
         """Retrieves llmOutput pairs by run_id"""
-        run_id = db.get_latest_run_id()
-        llm_pairs = db.retrieve_document_concept_pair(run_id)
+        run_id = self.get_run_id()
+        llm_pairs = self.get_pairs(run_id)
         return llm_pairs
 
     def retrieve_golden_pairs(self, llm_pairs):
@@ -22,7 +30,7 @@ class DataEncoding:
         for pair in llm_pairs:
             if pair[0] not in found:
                 found.append(pair[0])
-                golden_pair = db.get_golden_standard_by_document_id(pair[0])
+                golden_pair = asyncio.run(db.get_golden_standard_by_document_id(pair[0]))
                 golden_pairs += [(item["doceumnet_id"], item["condept_id"]) for item in golden_pair]
         return golden_pairs
 

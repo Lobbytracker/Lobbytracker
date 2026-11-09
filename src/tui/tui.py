@@ -5,6 +5,7 @@ from rich.text import Text
 
 from error_handling import BackToMenu
 from tui.tui_io import TuiIO
+from evaluations.f1_calculation import F1Calculator
 
 BACK_TO_MENU_COMMANDS = {"b"}
 
@@ -245,3 +246,12 @@ class Tui:
         self.io.output(
             JSON.from_data(output, indent=2, ensure_ascii=False, highlight=True)
         )
+
+    def calculate_f1_score(self):
+        """Calsulates F1 score for the latest llm run."""
+        f1_calculator = F1Calculator()
+        self.io.output(f"F1 score (micro): {f1_calculator.calculate_f1_micro()}")
+        self.io.output(f"F1 score (macro): {f1_calculator.calculate_f1_macro()}")
+        self.io.output(f"Precision: {f1_calculator.calculate_precision()}")
+        self.io.output(f"Recall: {f1_calculator.calculate_recall()}")
+

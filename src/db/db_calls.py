@@ -140,7 +140,7 @@ async def retrieve_document_concept_pair(
             """SELECT run_id, document_id, concept_id FROM llmOutput WHERE run_id=$1""",
             run_id,
         )
-        return [(row["document_id"], row["concept_id"]) for row in rows]
+        return [(row["document_id"], row["concept_id"]) for row in pairs]
     finally:
         await conn.close()
 

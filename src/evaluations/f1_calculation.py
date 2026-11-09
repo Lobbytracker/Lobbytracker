@@ -8,13 +8,13 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 class F1Calculator:
     """Calculates F1 score, precision and recall for the given LLM output and goldenstandard."""
 
-    def __init__(self, llm_output, golden_standard):
-        self.llm_output = self.encode_data(llm_output, golden_standard)[0]
-        self.golden_standard = self.encode_data(llm_output, golden_standard)[1]
+    def __init__(self, llm_output=None, golden_standard=None):
+        self.llm_output = self.encode_data()[0]
+        self.golden_standard = self.encode_data()[1]
 
-    def encode_data(self, llm_output, golden_standard):
+    def encode_data(self):
         """Encodes the given llm output and goldenstandard data."""
-        encoded_data = DataEncoding(llm_output, golden_standard).encode_data()
+        encoded_data = DataEncoding().encode_data()
         encoded_llm = encoded_data[1]
         encoded_golden_standard = encoded_data[2]
         return encoded_llm, encoded_golden_standard
