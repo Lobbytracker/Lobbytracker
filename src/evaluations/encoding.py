@@ -21,7 +21,7 @@ class DataEncoding:
         golden_pairs = []
         for pair in llm_pairs:
             if pair[0] not in found:
-                found.appned(pair[0])
+                found.append(pair[0])
                 golden_pair = db.get_golden_standard_by_document_id(pair[0])
                 golden_pairs += [(item["doceumnet_id"], item["condept_id"]) for item in golden_pair]
         return golden_pairs
