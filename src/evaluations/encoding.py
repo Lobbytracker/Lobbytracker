@@ -6,58 +6,57 @@ class DataEncoding:
     """Encodes the given LLM outputs and goldenstandard."""
 
     def __init__(self, llm_output=None, goldenstandard=None):
-        self.llm_output = self.retrieve_llm_pairs() #if not llm_output else self.remove_duplicates(llm_output)
-        self.goldenstandard = self.retrieve_golden_pairs(self.llm_output) # if not goldenstandard else self.remove_duplicates(goldenstandard)
+        self.llm_output, self.goldenstandard = asyncio.run(self._load_pairs())
 
-    async def get_run_id(self):
+    async def _load_pairs(self):
+        """Fetches (document_id, concept_id) pairs for the latest run and
+        the matching golden standard pairs."""
         result = await db.get_latest_run_id()
-        return result[0]["max"]
+        run_id = result[0]["max"]
+        if run_id is None:
+            return [], []
 
-    async def get_pairs(self,run_id):
-        pairs = await db.get_golden_standard_by_document_id(run_id)
-        return pairs
-
-    def retrieve_llm_pairs(self):
-        """Retrieves llmOutput pairs by run_id"""
-        run_id = self.get_run_id()
-        llm_pairs = self.get_pairs(run_id)
-        return llm_pairs
-
-    def retrieve_golden_pairs(self, llm_pairs):
-        """Retrieves goldenStandard pairs"""
-        found = []
+        llm_pairs = await db.retrieve_document_concept_pair(run_id)
         golden_pairs = []
-        for pair in llm_pairs:
-            if pair[0] not in found:
-                found.append(pair[0])
-                golden_pair = asyncio.run(db.get_golden_standard_by_document_id(pair[0]))
-                golden_pairs += [(item["doceumnet_id"], item["condept_id"]) for item in golden_pair]
-        return golden_pairs
+        for document_id in {doc for doc, _ in llm_pairs}:
+            rows = await db.get_golden_standard_by_document_id(document_id)
+            golden_pairs += [(row["document_id"], row["concept_id"]) for row in rows]
+
+        return llm_pairs, golden_pairs
 
     def remove_duplicates(self, llm_pairs):
         """Removes duplicate pairs from a list."""
-        return list(dict.fromkeys(llm_pairs))
+        return list(dict.fromkeys(llm_pairs)) #set maybe instead?
 
     def encode_data(self):
         """Encodes the given llm output and goldenstandard data.
         Returns (document,concept) pairs, coded LLM output and coded goldenstandard."""
         encoded_output = []
-        encoded_goldestandard = []
+        encoded_goldenstandard = []
         pair = []
 
-        while len(self.llm_output) > 0:  # Finds true positives and false positives
-            first = self.llm_output.pop(0)
+        llm_output = list(self.llm_output)
+        goldenstandard = list(self.goldenstandard)
+
+        # print(f"llm_output {llm_output}")
+        # print(f"goldenstandard {goldenstandard}")
+
+        for first in llm_output:  # true positives and false positives
             encoded_output.append(1)
             pair.append(first)
-            if first in self.goldenstandard:
-                encoded_goldestandard.append(1)
-                self.goldenstandard.remove(first)
+            if first in goldenstandard:
+                encoded_goldenstandard.append(1)
+                goldenstandard.remove(first)
             else:
-                encoded_goldestandard.append(0)
+                encoded_goldenstandard.append(0)
 
-        if len(self.goldenstandard) > 0:  # Finds false negatives
-            encoded_output += len(self.goldenstandard) * [0]
-            encoded_goldestandard += len(self.goldenstandard) * [1]
-            pair += self.goldenstandard
+        if goldenstandard:  # false negatives
+            encoded_output += len(goldenstandard) * [0]
+            encoded_goldenstandard += len(goldenstandard) * [1]
+            pair += goldenstandard
 
-        return (pair, encoded_output, encoded_goldestandard)
+        # print(f"encoded_output {encoded_output}")
+        # print(f"encoded_goldenstandard {encoded_goldenstandard}")
+        # print(f"pair {pair}")
+
+        return (pair, encoded_output, encoded_goldenstandard)
