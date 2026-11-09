@@ -136,11 +136,11 @@ async def retrieve_document_concept_pair(
     """Retrieves run_id, document_id and concept_id pair from llmoutput table"""
     conn = await asyncpg.connect(database_url)
     try:
-        pairs = await conn.execute(
+        pairs = await conn.fetch(
             """SELECT run_id, document_id, concept_id FROM llmOutput WHERE run_id=$1""",
             run_id,
         )
-        return pairs
+        return [(row["document_id"], row["concept_id"]) for row in rows]
     finally:
         await conn.close()
 
@@ -149,7 +149,7 @@ async def get_latest_run_id(database_url=DATABASE_URL
     """Retrieves the latest run_id"""
     conn = await asyncpg.connect(database_url)
     try:
-        run_id = await conn.execute(
+        run_id = await conn.fetch(
             """SELECT MAX(id) FROM evaluationRuns"""
         )
         return run_id

@@ -1,13 +1,34 @@
+import asyncio
+
+import db.db_calls as db
+
 class DataEncoding:
     """Encodes the given LLM outputs and goldenstandard."""
 
-    def __init__(self, llm_output, goldenstandard):
-        self.llm_output = self.remove_duplicates(llm_output)
-        self.goldenstandard = self.remove_duplicates(goldenstandard)
+    def __init__(self, llm_output=None, goldenstandard=None):
+        self.llm_output = self.retrieve_llm_pairs() if not llm_output else self.remove_duplicates(llm_output)
+        self.goldenstandard = self.retrieve_golden_pairs(self.llm_output) if not goldenstandard else self.remove_duplicates(goldenstandard)
 
-    def remove_duplicates(self, pairs):
+    def retrieve_llm_pairs(self):
+        """Retrieves llmOutput pairs by run_id"""
+        run_id = db.get_latest_run_id()
+        llm_pairs = db.retrieve_document_concept_pair(run_id)
+        return llm_pairs
+
+    def retrieve_golden_pairs(self, llm_pairs):
+        """Retrieves goldenStandard pairs"""
+        found = []
+        golden_pairs = []
+        for pair in llm_pairs:
+            if pair[0] not in found:
+                found.appned(pair[0])
+                golden_pair = db.get_golden_standard_by_document_id(pair[0])
+                golden_pairs += [(item["doceumnet_id"], item["condept_id"]) for item in golden_pair]
+        return golden_pairs
+
+    def remove_duplicates(self, llm_pairs):
         """Removes duplicate pairs from a list."""
-        return list(dict.fromkeys(pairs))
+        return list(dict.fromkeys(llm_pairs))
 
     def encode_data(self):
         """Encodes the given llm output and goldenstandard data.
