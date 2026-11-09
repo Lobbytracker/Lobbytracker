@@ -6,7 +6,10 @@ class DataEncoding:
     """Encodes the given LLM outputs and goldenstandard."""
 
     def __init__(self, llm_output=None, goldenstandard=None):
-        self.llm_output, self.goldenstandard = asyncio.run(self._load_pairs())
+        if llm_output == None and goldenstandard == None:
+            self.llm_output, self.goldenstandard = asyncio.run(self._load_pairs())
+        else:
+            self.llm_output, self.goldenstandard = self.remove_duplicates(llm_output), self.remove_duplicates(goldenstandard)
 
     async def _load_pairs(self):
         """Fetches (document_id, concept_id) pairs for the latest run and
