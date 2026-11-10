@@ -107,9 +107,11 @@ class App:
 
     def call_batch(self):
         """Calls the BatchManager to process documents and concepts in batch mode."""
-        self.tui.print_cancel_hint()
         documents = self.documents.all_documents
+        document_ids = self.tui.ask_document_ids(documents, limit=None)
+        selected_documents = self.documents.get_by_ids(document_ids)
         concepts = self.concepts.all_concepts
+        self.tui.print_cancel_hint()
         batch_manager = BatchManager(self.tui, documents, concepts, self.selected_model)
         batch_manager.batch_call()
 
