@@ -160,7 +160,7 @@ class Tui:
 
         self.io.output(table)
 
-    def ask_document_ids(self, documents, start=0):
+    def ask_document_ids(self, documents):
         """Shows documents and returns the selected document id."""
 
         if not documents:
@@ -168,7 +168,24 @@ class Tui:
             return None
 
         valid_ids = {document["id"] for document in documents}
+        start = 0
+        while True:  
+            document_id, start = self.show_next_documents(documents, start=start)     
+            try:
+                document_id = int(document_id)
+            except ValueError:
+                self.io.output("Väärä syöte. Anna yhden tiedoston ID tai x.")
+                continue
 
+            if document_id not in valid_ids:
+                self.io.output(f"Tuntematon ID: {document_id}")
+                continue
+
+            return document_id
+
+    def show_next_documents(self, documents, start=0):
+        """Prints the next 10 documents, returns the selected document id 
+            and starting position for the next 10 documents"""
         while True:
             page = documents[start : start + 10]
             self.print_documents(page, start)
@@ -185,19 +202,8 @@ class Tui:
                     start += 10
                 else:
                     self.io.output("Ei enempää tiedostoja.")
-                continue
-
-            try:
-                document_id = int(document_id)
-            except ValueError:
-                self.io.output("Väärä syöte. Anna yhden tiedoston ID tai x.")
-                continue
-
-            if document_id not in valid_ids:
-                self.io.output(f"Tuntematon ID: {document_id}")
-                continue
-
-            return document_id
+            else:
+                return document_id, start
 
     def ask_concept_ids(self, concepts):
         """Shows concepts and returns the concept ids."""
