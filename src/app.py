@@ -107,20 +107,13 @@ class App:
 
     def call_batch(self):
         """Calls the BatchManager to process documents and concepts in batch mode."""
-        self.tui.print_cancel_hint()
         documents = self.documents.all_documents
+        document_ids = self.tui.ask_document_ids(documents, limit=None)
+        selected_documents = self.documents.get_by_ids(document_ids)
         concepts = self.concepts.all_concepts
+        self.tui.print_cancel_hint()
         batch_manager = BatchManager(self.tui, documents, concepts, self.selected_model)
         batch_manager.batch_call()
-
-    # NOT FINAL IMPLEMENTATION!! JUST FOR EASIER TESTING OF F1 CALCULATION AND ENCODING
-    def f1_mvp(self):
-        llm_output, golden_standard = populate_evaluations_test_data()
-        f1_calculator = F1Calculator(llm_output, golden_standard)
-        self.tui.io.output(f"F1 score (micro): {f1_calculator.calculate_f1_micro()}")
-        self.tui.io.output(f"F1 score (macro): {f1_calculator.calculate_f1_macro()}")
-        self.tui.io.output(f"Precision: {f1_calculator.calculate_precision()}")
-        self.tui.io.output(f"Recall: {f1_calculator.calculate_recall()}")
 
     def calculate_f1(self):
         self.tui.calculate_f1_score()

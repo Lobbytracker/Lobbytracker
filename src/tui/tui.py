@@ -219,6 +219,8 @@ class Tui:
                     start += 10
                 else:
                     self.io.output("Ei enempää tiedostoja.")
+            if document_id == "all":
+                return ",".join({str(document["id"]) for document in documents}), start
             else:
                 return document_id, start
 
