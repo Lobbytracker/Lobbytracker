@@ -23,7 +23,7 @@ class App:
 
     def search_from_file(self):
         """Search selected documents using selected concepts."""
-        document_ids = self.tui.ask_document_ids(self.documents.all_documents)
+        document_ids = self.tui.ask_document_ids(self.documents.all_documents, limit=1)
         if document_ids is None:
             return None
 
