@@ -137,10 +137,10 @@ async def retrieve_document_concept_pair(
     conn = await asyncpg.connect(database_url)
     try:
         pairs = await conn.fetch(
-            """SELECT run_id, document_id, concept_id FROM llmOutput WHERE run_id=$1""",
+            """SELECT run_id, document_id, concept_id, present FROM llmOutput WHERE run_id=$1""",
             run_id,
         )
-        return [(row["document_id"], row["concept_id"]) for row in pairs]
+        return [(row["document_id"], row["concept_id"], row["present"]) for row in pairs]
     finally:
         await conn.close()
 
