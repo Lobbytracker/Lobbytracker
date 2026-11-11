@@ -34,7 +34,7 @@ class TestTui(unittest.TestCase):
             3: "Vaihda tekoälymallia",
             4: "Tulosta golden standard tiedostoille",
             5: "Suorita batch-prosessointi",
-            6: "F1 MVP",
+            6: "Laske F1-arvo viimeisimmälle ajolle",
             7: "Encoding test",
         }
         self.tui.print_instructions(selected_model="testmodel")

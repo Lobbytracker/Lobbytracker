@@ -112,7 +112,7 @@ class App:
         selected_documents = self.documents.get_by_ids(document_ids)
         concepts = self.concepts.all_concepts
         self.tui.print_cancel_hint()
-        batch_manager = BatchManager(self.tui, documents, concepts, self.selected_model)
+        batch_manager = BatchManager(self.tui, selected_documents, concepts, self.selected_model)
         batch_manager.batch_call()
 
     def calculate_f1(self):
