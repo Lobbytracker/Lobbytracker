@@ -274,6 +274,11 @@ class Tui:
     def calculate_f1_score(self):
         """Calsulates F1 score for the latest llm run."""
         f1_calculator = F1Calculator()
+        self.io.output(f"True Positives: {f1_calculator.calculate_true_positives()}")
+        self.io.output(f"False Positives: {f1_calculator.calculate_false_positives()}")
+        self.io.output(f"True Negatives: {f1_calculator.calculate_true_negatives()}")
+        self.io.output(f"False Negatives: {f1_calculator.calculate_false_negatives()}")
+
         self.io.output(f"F1 score (micro): {f1_calculator.calculate_f1_micro()}")
         self.io.output(f"F1 score (macro): {f1_calculator.calculate_f1_macro()}")
         self.io.output(f"Precision: {f1_calculator.calculate_precision()}")

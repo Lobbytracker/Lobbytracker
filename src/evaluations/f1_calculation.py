@@ -24,20 +24,44 @@ class F1Calculator:
         encoded_golden_standard = encoded_data[2]
         return encoded_llm, encoded_golden_standard
 
+    def calculate_true_positives(self):
+        """Calculates the number of true positives for the given LLM output and goldenstandard."""
+        return sum(
+            1 for llm, golden in zip(self.llm_output, self.golden_standard) if llm == 1 and golden == 1
+        )
+
+    def calculate_false_positives(self):
+        """Calculates the number of false positives for the given LLM output and goldenstandard."""
+        return sum(
+            1 for llm, golden in zip(self.llm_output, self.golden_standard) if llm == 1 and golden == 0
+        )
+
+    def calculate_false_negatives(self):
+        """Calculates the number of false negatives for the given LLM output and goldenstandard."""
+        return sum(
+            1 for llm, golden in zip(self.llm_output, self.golden_standard) if llm == 0 and golden == 1
+        )
+
+    def calculate_true_negatives(self):
+        """Calculates the number of true negatives for the given LLM output and goldenstandard."""
+        return sum(
+            1 for llm, golden in zip(self.llm_output, self.golden_standard) if llm == 0 and golden == 0
+        )
+
     def calculate_f1_micro(self):
         """Calculates the F1 score for the given LLM output and goldenstandard
         using micro averaging."""
-        return f1_score(self.golden_standard, self.llm_output, labels=[1,0], average="micro")
+        return f1_score(self.golden_standard, self.llm_output, average="micro")
 
     def calculate_f1_macro(self):
         """Calculates the F1 score for the given LLM output and goldenstandard
         using macro averaging."""
-        return f1_score(self.golden_standard, self.llm_output, labels=[1,0], average="macro")
+        return f1_score(self.golden_standard, self.llm_output, average="macro")
 
     def calculate_precision(self):
         """Calculates the precision for the given LLM output and goldenstandard."""
-        return precision_score(self.golden_standard, self.llm_output, labels=[1,0], average="binary")
+        return precision_score(self.golden_standard, self.llm_output, average=None)
 
     def calculate_recall(self):
         """Calculates the recall for the given LLM output and goldenstandard."""
-        return recall_score(self.golden_standard, self.llm_output, labels=[1,0], average="binary")
+        return recall_score(self.golden_standard, self.llm_output, average=None)
