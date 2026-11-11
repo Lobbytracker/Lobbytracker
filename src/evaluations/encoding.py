@@ -2,6 +2,7 @@ import asyncio
 
 import db.db_calls as db
 
+
 class DataEncoding:
     """Encodes the given LLM outputs and goldenstandard."""
 
@@ -42,9 +43,6 @@ class DataEncoding:
         llm_output = list(self.llm_output)
         goldenstandard = list(self.goldenstandard)
 
-        # print(f"llm_output {llm_output}")
-        # print(f"goldenstandard {goldenstandard}")
-
         for first in llm_output:  # true positives and false positives
             pair.append(first)
             document_id, concept_id, present = first
@@ -62,9 +60,5 @@ class DataEncoding:
             encoded_output += len(goldenstandard) * [0]
             encoded_goldenstandard += len(goldenstandard) * [1]
             pair += goldenstandard
-
-        # print(f"encoded_output {encoded_output}")
-        # print(f"encoded_goldenstandard {encoded_goldenstandard}")
-        # print(f"pair {pair}")
 
         return (pair, encoded_output, encoded_goldenstandard)
