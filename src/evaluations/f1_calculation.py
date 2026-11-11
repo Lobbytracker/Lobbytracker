@@ -27,23 +27,17 @@ class F1Calculator:
     def calculate_f1_micro(self):
         """Calculates the F1 score for the given LLM output and goldenstandard
         using micro averaging."""
-        return f1_score(self.golden_standard, self.llm_output, average="micro")
+        return f1_score(self.golden_standard, self.llm_output, labels=[1,0], average="micro")
 
     def calculate_f1_macro(self):
         """Calculates the F1 score for the given LLM output and goldenstandard
         using macro averaging."""
-        return f1_score(self.golden_standard, self.llm_output, average="macro")
+        return f1_score(self.golden_standard, self.llm_output, labels=[1,0], average="macro")
 
     def calculate_precision(self):
         """Calculates the precision for the given LLM output and goldenstandard."""
-        return precision_score(self.golden_standard, self.llm_output, average="binary")
+        return precision_score(self.golden_standard, self.llm_output, labels=[1,0], average="binary")
 
     def calculate_recall(self):
         """Calculates the recall for the given LLM output and goldenstandard."""
-        return recall_score(self.golden_standard, self.llm_output, average="binary")
-
-if __name__=="__main__":
-    llm_output = [(1, 4), (1, 6), (1, 17), (1, 20), (1, 23), (1, 24)]
-    golden_standard = [(1, 4), (1, 19), (1, 23), (1, 17), (1, 6), (1, 9)]
-    calculator = F1Calculator(llm_output, golden_standard)
-    print(calculator.calculate_f1_micro())
+        return recall_score(self.golden_standard, self.llm_output, labels=[1,0], average="binary")
