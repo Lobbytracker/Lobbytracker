@@ -60,8 +60,8 @@ class F1Calculator:
 
     def calculate_precision(self):
         """Calculates the precision for the given LLM output and goldenstandard."""
-        return precision_score(self.golden_standard, self.llm_output, average=None)
+        return precision_score(self.golden_standard, self.llm_output, average="binary")
 
     def calculate_recall(self):
         """Calculates the recall for the given LLM output and goldenstandard."""
-        return recall_score(self.golden_standard, self.llm_output, average=None)
+        return recall_score(self.golden_standard, self.llm_output, average="binary")
