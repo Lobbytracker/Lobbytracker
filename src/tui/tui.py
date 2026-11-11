@@ -4,8 +4,8 @@ from rich.table import Table
 from rich.text import Text
 
 from error_handling import BackToMenu
-from tui.tui_io import TuiIO
 from evaluations.f1_calculation import F1Calculator
+from tui.tui_io import TuiIO
 
 BACK_TO_MENU_COMMANDS = {"b"}
 
@@ -170,22 +170,23 @@ class Tui:
         valid_ids = {document["id"] for document in documents}
         start = 0
 
-        while True:  
+        while True:
             document_id, start = self.show_next_documents(documents, start=start)
-            if limit == 1:     
+            if limit == 1:
                 try:
                     ids = [int(document_id)]
                 except ValueError:
                     self.io.output("Väärä syöte. Anna yhden tiedoston ID tai x.")
                     continue
 
-            if limit == None:
-                try:    
+
+            if limit is None:
+                try:
                     ids = [int(part) for part in str(document_id).split(",")]
                 except ValueError:
                     self.io.output("Väärä syöte. Anna ID-numerot pilkulla erotettuna.")
                     continue
-            
+
             invalid = [i for i in ids if i not in valid_ids]
             if invalid:
                 self.io.output(f"Tuntemattomat ID:t: {invalid}")
@@ -199,12 +200,10 @@ class Tui:
         while True:
             page = documents[start : start + 10]
             self.print_documents(page, start)
-
-
             if start + 10 < len(documents):
                 if limit == 1:
                     prompt = "\nAnna tiedoston ID tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
-                if limit == None:
+                if limit is None:
                     prompt = "\nAnna tiedostojen ID:t tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
             else:
                 if limit == 1:
@@ -279,4 +278,3 @@ class Tui:
         self.io.output(f"F1 score (macro): {f1_calculator.calculate_f1_macro()}")
         self.io.output(f"Precision: {f1_calculator.calculate_precision()}")
         self.io.output(f"Recall: {f1_calculator.calculate_recall()}")
-

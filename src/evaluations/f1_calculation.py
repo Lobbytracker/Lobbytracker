@@ -9,7 +9,7 @@ class F1Calculator:
     """Calculates F1 score, precision and recall for the given LLM output and goldenstandard."""
 
     def __init__(self, llm_output=None, golden_standard=None):
-        if llm_output != None and golden_standard != None:
+        if llm_output is not None and golden_standard is not None:
             encoded = self.encode_data(llm_output, golden_standard)
             self.llm_output = encoded[0]
             self.golden_standard = encoded[1]
@@ -41,9 +41,3 @@ class F1Calculator:
     def calculate_recall(self):
         """Calculates the recall for the given LLM output and goldenstandard."""
         return recall_score(self.golden_standard, self.llm_output, average="binary")
-
-if __name__=="__main__":
-    llm_output = [(1, 4), (1, 6), (1, 17), (1, 20), (1, 23), (1, 24)]
-    golden_standard = [(1, 4), (1, 19), (1, 23), (1, 17), (1, 6), (1, 9)]
-    calculator = F1Calculator(llm_output, golden_standard)
-    print(calculator.calculate_f1_micro())

@@ -4,7 +4,6 @@ from ai.ai import DEFAULT_MODEL, LlmManager, get_available_models
 from ai.batch import BatchManager
 from error_handling import BackToMenu
 from evaluations.encoding import DataEncoding
-from evaluations.f1_calculation import F1Calculator
 from populate_test_data import populate_evaluations_test_data
 
 
