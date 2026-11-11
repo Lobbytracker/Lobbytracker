@@ -5,7 +5,7 @@ from evaluations.f1_calculation import F1Calculator
 
 class TestF1Calculator(unittest.TestCase):
     def setUp(self):
-        self.llm_output = [(1, 1), (1, 2), (2, 2)]
+        self.llm_output = [(1, 1, True), (1, 2, True), (2, 2, True)]
         self.golden_standard = [(1, 1), (2, 2), (3, 3)]
         self.calculator = F1Calculator(self.llm_output, self.golden_standard)
 
