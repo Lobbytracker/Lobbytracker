@@ -64,7 +64,7 @@ make app
 - [User guide](documentation/user_guide.md): terminology, starting the application, menu commands, and interpreting results.
 
 ## Links
-[Backlog](https://github.com/orgs/Lobbytracker/projects/1)
+[Backlog](https://github.com/orgs/Lobbytracker/projects/1)  
 [Definition of Done](documentation/dod.md)
 
 
