@@ -37,6 +37,8 @@ Then edit `.env`:
 | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | Database name and credentials |
 | `AITTA_API_KEY` | API key for the LLM service |
 
+Currenty the project utilizes CSC's private [Aitta](https://aitta.csc.fi/public) interface to access LLMs. Aitta provides the API key.
+
 **3.** Install ```make``` utility
 ```
 sudo apt install make
@@ -62,14 +64,8 @@ make app
 - [User guide](documentation/user_guide.md): terminology, starting the application, menu commands, and interpreting results.
 
 ## Links
-[Backlog.](https://github.com/orgs/Lobbytracker/projects/1)
+[Backlog](https://github.com/orgs/Lobbytracker/projects/1)
+[Definition of Done](documentation/dod.md)
 
 
-## Definition of Done
 
-* Acceptance criteria have been defined for user stories and are documented in the description of each user story.
-* User stories and their acceptance criteria can be found in the product backlog.
-* The test coverage of the implemented code must be reasonable.
-* The customer can view the status of the code and tests at all times via the CI service.
-* The code is as maintainable as possible: naming conventions and architecture are sensible,
-* A consistent coding style is followed (enforced using Pylint).
