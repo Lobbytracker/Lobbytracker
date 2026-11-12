@@ -1,125 +1,69 @@
 # Lobbytracker
-Lobbytracker is a prototype for analysing legal documents with AI. It lets a user select documents and predefined concepts, asks an AI model whether each concept appears in the document, and returns the answer together with an exact supporting passage.
+
+## Description
+Lobbytracker is a tool for analyzing legal and policy documents with LLMs. The goal of this project is to find out how well LLMs can analyze Finnish language policy documents and find stances in them. This tool is made mainly for political and social scientists to streamline their research. Reliable stance data can then be aggregated into networks of organisations' policy positions.
+
+Other similar tools have been developed for other languages (for e.g. German & English), but this is the first one in Finnish. The project is developed as a university course project for a researcher at the University of Helsinki.
+
+
+## Features
+- **Choosing a Model:** pick an LLM from a list of available models
+- **Document selection:** analyse one or several documents
+- **Concept-based coding:** the LLM receives a list of concepts (the stances a human
+  coder looks for) and decides for each one whether the document mentions it
+- **Stance detection:** for each concept found, the output states whether the document supports or opposes it
+- **Output inspection:** view the LLM's output for each document and concept
+- **Batch processing:** run all document-concept pairs in one go
+- **Evaluation:** compute F1 scores for concept and stance detection against the
+  human researchers' labels
+
+## Installation
+
+First navigate to the command line interface.
+
+**1.** Clone the project
+```
+$ git clone git@github.com:Lobbytracker/Lobbytracker.git
+```
+
+**2.** Configure the local .env file
+```
+cp .env.example .env
+```
+Then edit `.env`:
+
+| Variable | Description |
+|---|---|
+| `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | Database name and credentials |
+| `AITTA_API_KEY` | API key for the LLM service |
+
+**3.** Install ```make``` utility
+```
+sudo apt install make
+``` 
+
+ **4.** Upload your data
+ **TO DO**
+
+**5.** Start the application
+
+* Start the Docker container
+```
+make start
+```
+* Start the application
+```
+make app
+```
 
 ## Documentation
 
 - [Architecture](documentation/architecture.md): project structure, technologies, and database.
 - [User guide](documentation/user_guide.md): terminology, starting the application, menu commands, and interpreting results.
 
-## Installing the application
+## Links
+[Backlog.](https://github.com/orgs/Lobbytracker/projects/1)
 
-### Clone the project
-```
-$ git clone git@github.com:Lobbytracker/Lobbytracker.git
-```
-
-### Update the project's environment
-```
-uv sync
-```
-
-### Create local environment file
-```
-cp .env.example .env
-```
-
-*Fill required fields with your own credentials.*
-
-### Install `make` utility
-```
-sudo apt install make
-```
-
-### Start docker
-```
-make start
-```
-
-### Run data import scripts
-```
-make data
-```
-
-### Run the application locally
-```
-make app
-```
-
-The terminal application starts with `make app`. Web-version is available at [http://localhost:8000](http://localhost:8000) which currently does not provide same functionality as terminal application.
-
-## Docker commands
-
-### Check running containers
-```
-make status
-```
-### View backend logs
-```
-make logs
-```
-### Stop the application
-```
-make stop
-```
-
-## Database commands
-
-### Access PostgreSQL
-
-Open an interactive PostgreSQL session:
-```
-make db
-```
-
-### Show the tables
-```
-\dt
-```
-
-### Show the first 10 concepts
-```
-SELECT * FROM concepts LIMIT 10;
-```
-
-### Show PostgreSQL tables directly
-```
-make tables
-```
-
-### Exit PostgreSQL
-```
-\q
-```
-
-## Other
-
-### Run tests
-```
-make tests
-```
-
-### Run coverage
-```
-make coverage
-```
-
-### Run pylint
-```
-make pylint
-```
-
-### Apply Ruff fixes and formatting
-```
-make autofix
-```
-
-## Backlog
-
-Product backlog and sprint backlog can be found [here.](https://github.com/orgs/Lobbytracker/projects/1)
-
-## Data
-
-Data can be found [here.](https://github.com/Lobbytracker/ilmastolaki_lausunnot)
 
 ## Definition of Done
 
