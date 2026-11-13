@@ -158,25 +158,27 @@ class LlmManager:
                         )
                         self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
 
-            if api_call_result is None:
-                continue
-
             result = {
                 "run_id": run_id,
                 "document_id": document_id,
                 "concept_id": concept["id"],
                 "concept": concept["concept"],
                 "present": api_call_result.present,
-                "passage": api_call_result.passage if api_call_result.present else None,
+                "passage": (
+                    api_call_result.passage if api_call_result.present else None
+                ),
                 "agreement": api_call_result.agreement,
             }
 
             self.session_list.append(result)
-            self.output_to_db()
+
+            if api_call_result is None:
+                continue
 
             if on_result is not None:
                 on_result(result)
 
+        self.output_to_db()
         return self.session_list, self.failed_api_calls
 
     def completed_all(self):
