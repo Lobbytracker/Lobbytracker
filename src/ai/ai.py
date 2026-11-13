@@ -13,6 +13,7 @@ from tui.tui_io import TuiIO
 AITTA_URL = "https://aitta-api.csc.fi"
 DEFAULT_MODEL = "openai/gpt-oss-120b"
 REQUEST_TIMEOUT_SECONDS = 300
+MAX_API_CALL_ATTEMPTS = 2
 
 
 def get_available_models():
@@ -45,6 +46,7 @@ def get_available_models():
 
 class ConceptResult(BaseModel):
     """Structured result of checking a concept in a document."""
+
     present: bool
     passage: str | None
     agreement: bool | None
@@ -52,6 +54,7 @@ class ConceptResult(BaseModel):
 
 class LlmManager:
     """Call the language model and store concept analysis results."""
+
     def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
         self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
@@ -132,7 +135,6 @@ class LlmManager:
         prompt = "TEMPORARY PROMPT"
         run_id = asyncio.run(create_evaluation_run(self.model, prompt))
         return run_id
-        
 
     def call_aitta(self, run_id, on_result=None):
         """Analyzes each concept in the selected document and returns results and failures."""
@@ -140,12 +142,23 @@ class LlmManager:
         document_id = self.documents["id"]
 
         for concept in self.concepts:
-            try:
-                api_call_result = self.API_call(concept, document)
-            except (openai.APIError, ValidationError) as e:
-                self.failed_api_calls.append((run_id, concept, document))
-                self.io.output(f"Konseptin {concept['id']} käsittely epäonnistui:")
-                self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
+            api_call_result = None
+            for attempt in range(MAX_API_CALL_ATTEMPTS):
+                try:
+                    api_call_result = self.API_call(concept, document)
+                    break
+                except (openai.APIError, ValidationError) as e:
+                    self.io.output(
+                        f"Konseptin käsittely epäonnistui, yritetään {MAX_API_CALL_ATTEMPTS - 1} kertaa."
+                    )
+                    if attempt == MAX_API_CALL_ATTEMPTS - 1:
+                        self.failed_api_calls.append((run_id, concept, document))
+                        self.io.output(
+                            f"Konseptin {concept['id']} käsittely epäonnistui 2 kertaa:"
+                        )
+                        self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
+
+            if api_call_result is None:
                 continue
 
             result = {
@@ -159,22 +172,24 @@ class LlmManager:
             }
 
             self.session_list.append(result)
+            self.output_to_db()
 
             if on_result is not None:
                 on_result(result)
-
-        self.output_to_db()
 
         return self.session_list, self.failed_api_calls
 
     def completed_all(self):
         """Returns True if all API calls were successful, False otherwise."""
-        if self.failed_api_calls == []:
-            return True
-        else:
-            return False
+        return not self.failed_api_calls
 
     def output_to_db(self):
         """Saves LLM output to the database."""
         asyncio.run(save_output(self.session_list))
-        asyncio.run(save_evaluation_run(run_id=self.session_list[0]["run_id"], repetitions=1, completed_all=self.completed_all()))
+        asyncio.run(
+            save_evaluation_run(
+                run_id=self.session_list[0]["run_id"],
+                repetitions=1,
+                completed_all=self.completed_all(),
+            )
+        )
