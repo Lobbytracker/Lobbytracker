@@ -48,19 +48,15 @@ class DataEncoding:
         for first in llm_output:  # true positives and false positives
             pair.append(first)
             document_id, concept_id, present = first
+
             if present:
                 encoded_output.append(1)
             else:
                 encoded_output.append(0)
+
             if (document_id, concept_id) in goldenstandard:
                 encoded_goldenstandard.append(1)
-                goldenstandard.remove((document_id, concept_id))
             else:
                 encoded_goldenstandard.append(0)
-
-        if goldenstandard:  # false negatives
-            encoded_output += len(goldenstandard) * [0]
-            encoded_goldenstandard += len(goldenstandard) * [1]
-            pair += goldenstandard
 
         return (pair, encoded_output, encoded_goldenstandard)
