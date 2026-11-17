@@ -38,9 +38,17 @@ class App:
             selected_documents[0], selected_concepts, model=self.selected_model
         )
         run_id = manager.create_evaluation_run()
-        session_list = manager.call_aitta(run_id, on_result=self.tui.print_output)
+        completed_all = False
 
-        return session_list
+        try:
+            results, failures = manager.call_aitta(run_id, on_result=self.tui.print_output)
+
+            completed_all = manager.completed_all()
+
+            return results, failures
+
+        finally:
+            manager.finish_evaluation_run(run_id, completed_all)
 
     def prompt_thing(self):
         """Runs a test analysis on the first document and two concepts."""
@@ -54,9 +62,17 @@ class App:
 
         manager = LlmManager(documents, concepts, model=self.selected_model)
         run_id = manager.create_evaluation_run()
-        session_list = manager.call_aitta(run_id, on_result=self.tui.print_output)
+        completed_all = False
 
-        return session_list
+        try:
+            results, failures = manager.call_aitta(run_id, on_result=self.tui.print_output)
+
+            completed_all = manager.completed_all()
+
+            return results, failures
+
+        finally:
+            manager.finish_evaluation_run(run_id, completed_all)
 
     def change_model(self):
         """Lets the user choose and test an available AI model."""

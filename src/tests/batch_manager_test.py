@@ -15,16 +15,16 @@ class TestBatchManager(unittest.TestCase):
     @patch("ai.batch.LlmManager")
     def test_batch_call_returns_results(self, llm_manager):
         llm_manager.return_value.create_evaluation_run.return_value = 1
-        llm_manager.return_value.call_aitta.return_value = ["result"]
+        llm_manager.return_value.call_aitta.return_value = (["result"], [])
 
         result = self.manager.batch_call()
 
-        self.assertEqual(["result", "result"], result)
+        self.assertEqual((["result", "result"], []), result)
 
     @patch("ai.batch.LlmManager")
     def test_batch_call_passes_evaluation_run_id(self, llm_manager):
         llm_manager.return_value.create_evaluation_run.return_value = 1
-        llm_manager.return_value.call_aitta.return_value = []
+        llm_manager.return_value.call_aitta.return_value = ([], [])
 
         self.manager.batch_call()
 
@@ -37,7 +37,7 @@ class TestBatchManager(unittest.TestCase):
     @patch("ai.batch.LlmManager")
     def test_batch_call_processes_two_documents(self, llm_manager):
         llm_manager.return_value.create_evaluation_run.return_value = 1
-        llm_manager.return_value.call_aitta.return_value = []
+        llm_manager.return_value.call_aitta.return_value = ([], [])
 
         self.manager.batch_call()
 

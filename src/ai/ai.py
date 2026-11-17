@@ -136,6 +136,13 @@ class LlmManager:
         run_id = asyncio.run(create_evaluation_run(self.model, prompt))
         return run_id
 
+    def finish_evaluation_run(self, run_id, completed_all):
+        """Save the final state of the evaluation run"""
+        asyncio.run(
+            save_evaluation_run(run_id=run_id,
+                                repetitions=1,
+                                completed_all=completed_all,))
+
     def call_aitta(self, run_id, on_result=None):
         """Analyzes each concept in the selected document and returns results and failures."""
         document = self.documents["content"]
@@ -144,6 +151,7 @@ class LlmManager:
         for concept in self.concepts:
             api_call_result = None
             for attempt in range(MAX_API_CALL_ATTEMPTS):
+                print(f"Processing concept {concept['id']} (attempt {attempt + 1})...")
                 try:
                     api_call_result = self.API_call(concept, document)
                     break
@@ -158,6 +166,9 @@ class LlmManager:
                         )
                         self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
 
+            if api_call_result is None:
+                continue
+
             result = {
                 "run_id": run_id,
                 "document_id": document_id,
@@ -170,28 +181,18 @@ class LlmManager:
                 "agreement": api_call_result.agreement,
             }
 
+            self.output_to_db(result)
             self.session_list.append(result)
-
-            if api_call_result is None:
-                continue
 
             if on_result is not None:
                 on_result(result)
 
-        self.output_to_db()
         return self.session_list, self.failed_api_calls
 
     def completed_all(self):
         """Returns True if all API calls were successful, False otherwise."""
         return not self.failed_api_calls
 
-    def output_to_db(self):
+    def output_to_db(self, result):
         """Saves LLM output to the database."""
-        asyncio.run(save_output(self.session_list))
-        asyncio.run(
-            save_evaluation_run(
-                run_id=self.session_list[0]["run_id"],
-                repetitions=1,
-                completed_all=self.completed_all(),
-            )
-        )
+        asyncio.run(save_output([result]))

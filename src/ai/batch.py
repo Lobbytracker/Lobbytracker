@@ -13,14 +13,25 @@ class BatchManager:
     def batch_call(self):
         """Calls the LlmManager for each document and concept combination and returns the results."""
         batch_list = []
+        failed_calls = []
+
         batch_run = LlmManager(None, self.concepts, self.model)
         run_id = batch_run.create_evaluation_run()
+        completed_all = False
 
-        for document in self.documents:
-            document_run = LlmManager(document, self.concepts, self.model)
-            batch_list.extend(
-                document_run.call_aitta(run_id, on_result=self.tui.print_output)
-            )
-            # added tui.print_output to display results in real-time
+        try:
+            for document in self.documents:
+                document_run = LlmManager(document, self.concepts, self.model)
 
-        return batch_list
+                results, failures = document_run.call_aitta(
+                    run_id, on_result=self.tui.print_output) # added tui.print_output to display results in real-time
+
+                batch_list.extend(results)
+                failed_calls.extend(failures)
+
+            completed_all = not failed_calls
+
+            return batch_list, failed_calls
+
+        finally:
+            batch_run.finish_evaluation_run(run_id, completed_all)
