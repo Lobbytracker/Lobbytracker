@@ -97,12 +97,9 @@ class LlmManager:
             self.io.output(f"Connection failed ({type(error).__name__}): {error}")
             return False
 
-    def API_call(self, concept, document):
-        """Asks the model if the concept appears in a document and returns the result."""
-        concept_definition = concept["concept"]
-        stance_label = concept["stance_label"]
-
-        instructions = (
+    def build_system_prompt(self, concept=None):
+        """Returns prompt body for eval run and prompt+concept for system message"""
+        prompt_body = (
             "Determine whether the following concept appears in the document. "
             "The stance label (Yes/No) in front of the concept tells you whether "
             "the concept promotes or opposes the climate law. "
@@ -113,13 +110,21 @@ class LlmManager:
             "and false if the author rejects it. "
             "If the concept is not found, set present to false, passage to null, "
             "and agreement to null. "
-            'Do not answer "yes" unless you can provide a supporting passage.\n'
-            f"Concept: {stance_label}: {concept_definition}"
+            'Do not answer "yes" unless you can provide a supporting passage.'
         )
 
+        if concept is None:
+            return prompt_body
+
+        return (f"{prompt_body}\n"
+                f"Concept: {concept["stance_label"]}: {concept["concept"]}"
+            )
+
+    def API_call(self, concept, document):
+        """Asks the model if the concept appears in a document and returns the result."""
         response = self.client.beta.chat.completions.parse(
             messages=[
-                {"role": "system", "content": instructions},
+                {"role": "system", "content": self.build_system_prompt(concept)},
                 {"role": "user", "content": document},
             ],
             model=self.model,
@@ -132,7 +137,7 @@ class LlmManager:
 
     def create_evaluation_run(self):
         """Creates a new evaluation run in the database and returns the run ID."""
-        prompt = "TEMPORARY PROMPT"
+        prompt = self.build_system_prompt()
         run_id = asyncio.run(create_evaluation_run(self.model, prompt))
         return run_id
 
