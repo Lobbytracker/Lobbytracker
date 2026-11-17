@@ -60,7 +60,7 @@ make app
 
 ## Documentation
 
-- [Architecture](documentation/architecture.md): project structure, technologies, and database.
+- [Architecture](documentation/architecture/architecture.md): project structure, technologies, and database.
 - [User guide](documentation/user_guide.md): terminology, starting the application, menu commands, and interpreting results.
 
 ## Links
