@@ -1,5 +1,5 @@
-from .ai import LlmManager
 from config import DEFAULT_MODEL
+from .ai import LlmManager
 
 
 class BatchManager:
