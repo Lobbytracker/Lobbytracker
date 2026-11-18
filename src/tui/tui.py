@@ -6,8 +6,7 @@ from rich.text import Text
 from error_handling import BackToMenu
 from evaluations.f1_calculation import F1Calculator
 from tui.tui_io import TuiIO
-
-BACK_TO_MENU_COMMANDS = {"b"}
+from config import BACK_TO_MENU_COMMANDS
 
 
 class Tui:
@@ -220,8 +219,7 @@ class Tui:
                     self.io.output("Ei enempää tiedostoja.")
             if document_id == "all":
                 return ",".join({str(document["id"]) for document in documents}), start
-            else:
-                return document_id, start
+            return document_id, start
 
     def ask_concept_ids(self, concepts):
         """Shows concepts and returns the concept ids."""

@@ -116,7 +116,7 @@ class LlmManager:
                 f"Concept: {concept["stance_label"]}: {concept["concept"]}"
             )
 
-    def API_call(self, concept, document):
+    def api_call(self, concept, document):
         """Asks the model if the concept appears in a document and returns the result."""
         response = self.client.beta.chat.completions.parse(
             messages=[
@@ -154,7 +154,7 @@ class LlmManager:
             for attempt in range(MAX_API_CALL_ATTEMPTS):
                 print(f"Processing concept {concept['id']} (attempt {attempt + 1})...")
                 try:
-                    api_call_result = self.API_call(concept, document)
+                    api_call_result = self.api_call(concept, document)
                     break
                 except (openai.APIError, ValidationError) as e:
                     self.io.output(

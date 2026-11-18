@@ -1,11 +1,6 @@
-import os
-
 import asyncpg
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "postgresql://postgres:postgres@localhost:5432/lobbytracker",
-)
+from config import DATABASE_URL
 
 
 async def get_concepts(database_url=DATABASE_URL):
