@@ -1,4 +1,4 @@
-#### Retrospektiivi 18.11. 
+# Retrospektiivi 18.11. 
 Retron piti Anastasia Petrova, ja siinä käytettiin mad, sad, glad tekniikkaa. Lisäksi oli erikseen osio toiveita ensi sprintille, johon sai kirjoittaa joko asioita, jotka toimi hyvin viime sprintissä ja ryhmä haluaa toistaa sen seuraavassa sprintissä taas tai jotka eivät toiminu viime sprintissä ja ryhmä haluaa muutosta asialle. Jokainen sai myös ilmaista mielipiteensä jokaisen osuuden kohdalla, ja avata näkemyksensä koko ryhmälle. 
 
 ## Mad:
