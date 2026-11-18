@@ -9,11 +9,7 @@ from pydantic import BaseModel, ValidationError
 
 from db.db_calls import create_evaluation_run, save_evaluation_run, save_output
 from tui.tui_io import TuiIO
-
-AITTA_URL = "https://aitta-api.csc.fi"
-DEFAULT_MODEL = "openai/gpt-oss-120b"
-REQUEST_TIMEOUT_SECONDS = 300
-MAX_API_CALL_ATTEMPTS = 2
+from config import AITTA_URL, DEFAULT_MODEL, REQUEST_TIMEOUT_SECONDS, MAX_API_CALL_ATTEMPTS
 
 
 def get_available_models():

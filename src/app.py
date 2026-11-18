@@ -1,10 +1,11 @@
 import asyncio
 
-from ai.ai import DEFAULT_MODEL, LlmManager, get_available_models
+from ai.ai import LlmManager, get_available_models
 from ai.batch import BatchManager
 from error_handling import BackToMenu
 from evaluations.encoding import DataEncoding
 from populate_test_data import populate_evaluations_test_data
+from config import DEFAULT_MODEL
 
 
 class App:
