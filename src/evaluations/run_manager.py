@@ -41,6 +41,7 @@ class RunManager:
                     "prompt": run["prompt"],
                     "document_count": self.count_documents_in_run(run["id"]),
                     "concept_count": self.count_concepts_in_run(run["id"]),
+                    "runtime": self.count_runtime_in_run(run["id"]),
                 }
             )
         return runs
@@ -52,3 +53,24 @@ class RunManager:
     def count_concepts_in_run(self, run_id):
         """Counts the number of concepts in a given evaluation run."""
         return asyncio.run(db.count_concepts_in_run(run_id))
+
+    def count_runtime_in_run(self, run_id):
+        """Counts the runtime of a given evaluation run."""
+        runtime_seconds = asyncio.run(db.count_runtime_in_run(run_id))
+        return self.format_runtime(runtime_seconds)
+
+    @staticmethod
+    def format_runtime(runtime_seconds):
+        """Formats the runtime to user-friendly format."""
+        if runtime_seconds is None:
+            return "-"
+
+        total_seconds = max(0, int(float(runtime_seconds) + 0.5))
+        hours, remainder = divmod(total_seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+
+        if hours:
+            return f"{hours}h {minutes}m {seconds}s"
+        if minutes:
+            return f"{minutes}m {seconds}s"
+        return f"{seconds}s"

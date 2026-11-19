@@ -94,6 +94,19 @@ async def count_concepts_in_run(run_id, database_url=DATABASE_URL):
         await conn.close()
 
 
+async def count_runtime_in_run(run_id, database_url=DATABASE_URL):
+    """Counts the runtime of a given evaluation run."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        runtime = await conn.fetchval(
+            "SELECT EXTRACT(EPOCH FROM (end_time - start_time)) FROM evaluationRuns WHERE id = $1",
+            run_id,
+        )
+        return runtime
+    finally:
+        await conn.close()
+
+
 async def get_llm_output(database_url=DATABASE_URL):
     """Retrieves all LLM output rows, ordered by ID."""
     conn = await asyncpg.connect(database_url)

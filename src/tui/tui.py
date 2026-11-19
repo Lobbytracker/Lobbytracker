@@ -171,6 +171,7 @@ class Tui:
         table.add_column("Prompti")
         table.add_column("Dokumenttien määrä", justify="right")
         table.add_column("Konseptien määrä", justify="right")
+        table.add_column("Suoritusaika", justify="right")
 
         for run in runs:
             table.add_row(
@@ -179,6 +180,7 @@ class Tui:
                 str(run["prompt"]),
                 str(run["document_count"]),
                 str(run["concept_count"]),
+                str(run["runtime"]),
             )
         self.io.output(table)
 
