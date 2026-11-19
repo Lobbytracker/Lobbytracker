@@ -29,3 +29,26 @@ class RunManager:
     def get_all_ids(self):
         """Returns the ids of all runs as a set."""
         return {run["id"] for run in self.all_runs}
+
+    def get_preview_info(self):
+        """Returns a list of dictionaries containing preview information for each run."""
+        runs = []
+        for run in self.all_runs:
+            runs.append(
+                {
+                    "id": run["id"],
+                    "model": run["model"],
+                    "prompt": run["prompt"],
+                    "document_count": self.count_documents_in_run(run["id"]),
+                    "concept_count": self.count_concepts_in_run(run["id"]),
+                }
+            )
+        return runs
+
+    def count_documents_in_run(self, run_id):
+        """Counts the number of documents in a given evaluation run."""
+        return asyncio.run(db.count_documents_in_run(run_id))
+
+    def count_concepts_in_run(self, run_id):
+        """Counts the number of concepts in a given evaluation run."""
+        return asyncio.run(db.count_concepts_in_run(run_id))

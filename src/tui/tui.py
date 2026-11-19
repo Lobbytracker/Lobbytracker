@@ -3,10 +3,10 @@ from rich.json import JSON
 from rich.table import Table
 from rich.text import Text
 
+from config import BACK_TO_MENU_COMMANDS
 from error_handling import BackToMenu
 from evaluations.f1_calculation import F1Calculator
 from tui.tui_io import TuiIO
-from config import BACK_TO_MENU_COMMANDS
 
 
 class Tui:
@@ -169,9 +169,17 @@ class Tui:
         table.add_column("ID", style="dim", justify="right")
         table.add_column("Malli")
         table.add_column("Prompti")
+        table.add_column("Dokumenttien määrä", justify="right")
+        table.add_column("Konseptien määrä", justify="right")
 
         for run in runs:
-            table.add_row(str(run["id"]), run["model"], str(run["prompt"]))
+            table.add_row(
+                str(run["id"]),
+                run["model"],
+                str(run["prompt"]),
+                str(run["document_count"]),
+                str(run["concept_count"]),
+            )
         self.io.output(table)
 
     def ask_run_ids(self, runs):
@@ -184,14 +192,14 @@ class Tui:
         start = 0
         runs = runs[::-1]  # reverse() mutates the list and returns None
 
-        selection, _ = self.show_next_items(
+        run_id, _ = self.show_next_items(
             runs,
             self.print_runs,
             prompt,
             next_page_prompt,
             start,
         )
-        return selection
+        return run_id
 
     def ask_document_ids(self, documents, limit=None):
         """Shows documents and returns the selected document id."""

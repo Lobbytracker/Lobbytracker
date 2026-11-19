@@ -5,6 +5,7 @@ console = Console()
 
 class TuiIO:
     """Provides console input and output for the TUI."""
+
     @staticmethod
     def input(message: str):
         """Prompt for input and return the user's response."""

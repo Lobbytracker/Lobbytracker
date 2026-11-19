@@ -7,9 +7,14 @@ import openai
 from dotenv import load_dotenv
 from pydantic import BaseModel, ValidationError
 
+from config import (
+    AITTA_URL,
+    DEFAULT_MODEL,
+    MAX_API_CALL_ATTEMPTS,
+    REQUEST_TIMEOUT_SECONDS,
+)
 from db.db_calls import create_evaluation_run, save_evaluation_run, save_output
 from tui.tui_io import TuiIO
-from config import AITTA_URL, DEFAULT_MODEL, REQUEST_TIMEOUT_SECONDS, MAX_API_CALL_ATTEMPTS
 
 
 def get_available_models():
@@ -112,9 +117,9 @@ class LlmManager:
         if concept is None:
             return prompt_body
 
-        return (f"{prompt_body}\n"
-                f"Concept: {concept["stance_label"]}: {concept["concept"]}"
-            )
+        return (
+            f"{prompt_body}\nConcept: {concept['stance_label']}: {concept['concept']}"
+        )
 
     def api_call(self, concept, document):
         """Asks the model if the concept appears in a document and returns the result."""
@@ -140,9 +145,12 @@ class LlmManager:
     def finish_evaluation_run(self, run_id, completed_all):
         """Save the final state of the evaluation run"""
         asyncio.run(
-            save_evaluation_run(run_id=run_id,
-                                repetitions=1,
-                                completed_all=completed_all,))
+            save_evaluation_run(
+                run_id=run_id,
+                repetitions=1,
+                completed_all=completed_all,
+            )
+        )
 
     def call_aitta(self, run_id, on_result=None):
         """Analyzes each concept in the selected document and returns results and failures."""

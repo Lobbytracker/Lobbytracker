@@ -2,8 +2,8 @@ import asyncio
 
 from ai.ai import LlmManager, get_available_models
 from ai.batch import BatchManager
-from error_handling import BackToMenu
 from config import DEFAULT_MODEL
+from error_handling import BackToMenu
 
 
 class App:
@@ -127,7 +127,7 @@ class App:
 
     def print_runs(self):
         """Displays evaluation runs."""
-        runs = self.runs.all_runs
+        runs = self.runs.get_preview_info()
         self.tui.ask_run_ids(runs)
 
     def call_batch(self):

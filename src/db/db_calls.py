@@ -68,6 +68,32 @@ async def get_runs(database_url=DATABASE_URL):
         await conn.close()
 
 
+async def count_documents_in_run(run_id, database_url=DATABASE_URL):
+    """Counts the number of documents in a given evaluation run."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        count = await conn.fetchval(
+            "SELECT COUNT(DISTINCT document_id) FROM llmOutput WHERE run_id = $1",
+            run_id,
+        )
+        return count
+    finally:
+        await conn.close()
+
+
+async def count_concepts_in_run(run_id, database_url=DATABASE_URL):
+    """Counts the number of concepts in a given evaluation run."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        count = await conn.fetchval(
+            "SELECT COUNT(DISTINCT concept_id) FROM llmOutput WHERE run_id = $1",
+            run_id,
+        )
+        return count
+    finally:
+        await conn.close()
+
+
 async def get_llm_output(database_url=DATABASE_URL):
     """Retrieves all LLM output rows, ordered by ID."""
     conn = await asyncpg.connect(database_url)

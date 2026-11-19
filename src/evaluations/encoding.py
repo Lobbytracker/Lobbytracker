@@ -33,7 +33,7 @@ class DataEncoding:
 
     def remove_duplicates(self, llm_pairs):
         """Removes duplicate pairs from a list."""
-        return list(dict.fromkeys(llm_pairs)) #set maybe instead?
+        return list(dict.fromkeys(llm_pairs))  # set maybe instead?
 
     def encode_data(self):
         """Encodes the given llm output and goldenstandard data.

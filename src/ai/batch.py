@@ -1,4 +1,5 @@
 from config import DEFAULT_MODEL
+
 from .ai import LlmManager
 
 
@@ -25,7 +26,8 @@ class BatchManager:
                 document_run = LlmManager(document, self.concepts, self.model)
 
                 results, failures = document_run.call_aitta(
-                    run_id, on_result=self.tui.print_output) # added tui.print_output to display results in real-time
+                    run_id, on_result=self.tui.print_output
+                )  # added tui.print_output to display results in real-time
 
                 batch_list.extend(results)
                 failed_calls.extend(failures)
