@@ -3,18 +3,18 @@ import asyncio
 from ai.ai import LlmManager, get_available_models
 from ai.batch import BatchManager
 from error_handling import BackToMenu
-from evaluations.encoding import DataEncoding
-from populate_test_data import populate_evaluations_test_data
 from config import DEFAULT_MODEL
 
 
 class App:
     """Coordinates the application's menu actions and services."""
-    def __init__(self, tui, documents, concepts, golden_standards):
+
+    def __init__(self, tui, documents, concepts, golden_standards, runs):
         self.tui = tui
         self.documents = documents
         self.concepts = concepts
         self.golden_standards = golden_standards
+        self.runs = runs
         self.selected_model = DEFAULT_MODEL
 
     def print_instructions(self):
@@ -42,7 +42,9 @@ class App:
         completed_all = False
 
         try:
-            results, failures = manager.call_aitta(run_id, on_result=self.tui.print_output)
+            results, failures = manager.call_aitta(
+                run_id, on_result=self.tui.print_output
+            )
 
             completed_all = manager.completed_all()
 
@@ -66,7 +68,9 @@ class App:
         completed_all = False
 
         try:
-            results, failures = manager.call_aitta(run_id, on_result=self.tui.print_output)
+            results, failures = manager.call_aitta(
+                run_id, on_result=self.tui.print_output
+            )
 
             completed_all = manager.completed_all()
 
@@ -121,6 +125,11 @@ class App:
 
         self.tui.print_golden_standard(golden_standards)
 
+    def print_runs(self):
+        """Displays evaluation runs."""
+        runs = self.runs.all_runs
+        self.tui.ask_run_ids(runs)
+
     def call_batch(self):
         """Calls the BatchManager to process documents and concepts in batch mode."""
         documents = self.documents.all_documents
@@ -128,18 +137,14 @@ class App:
         selected_documents = self.documents.get_by_ids(document_ids)
         concepts = self.concepts.all_concepts
         self.tui.print_cancel_hint()
-        batch_manager = BatchManager(self.tui, selected_documents, concepts, self.selected_model)
+        batch_manager = BatchManager(
+            self.tui, selected_documents, concepts, self.selected_model
+        )
         batch_manager.batch_call()
 
     def calculate_f1(self):
+        """Calculates the F1 score for the latest evaluation run."""
         self.tui.calculate_f1_score()
-
-    def encoding_test(self):
-        llm_output, golden_standard = populate_evaluations_test_data()
-        encoder = DataEncoding(llm_output, golden_standard)
-        result = encoder.encode_data()
-        for row in result:
-            self.tui.io.output(row)
 
     def main(self):
         """Runs the application command loop."""
@@ -150,7 +155,7 @@ class App:
             4: self.print_golden_standard,
             5: self.call_batch,
             6: self.calculate_f1,
-            7: self.encoding_test,
+            7: self.print_runs,
         }
 
         while True:

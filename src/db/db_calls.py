@@ -58,6 +58,16 @@ async def get_golden_standard_by_document_id(document_id, database_url=DATABASE_
         await conn.close()
 
 
+async def get_runs(database_url=DATABASE_URL):
+    """Retrieves all evaluation runs, ordered by ID."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        rows = await conn.fetch("SELECT * FROM evaluationRuns ORDER BY id")
+        return rows
+    finally:
+        await conn.close()
+
+
 async def get_llm_output(database_url=DATABASE_URL):
     """Retrieves all LLM output rows, ordered by ID."""
     conn = await asyncpg.connect(database_url)
@@ -125,9 +135,8 @@ async def save_evaluation_run(
     finally:
         await conn.close()
 
-async def retrieve_document_concept_pair(
-        run_id, database_url=DATABASE_URL
-):
+
+async def retrieve_document_concept_pair(run_id, database_url=DATABASE_URL):
     """Retrieves run_id, document_id and concept_id pair from llmoutput table"""
     conn = await asyncpg.connect(database_url)
     try:
@@ -135,18 +144,18 @@ async def retrieve_document_concept_pair(
             """SELECT run_id, document_id, concept_id, present FROM llmOutput WHERE run_id=$1""",
             run_id,
         )
-        return [(row["document_id"], row["concept_id"], row["present"]) for row in pairs]
+        return [
+            (row["document_id"], row["concept_id"], row["present"]) for row in pairs
+        ]
     finally:
         await conn.close()
 
-async def get_latest_run_id(database_url=DATABASE_URL
-):
+
+async def get_latest_run_id(database_url=DATABASE_URL):
     """Retrieves the latest run_id"""
     conn = await asyncpg.connect(database_url)
     try:
-        run_id = await conn.fetch(
-            """SELECT MAX(id) FROM evaluationRuns"""
-        )
+        run_id = await conn.fetch("""SELECT MAX(id) FROM evaluationRuns""")
         return run_id
     finally:
         await conn.close()

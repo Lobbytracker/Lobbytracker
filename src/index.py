@@ -2,6 +2,7 @@ from app import App
 from concepts.concept_management import ConceptManager
 from documents.document_management import DocumentManager
 from goldenstandards.goldenstandard_manager import GoldenStandardManager
+from evaluations.run_manager import RunManager
 from tui.tui import Tui
 
 if __name__ == "__main__":
@@ -10,5 +11,6 @@ if __name__ == "__main__":
         documents=DocumentManager(),
         concepts=ConceptManager(),
         golden_standards=GoldenStandardManager(),
+        runs=RunManager(),
     )
     app.main()

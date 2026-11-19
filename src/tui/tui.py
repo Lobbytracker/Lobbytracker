@@ -25,7 +25,7 @@ class Tui:
             4: "Tulosta golden standard tiedostoille",
             5: "Suorita batch-prosessointi",
             6: "Laske F1-arvo viimeisimmälle ajolle",
-            7: "Encoding test",
+            7: "Näytä aikaisemmat ajot",
         }
 
         self.io.output(
@@ -159,6 +159,40 @@ class Tui:
 
         self.io.output(table)
 
+    def print_runs(self, runs: list, start: int = 0):
+        """Prints runs"""
+        table = Table(
+            title=f"\nAikaisemmat ajot {start + 1}-{start + len(runs)}:",
+            box=box.SIMPLE,
+            header_style="bold magenta",
+        )
+        table.add_column("ID", style="dim", justify="right")
+        table.add_column("Malli")
+        table.add_column("Prompti")
+
+        for run in runs:
+            table.add_row(str(run["id"]), run["model"], str(run["prompt"]))
+        self.io.output(table)
+
+    def ask_run_ids(self, runs):
+        """Shows runs and returns the selected run id."""
+
+        prompt = "\nAnna ajon ID"
+        next_page_prompt = (
+            "\nAnna ajon ID tai kirjoita x nähdäksesi seuraavat 10 ajoa: "
+        )
+        start = 0
+        runs = runs[::-1]  # reverse() mutates the list and returns None
+
+        selection, _ = self.show_next_items(
+            runs,
+            self.print_runs,
+            prompt,
+            next_page_prompt,
+            start,
+        )
+        return selection
+
     def ask_document_ids(self, documents, limit=None):
         """Shows documents and returns the selected document id."""
 
@@ -167,59 +201,68 @@ class Tui:
             return None
 
         valid_ids = {document["id"] for document in documents}
+        single_document = limit == 1
+        prompt = "\nAnna tiedoston ID" if single_document else "\nAnna tiedostojen ID:t"
+        next_page_prompt = (
+            "\nAnna tiedoston ID tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
+            if single_document
+            else "\nAnna tiedostojen ID:t tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
+        )
         start = 0
 
         while True:
-            document_id, start = self.show_next_documents(documents, start=start)
-            if limit == 1:
-                try:
-                    ids = [int(document_id)]
-                except ValueError:
-                    self.io.output("Väärä syöte. Anna yhden tiedoston ID tai x.")
-                    continue
+            selection, start = self.show_next_items(
+                documents,
+                self.print_documents,
+                prompt,
+                next_page_prompt,
+                start,
+            )
+            if selection == "all":
+                return ",".join(str(document["id"]) for document in documents)
 
-
-            if limit is None:
-                try:
-                    ids = [int(part) for part in str(document_id).split(",")]
-                except ValueError:
-                    self.io.output("Väärä syöte. Anna ID-numerot pilkulla erotettuna.")
-                    continue
+            try:
+                ids = (
+                    [int(selection)]
+                    if single_document
+                    else [int(part) for part in selection.split(",")]
+                )
+            except ValueError:
+                message = (
+                    "Väärä syöte. Anna yhden tiedoston ID tai x."
+                    if single_document
+                    else "Väärä syöte. Anna ID-numerot pilkulla erotettuna."
+                )
+                self.io.output(message)
+                continue
 
             invalid = [i for i in ids if i not in valid_ids]
             if invalid:
                 self.io.output(f"Tuntemattomat ID:t: {invalid}")
                 continue
 
-            return document_id
+            return selection
 
-    def show_next_documents(self, documents, start=0, limit=None):
-        """Prints the next 10 documents, returns the selected document id 
-            and starting position for the next 10 documents"""
+    def show_next_items(self, items, render_page, prompt, next_page_prompt, start=0):
+        """Prints pages of items and returns the selection and next page index."""
         while True:
-            page = documents[start : start + 10]
-            self.print_documents(page, start)
-            if start + 10 < len(documents):
-                if limit == 1:
-                    prompt = "\nAnna tiedoston ID tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
-                if limit is None:
-                    prompt = "\nAnna tiedostojen ID:t tai kirjoita x nähdäksesi seuraavat 10 tiedostoa: "
-            else:
-                if limit == 1:
-                    prompt = "\nAnna tiedoston ID: "
-                else:
-                    prompt = "\nAnna tiedostojen ID:t: "
+            page = items[start : start + 10]
+            render_page(page, start)
+            has_next_page = start + 10 < len(items)
+            selection = (
+                self.ask(next_page_prompt if has_next_page else f"{prompt}: ")
+                .strip()
+                .lower()
+            )
 
-            document_id = self.ask(prompt).strip().lower()
-
-            if document_id == "x":
-                if start + 10 < len(documents):
+            if selection == "x":
+                if has_next_page:
                     start += 10
                 else:
                     self.io.output("Ei enempää tiedostoja.")
-            if document_id == "all":
-                return ",".join({str(document["id"]) for document in documents}), start
-            return document_id, start
+                continue
+
+            return selection, start
 
     def ask_concept_ids(self, concepts):
         """Shows concepts and returns the concept ids."""
