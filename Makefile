@@ -1,4 +1,14 @@
-.PHONY: start app stop status db tables logs
+.PHONY: start app stop status db tables logs init-db reset-db
+
+init-db:
+	PYTHONPATH=src uv run src/db/initialize_db.py
+
+reset-db:
+	docker compose exec db psql -U postgres -d lobbytracker -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'
+	PYTHONPATH=src uv run src/db/initialize_db.py
+	uv run python scripts/import_documents.py
+	uv run python scripts/import_concepts.py
+	uv run python scripts/import_goldenstandard.py
 
 start:
 	docker compose up -d --build
