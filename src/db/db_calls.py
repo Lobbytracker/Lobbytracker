@@ -223,3 +223,14 @@ async def run_has_output(run_id, database_url=DATABASE_URL):
         return count > 0
     finally:
         await conn.close()
+
+async def get_failed_outputs(run_id, database_url=DATABASE_URL):
+    """Gets llm failed outputs based on run_id"""
+    conn = await asyncpg.connect(database_url)
+    try:
+        fails = await conn.fetch(
+            "SELECT document_id, concept_id FROM llmOutput WHERE status='failed' AND run_id = $1", run_id
+        )
+        return fails
+    finally:
+        await conn.close()
