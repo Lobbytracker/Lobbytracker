@@ -210,3 +210,15 @@ async def get_run_by_id(run_id, database_url=DATABASE_URL):
         return run
     finally:
         await conn.close()
+
+
+async def run_has_output(run_id, database_url=DATABASE_URL):
+    """Checks if a run has output in the database."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        count = await conn.fetchval(
+            "SELECT COUNT(*) FROM llmOutput WHERE run_id = $1", run_id
+        )
+        return count > 0
+    finally:
+        await conn.close()

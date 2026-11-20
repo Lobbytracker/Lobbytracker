@@ -187,22 +187,35 @@ class Tui:
     def ask_run_ids(self, runs):
         """Shows runs and returns the selected run id."""
 
+        if not runs:
+            self.io.output("Ei valittavia ajoja")
+            return None
+
         prompt = "\nAnna ajon ID"
         next_page_prompt = "\nLaske ajon F1-arvot antamalla ajon ID tai kirjoita x nähdäksesi seuraavat 10 ajoa: "
         start = 0
         runs = runs[::-1]
+        valid_ids = {run["id"] for run in runs}
 
-        run_id, _ = self.show_next_items(
-            runs,
-            self.print_runs,
-            prompt,
-            next_page_prompt,
-            start,
-        )
-        try:
-            return int(run_id)
-        except (TypeError, ValueError):
-            return None
+        while True:
+            run_id, start = self.show_next_items(
+                runs,
+                self.print_runs,
+                prompt,
+                next_page_prompt,
+                start,
+            )
+            try:
+                run_id = int(run_id)
+            except (TypeError, ValueError):
+                self.io.output("Väärä syöte. Anna ajon ID.")
+                continue
+
+            if run_id not in valid_ids:
+                self.io.output(f"Tuntematon ID: {run_id}")
+                continue
+
+            return run_id
 
     def ask_document_ids(self, documents, limit=None):
         """Shows documents and returns the selected document id."""

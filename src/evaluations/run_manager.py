@@ -16,6 +16,11 @@ class RunManager:
         """Returns all runs from the database."""
         return await db.get_runs()
 
+    async def run_has_output(self, run_id):
+        """Checks if a given run has any output."""
+        output_count = await db.run_has_output(run_id)
+        return output_count > 0
+
     def get_next_ten_runs(self, start):
         """Returns 10 runs starting from the given index, newest run first."""
 

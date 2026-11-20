@@ -146,7 +146,11 @@ class App:
 
     def calculate_f1(self, run_id=None):
         """Calculates the F1 score for the given evaluation run."""
-        self.tui.calculate_f1_score(run_id)
+        run_output = asyncio.run(self.runs.run_has_output(run_id))
+        if run_output:
+            self.tui.calculate_f1_score(run_id)
+        else:
+            self.tui.io.output(f"Ajolla {run_id} ei ole tuloksia.")
 
     def main(self):
         """Runs the application command loop."""
