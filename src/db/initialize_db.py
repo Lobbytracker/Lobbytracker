@@ -55,7 +55,9 @@ async def init_db(database_url=DATABASE_URL):
                 present BOOLEAN,
                 passage TEXT,
                 agreement BOOLEAN, 
-                CHECK (present OR agreement IS NULL)
+                CHECK (present OR agreement IS NULL),
+                status TEXT NOT NULL CHECK(status IN ('failed', 'passed')),
+                UNIQUE (run_id, document_id, concept_id)
             )
             """)
     finally:

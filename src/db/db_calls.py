@@ -127,6 +127,7 @@ async def save_output(output, database_url=DATABASE_URL):
             row["present"],
             row["passage"],
             row["agreement"],
+            row["status"],
         )
         for row in output
     ]
@@ -135,8 +136,8 @@ async def save_output(output, database_url=DATABASE_URL):
     try:
         await conn.executemany(
             """INSERT INTO llmOutput (
-            run_id, document_id, concept_id, present, passage, agreement)
-            VALUES ($1, $2, $3, $4, $5, $6)""",
+            run_id, document_id, concept_id, present, passage, agreement, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)""",
             rows,
         )
     finally:

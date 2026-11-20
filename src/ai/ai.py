@@ -156,9 +156,10 @@ class LlmManager:  # pylint: disable=too-many-instance-attributes
         """Analyzes each concept in the selected document and returns results and failures."""
         document = self.documents["content"]
         document_id = self.documents["id"]
-
+ 
         for concept in self.concepts:
             api_call_result = None
+ 
             for attempt in range(MAX_API_CALL_ATTEMPTS):
                 print(f"Processing concept {concept['id']} (attempt {attempt + 1})...")
                 try:
@@ -166,36 +167,35 @@ class LlmManager:  # pylint: disable=too-many-instance-attributes
                     break
                 except (openai.APIError, ValidationError) as e:
                     self.io.output(
-                        f"Konseptin käsittely epäonnistui, yritetään {MAX_API_CALL_ATTEMPTS - 1} kertaa."
+                        f"Concept {concept['id']} attempt {attempt + 1} failed: {e}"
                     )
-                    if attempt == MAX_API_CALL_ATTEMPTS - 1:
-                        self.failed_api_calls.append((run_id, concept, document))
-                        self.io.output(
-                            f"Konseptin {concept['id']} käsittely epäonnistui 2 kertaa:"
-                        )
-                        self.io.output(json.dumps(f"{e}", indent=4, ensure_ascii=False))
-
-            if api_call_result is None:
-                continue
-
+    
+            failed = api_call_result is None
+    
             result = {
                 "run_id": run_id,
                 "document_id": document_id,
                 "concept_id": concept["id"],
                 "concept": concept["concept"],
-                "present": api_call_result.present,
+                "status": "failed" if failed else "passed",
+                "present": None if failed else api_call_result.present,
                 "passage": (
-                    api_call_result.passage if api_call_result.present else None
+                    None if failed or not api_call_result.present
+                    else api_call_result.passage
                 ),
-                "agreement": api_call_result.agreement,
+                "agreement": None if failed else api_call_result.agreement,
             }
-
-            self.output_to_db(result)
+    
+            self.output_to_db(result)  # saved for both passed and failed
+    
+            if failed:
+                self.failed_api_calls.append((run_id, concept, document))
+                continue
+    
             self.session_list.append(result)
-
             if on_result is not None:
                 on_result(result)
-
+    
         return self.session_list, self.failed_api_calls
 
     def completed_all(self):
