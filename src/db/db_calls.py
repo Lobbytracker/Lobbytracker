@@ -229,8 +229,14 @@ async def get_failed_outputs(run_id, database_url=DATABASE_URL):
     conn = await asyncpg.connect(database_url)
     try:
         fails = await conn.fetch(
-            "SELECT document_id, concept_id FROM llmOutput WHERE status='failed' AND run_id = $1", run_id
+            """
+            SELECT document_id, concept_id
+            FROM llmOutput
+            WHERE status = 'failed' AND run_id = $1
+            ORDER BY document_id, concept_id
+            """,
+            run_id,
         )
-        return fails
+        return fails, len(fails)
     finally:
         await conn.close()

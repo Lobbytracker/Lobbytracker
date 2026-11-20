@@ -142,7 +142,8 @@ class App:
         batch_manager = BatchManager(
             self.tui, selected_documents, concepts, self.selected_model
         )
-        batch_manager.batch_call()
+        results, failures = batch_manager.batch_call()
+        self.tui.print_batch_summary(len(results), len(failures))
 
     def calculate_f1(self, run_id=None):
         """Calculates the F1 score for the given evaluation run."""

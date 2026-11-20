@@ -350,3 +350,8 @@ class Tui:
         self.io.output(f"F1 score (macro): {f1_calculator.calculate_f1_macro()}")
         self.io.output(f"Precision: {f1_calculator.calculate_precision()}")
         self.io.output(f"Recall: {f1_calculator.calculate_recall()}")
+
+    def print_batch_summary(self, completed_count, failed_count):
+        self.io.output(
+            f"Ajo valmis: {completed_count} onnistui, {failed_count} epäonnistui."
+        )
