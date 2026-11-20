@@ -352,6 +352,7 @@ class Tui:
         self.io.output(f"Recall: {f1_calculator.calculate_recall()}")
 
     def print_batch_summary(self, completed_count, failed_count):
+        """Prints a summary for batch processing."""
         self.io.output(
             f"Ajo valmis: {completed_count} onnistui, {failed_count} epäonnistui."
         )
