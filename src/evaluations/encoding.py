@@ -6,21 +6,32 @@ import db.db_calls as db
 class DataEncoding:
     """Encodes the given LLM outputs and goldenstandard."""
 
-    def __init__(self, llm_output=None, goldenstandard=None):
+    def __init__(self, run_id=None, llm_output=None, goldenstandard=None):
         if llm_output is None and goldenstandard is None:
-            self.llm_output, self.goldenstandard = asyncio.run(self._load_pairs())
+            self.llm_output, self.goldenstandard = asyncio.run(self._load_pairs(run_id))
         else:
             self.llm_output, self.goldenstandard = (
                 self.remove_duplicates(llm_output),
                 self.remove_duplicates(goldenstandard),
             )
 
-    async def _load_pairs(self):
-        """Fetches (document_id, concept_id) pairs for the latest run and
+    async def _load_pairs(self, run_id=None):
+        """Fetches (document_id, concept_id) pairs for the given run and
         the matching golden standard pairs."""
-        result = await db.get_latest_run_id()
-        run_id = result[0]["max"]
-        if run_id is None:
+        try:
+            if run_id is None:
+                result = await db.get_latest_run_id()
+                run_id = result[0]["max"]
+            else:
+                try:
+                    run_id = int(run_id)
+                except (TypeError, ValueError) as exc:
+                    raise ValueError(f"Invalid run id: {run_id}") from exc
+                result = await db.get_run_by_id(run_id)
+                if result is None:
+                    raise ValueError(f"Run id not found: {run_id}")
+        except (TypeError, ValueError, KeyError, IndexError) as e:
+            print(f"Error occurred while fetching run: {e}")
             return [], []
 
         llm_pairs = await db.retrieve_document_concept_pair(run_id)

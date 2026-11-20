@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 from tui.tui import Tui
 from rich.table import Table
 from rich.text import Text

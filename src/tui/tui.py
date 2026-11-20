@@ -188,11 +188,9 @@ class Tui:
         """Shows runs and returns the selected run id."""
 
         prompt = "\nAnna ajon ID"
-        next_page_prompt = (
-            "\nAnna ajon ID tai kirjoita x nähdäksesi seuraavat 10 ajoa: "
-        )
+        next_page_prompt = "\nLaske ajon F1-arvot antamalla ajon ID tai kirjoita x nähdäksesi seuraavat 10 ajoa: "
         start = 0
-        runs = runs[::-1]  # reverse() mutates the list and returns None
+        runs = runs[::-1]
 
         run_id, _ = self.show_next_items(
             runs,
@@ -201,7 +199,10 @@ class Tui:
             next_page_prompt,
             start,
         )
-        return run_id
+        try:
+            return int(run_id)
+        except (TypeError, ValueError):
+            return None
 
     def ask_document_ids(self, documents, limit=None):
         """Shows documents and returns the selected document id."""
@@ -322,9 +323,11 @@ class Tui:
             JSON.from_data(output, indent=2, ensure_ascii=False, highlight=True)
         )
 
-    def calculate_f1_score(self):
-        """Calsulates F1 score for the latest llm run."""
-        f1_calculator = F1Calculator()
+    def calculate_f1_score(self, run_id=None):
+        """Calculates F1 score for the given llm run."""
+        f1_calculator = F1Calculator(run_id=run_id)
+        self.io.output("\n--- F1-arvojen laskenta ---")
+        self.io.output(f"Ajon {run_id} F1-arvot:")
         self.io.output(f"True Positives: {f1_calculator.calculate_true_positives()}")
         self.io.output(f"False Positives: {f1_calculator.calculate_false_positives()}")
         self.io.output(f"True Negatives: {f1_calculator.calculate_true_negatives()}")

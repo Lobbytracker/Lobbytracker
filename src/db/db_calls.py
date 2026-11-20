@@ -198,3 +198,15 @@ async def get_latest_run_id(database_url=DATABASE_URL):
         return run_id
     finally:
         await conn.close()
+
+
+async def get_run_by_id(run_id, database_url=DATABASE_URL):
+    """Retrieves a specific run by ID."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        run = await conn.fetchrow(
+            """SELECT * FROM evaluationRuns WHERE id = $1""", run_id
+        )
+        return run
+    finally:
+        await conn.close()

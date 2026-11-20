@@ -128,7 +128,9 @@ class App:
     def print_runs(self):
         """Displays evaluation runs."""
         runs = self.runs.get_preview_info()
-        self.tui.ask_run_ids(runs)
+        run_id = self.tui.ask_run_ids(runs)
+        if run_id is not None:
+            self.calculate_f1(run_id)
 
     def call_batch(self):
         """Calls the BatchManager to process documents and concepts in batch mode."""
@@ -142,9 +144,9 @@ class App:
         )
         batch_manager.batch_call()
 
-    def calculate_f1(self):
-        """Calculates the F1 score for the latest evaluation run."""
-        self.tui.calculate_f1_score()
+    def calculate_f1(self, run_id=None):
+        """Calculates the F1 score for the given evaluation run."""
+        self.tui.calculate_f1_score(run_id)
 
     def main(self):
         """Runs the application command loop."""

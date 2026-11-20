@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 
 from evaluations.f1_calculation import F1Calculator
 
@@ -7,7 +8,7 @@ class TestF1Calculator(unittest.TestCase):
     def setUp(self):
         self.llm_output = [(1, 1, True), (1, 2, True), (2, 2, True)]
         self.golden_standard = [(1, 1), (2, 2), (3, 3)]
-        self.calculator = F1Calculator(self.llm_output, self.golden_standard)
+        self.calculator = F1Calculator(None, self.llm_output, self.golden_standard)
 
     def test_encode_data(self):
         encoded_llm = self.calculator.llm_output
@@ -44,3 +45,11 @@ class TestF1Calculator(unittest.TestCase):
         recall_correct = tp / (tp + fn)
         recall = self.calculator.calculate_recall()
         self.assertEqual(recall_correct, recall)
+
+    @patch("evaluations.f1_calculation.DataEncoding")  # vibecoded test
+    def test_run_id_is_passed_to_data_encoding(self, data_encoding):
+        data_encoding.return_value.encode_data.return_value = ([], [], [])
+
+        F1Calculator(run_id=42)
+
+        data_encoding.assert_called_once_with(42, None, None)

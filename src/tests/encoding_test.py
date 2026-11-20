@@ -11,7 +11,7 @@ class TestEncoding(unittest.TestCase):
     def test_encoding_true_positives(self):
         llm_output = [(1, 1, True), (1, 2, True), (2, 2, True)]
         golden_standard = [(1, 1), (1, 2), (2, 2)]
-        encoder = DataEncoding(llm_output, golden_standard)
+        encoder = DataEncoding(None, llm_output, golden_standard)
         encoded_data = encoder.encode_data()
         self.assertEqual(encoded_data[0], [(1, 1, True), (1, 2, True), (2, 2, True)])
         self.assertEqual(encoded_data[1], [1, 1, 1])
@@ -20,7 +20,7 @@ class TestEncoding(unittest.TestCase):
     def test_encoding_false_positives(self):
         llm_output = [(1, 4, True), (1, 2, True), (2, 2, True)]
         golden_standard = [(1, 1), (3, 3)]
-        encoder = DataEncoding(llm_output, golden_standard)
+        encoder = DataEncoding(None, llm_output, golden_standard)
         encoded_data = encoder.encode_data()
         self.assertEqual(
             encoded_data[0],
@@ -32,7 +32,7 @@ class TestEncoding(unittest.TestCase):
     def test_encoding_false_negatives(self):
         llm_output = [(1, 1, False), (3, 3, False)]
         golden_standard = [(1, 1), (3, 3), (6, 7)]
-        encoder = DataEncoding(llm_output, golden_standard)
+        encoder = DataEncoding(None, llm_output, golden_standard)
         encoded_data = encoder.encode_data()
         self.assertEqual(encoded_data[0], llm_output)
         self.assertEqual(encoded_data[1], [0, 0])
@@ -41,7 +41,7 @@ class TestEncoding(unittest.TestCase):
     def test_encoding_mixed(self):
         llm_output = [(1, 2, True), (6, 9, True), (3, 3, True)]
         golden_standard = [(4, 20), (3, 3), (6, 7), (6, 9)]
-        encoder = DataEncoding(llm_output, golden_standard)
+        encoder = DataEncoding(None, llm_output, golden_standard)
         encoded_data = encoder.encode_data()
         self.assertEqual(
             encoded_data[0],
@@ -53,7 +53,7 @@ class TestEncoding(unittest.TestCase):
     def test_empty_llm_output(self):
         llm_output = []
         golden_standard = [(4, 20), (3, 3), (6, 7), (6, 9)]
-        encoder = DataEncoding(llm_output, golden_standard)
+        encoder = DataEncoding(None, llm_output, golden_standard)
         encoded_data = encoder.encode_data()
         self.assertEqual(encoded_data[0], [])
         self.assertEqual(encoded_data[1], [])
@@ -62,7 +62,7 @@ class TestEncoding(unittest.TestCase):
     def test_empty_golden_standard(self):
         llm_output = [(4, 20, True), (3, 3, True), (6, 7, True), (6, 9, True)]
         golden_standard = []
-        encoder = DataEncoding(llm_output, golden_standard)
+        encoder = DataEncoding(None, llm_output, golden_standard)
         encoded_data = encoder.encode_data()
         self.assertEqual(
             encoded_data[0],
@@ -80,7 +80,7 @@ class TestEncoding(unittest.TestCase):
             (2, 2, True),
         ]
         golden_standard = [(7, 7), (7, 7), (7, 7), (6, 1)]
-        encoder = DataEncoding(llm_output, golden_standard)
+        encoder = DataEncoding(None, llm_output, golden_standard)
         self.assertEqual(
             encoder.llm_output,
             [(1, 1, True), (1, 2, True), (2, 2, True)],
