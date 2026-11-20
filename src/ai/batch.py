@@ -3,7 +3,7 @@ from config import DEFAULT_MODEL
 from .ai import LlmManager
 
 
-class BatchManager:
+class BatchManager:  # pylint: disable=too-few-public-methods
     """Manages batch processing of documents and concepts using LlmManager."""
 
     def __init__(self, tui, documents, concepts, model=DEFAULT_MODEL):

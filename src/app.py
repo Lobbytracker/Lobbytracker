@@ -172,14 +172,13 @@ class App:
             if command not in commands:
                 print("Tuntematon komento, syötä jokin ohjelman komennoista.")
                 continue
-            else:
-                executable = commands[command]
-                try:
-                    if asyncio.iscoroutinefunction(executable):
-                        asyncio.run(executable())
-                    else:
-                        executable()
-                except BackToMenu as e:
-                    self.tui.handle_error(e)
-                except KeyboardInterrupt:
-                    self.tui.io.output("Operation cancelled.")
+            executable = commands[command]
+            try:
+                if asyncio.iscoroutinefunction(executable):
+                    asyncio.run(executable())
+                else:
+                    executable()
+            except BackToMenu as e:
+                self.tui.handle_error(e)
+            except KeyboardInterrupt:
+                self.tui.io.output("Operation cancelled.")

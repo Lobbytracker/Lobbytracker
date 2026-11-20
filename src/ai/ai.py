@@ -53,7 +53,7 @@ class ConceptResult(BaseModel):
     agreement: bool | None
 
 
-class LlmManager:
+class LlmManager:  # pylint: disable=too-many-instance-attributes
     """Call the language model and store concept analysis results."""
 
     def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
