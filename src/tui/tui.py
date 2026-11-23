@@ -20,12 +20,13 @@ class Tui:
         instructions = {
             0: "Quit",
             1: "Etsi valitut konseptit tiedostosta",
-            2: "Aitta prompti",
-            3: "Vaihda tekoälymallia",
-            4: "Tulosta golden standard tiedostoille",
-            5: "Suorita batch-prosessointi",
-            6: "Laske F1-arvo viimeisimmälle ajolle",
-            7: "Näytä aikaisemmat ajot",
+            2: "Lisää uusi prompti",
+            3: "Aitta prompti",
+            4: "Vaihda tekoälymallia",
+            5: "Tulosta golden standard tiedostoille",
+            6: "Suorita batch-prosessointi",
+            7: "Laske F1-arvo viimeisimmälle ajolle",
+            8: "Näytä aikaisemmat ajot",
         }
 
         self.io.output(

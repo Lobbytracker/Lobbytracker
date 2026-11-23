@@ -1,8 +1,10 @@
 import asyncio
+import asyncpg
 
+from db.db_calls import add_prompt 
 from ai.ai import LlmManager, get_available_models
 from ai.batch import BatchManager
-from config import DEFAULT_MODEL
+from config import DEFAULT_MODEL, MIN_PROMPT_LENGTH
 from error_handling import BackToMenu
 
 
@@ -78,6 +80,32 @@ class App:
 
         finally:
             manager.finish_evaluation_run(run_id, completed_all)
+
+    def add_prompt(self):
+        """Lets the user add a new prompt."""
+        while True:
+            input_prompt = self.tui.ask("Kirjoita uusi prompti: ").strip()
+
+            if not any(char.isalpha() for char in input_prompt):
+                self.tui.io.output(
+                    "Promptin täytyy sisältää tekstiä, ei pelkkiä numeroita tai välilyöntejä."
+                )
+                continue
+
+            if len(input_prompt) < MIN_PROMPT_LENGTH:
+                self.tui.io.output(
+                    f"Promptin täytyy olla vähintään {MIN_PROMPT_LENGTH} merkkiä pitkä."
+                )
+                continue
+
+            try:
+                prompt_id = asyncio.run(add_prompt(input_prompt))
+            except asyncpg.exceptions.UniqueViolationError:
+                self.tui.io.output("Tämä prompti on jo olemassa.")
+                continue
+
+            self.tui.io.output(f"Prompti lisätty (id {prompt_id}).")
+            return
 
     def change_model(self):
         """Lets the user choose and test an available AI model."""
@@ -157,12 +185,13 @@ class App:
         """Runs the application command loop."""
         commands = {
             1: self.search_from_file,
-            2: self.prompt_thing,
-            3: self.change_model,
-            4: self.print_golden_standard,
-            5: self.call_batch,
-            6: self.calculate_f1,
-            7: self.print_runs,
+            2: self.add_prompt,
+            3: self.prompt_thing,
+            4: self.change_model,
+            5: self.print_golden_standard,
+            6: self.call_batch,
+            7: self.calculate_f1,
+            8: self.print_runs,
         }
 
         while True:
