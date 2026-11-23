@@ -240,3 +240,13 @@ async def get_failed_outputs(run_id, database_url=DATABASE_URL):
         return fails, len(fails)
     finally:
         await conn.close()
+
+async def get_prompts(database_url=DATABASE_URL):
+    """Retrieves prompts from database."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        return await conn.fetch(
+            "SELECT id, prompt FROM prompts ORDER BY id"
+        )
+    finally:
+        await conn.close()

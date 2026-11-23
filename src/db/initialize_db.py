@@ -39,7 +39,7 @@ async def init_db(database_url=DATABASE_URL):
             CREATE TABLE IF NOT EXISTS evaluationRuns (
                 id SERIAL PRIMARY KEY,
                 model TEXT NOT NULL,
-                prompt TEXT NOT NULL,
+                prompt TEXT NOT NULL REFERENCES prompts(prompt),
                 start_time TIMESTAMP NOT NULL,
                 end_time TIMESTAMP NOT NULL,
                 repetitions INT, 
@@ -58,6 +58,12 @@ async def init_db(database_url=DATABASE_URL):
                 CHECK (present OR agreement IS NULL),
                 status TEXT NOT NULL CHECK(status IN ('failed', 'passed')),
                 UNIQUE (run_id, document_id, concept_id)
+            )
+            """)
+        await conn.execute("""
+            CREATE TABLE IF NOT EXISTS prompts (
+                id SERIAL PRIMARY KEY,
+                prompt TEXT NOT NULL
             )
             """)
     finally:

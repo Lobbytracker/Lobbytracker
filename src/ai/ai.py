@@ -12,6 +12,7 @@ from config import (
     DEFAULT_MODEL,
     MAX_API_CALL_ATTEMPTS,
     REQUEST_TIMEOUT_SECONDS,
+    DEFAULT_PROMPT,
 )
 from db.db_calls import create_evaluation_run, save_evaluation_run, save_output
 from tui.tui_io import TuiIO
@@ -56,10 +57,11 @@ class ConceptResult(BaseModel):
 class LlmManager:  # pylint: disable=too-many-instance-attributes
     """Call the language model and store concept analysis results."""
 
-    def __init__(self, documents, concepts, model=DEFAULT_MODEL, io=TuiIO):
+    def __init__(self, documents, concepts, model=DEFAULT_MODEL, prompt=DEFAULT_PROMPT, io=TuiIO):
         self.io = io
         self.url = "https://aitta-api.csc.fi/openai/v1"
         self.model = model
+        self.prompt = prompt
         self.documents = documents if documents else None
         self.concepts = concepts if concepts else None
         self.session_list = []
@@ -100,25 +102,11 @@ class LlmManager:  # pylint: disable=too-many-instance-attributes
 
     def build_system_prompt(self, concept=None):
         """Returns prompt body for eval run and prompt+concept for system message"""
-        prompt_body = (
-            "Determine whether the following concept appears in the document. "
-            "The stance label (Yes/No) in front of the concept tells you whether "
-            "the concept promotes or opposes the climate law. "
-            "If it does, give the passage from the document that expresses it, "
-            "quoted exactly as written, without markdown or ellipses. "
-            "The passage may endorse or reject the argument. "
-            "Set agreement to true if the author endorses the argument, "
-            "and false if the author rejects it. "
-            "If the concept is not found, set present to false, passage to null, "
-            "and agreement to null. "
-            'Do not answer "yes" unless you can provide a supporting passage.'
-        )
-
         if concept is None:
-            return prompt_body
+            return self.prompt
 
         return (
-            f"{prompt_body}\nConcept: {concept['stance_label']}: {concept['concept']}"
+            f"{self.prompt}\nConcept: {concept['stance_label']}: {concept['concept']}"
         )
 
     def api_call(self, concept, document):
