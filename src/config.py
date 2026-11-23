@@ -5,7 +5,7 @@ AITTA_URL = "https://aitta-api.csc.fi"
 DEFAULT_MODEL = "openai/gpt-oss-120b"
 REQUEST_TIMEOUT_SECONDS = 300
 MAX_API_CALL_ATTEMPTS = 2
-MIN_PROMPT_LENGTH = 20  
+MIN_PROMPT_LENGTH = 20
 
 DEFAULT_PROMPT = (
         "Determine whether the following concept appears in the document. "
@@ -19,8 +19,7 @@ DEFAULT_PROMPT = (
         "If the concept is not found, set present to false, passage to null, "
         "and agreement to null. "
         'Do not answer "yes" unless you can provide a supporting passage.'
-    )
-
+)
 # DB folder's variables
 DATABASE_URL = os.getenv(
     "DATABASE_URL",

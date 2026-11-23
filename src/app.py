@@ -1,7 +1,7 @@
 import asyncio
 import asyncpg
 
-from db.db_calls import add_prompt 
+from db.db_calls import add_prompt
 from ai.ai import LlmManager, get_available_models
 from ai.batch import BatchManager
 from config import DEFAULT_MODEL, MIN_PROMPT_LENGTH
@@ -30,8 +30,8 @@ class App:
             return None
 
         selected_documents = self.documents.get_by_ids(document_ids)
-
         concept_ids = self.tui.ask_concept_ids(self.concepts.all_concepts)
+
         if concept_ids is None:
             return None
 
