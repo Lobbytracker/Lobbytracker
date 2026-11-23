@@ -38,7 +38,7 @@ async def init_db(database_url=DATABASE_URL):
         await conn.execute("""
             CREATE TABLE IF NOT EXISTS prompts (
                 id SERIAL PRIMARY KEY,
-                prompt TEXT NOT NULL,
+                prompt TEXT NOT NULL UNIQUE,
                 is_default BOOLEAN NOT NULL DEFAULT FALSE
             )
             """)
