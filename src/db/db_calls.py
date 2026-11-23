@@ -278,6 +278,7 @@ async def get_default_prompt(database_url=DATABASE_URL):
         await conn.close()
 
 async def set_default_prompt(prompt_id, database_url=DATABASE_URL):
+    """Sets the default prompt"""
     conn = await asyncpg.connect(database_url)
     try:
         async with conn.transaction():
