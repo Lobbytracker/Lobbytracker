@@ -36,6 +36,17 @@ async def init_db(database_url=DATABASE_URL):
             )
             """)
         await conn.execute("""
+            CREATE TABLE IF NOT EXISTS prompts (
+                id SERIAL PRIMARY KEY,
+                prompt TEXT NOT NULL,
+                is_default BOOLEAN NOT NULL DEFAULT FALSE
+            )
+            """)
+        await conn.execute("""
+            CREATE UNIQUE INDEX IF NOT EXISTS one_default_prompt
+            ON prompts (is_default) WHERE is_default
+            """)
+        await conn.execute("""
             CREATE TABLE IF NOT EXISTS evaluationRuns (
                 id SERIAL PRIMARY KEY,
                 model TEXT NOT NULL,
@@ -58,12 +69,6 @@ async def init_db(database_url=DATABASE_URL):
                 CHECK (present OR agreement IS NULL),
                 status TEXT NOT NULL CHECK(status IN ('failed', 'passed')),
                 UNIQUE (run_id, document_id, concept_id)
-            )
-            """)
-        await conn.execute("""
-            CREATE TABLE IF NOT EXISTS prompts (
-                id SERIAL PRIMARY KEY,
-                prompt TEXT NOT NULL
             )
             """)
     finally:

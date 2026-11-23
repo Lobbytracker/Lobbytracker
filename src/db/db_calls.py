@@ -241,12 +241,47 @@ async def get_failed_outputs(run_id, database_url=DATABASE_URL):
     finally:
         await conn.close()
 
+async def add_prompt(prompt, is_default=False, database_url=DATABASE_URL):
+    """Adds a prompt to the database and returns its id."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        return await conn.fetchval(
+            """
+            INSERT INTO prompts (prompt, is_default)
+            VALUES ($1, $2)
+            RETURNING id
+            """,
+            prompt,
+            is_default,
+        )
+    finally:
+        await conn.close()
+
 async def get_prompts(database_url=DATABASE_URL):
-    """Retrieves prompts from database."""
+    """Retrieves all prompts from database."""
     conn = await asyncpg.connect(database_url)
     try:
         return await conn.fetch(
-            "SELECT id, prompt FROM prompts ORDER BY id"
+            "SELECT id, prompt, is_default FROM prompts ORDER BY id"
         )
+    finally:
+        await conn.close()
+
+async def get_default_prompt(database_url=DATABASE_URL):
+    """Retrieves default prompt from database."""
+    conn = await asyncpg.connect(database_url)
+    try:
+        return await conn.fetchrow(
+            "SELECT id, prompt FROM prompts WHERE is_default"
+        )
+    finally:
+        await conn.close()
+
+async def set_default_prompt(prompt_id, database_url=DATABASE_URL):
+    conn = await asyncpg.connect(database_url)
+    try:
+        async with conn.transaction():
+            await conn.execute("UPDATE prompts SET is_default = FALSE WHERE is_default")
+            await conn.execute("UPDATE prompts SET is_default = TRUE WHERE id = $1", prompt_id)
     finally:
         await conn.close()
