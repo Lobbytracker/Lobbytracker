@@ -148,6 +148,10 @@ async def create_evaluation_run(model, prompt, database_url=DATABASE_URL):
     """Creates a new evaluation run in the database and returns the run ID."""
     conn = await asyncpg.connect(database_url)
     try:
+        await conn.execute(
+            "INSERT INTO prompts (prompt) VALUES ($1) ON CONFLICT (prompt) DO NOTHING",
+            prompt,
+        )
         return await conn.fetchval(
             """INSERT INTO evaluationRuns (model, prompt, start_time, end_time, completed_all)
             VALUES ($1, $2, NOW(), NOW(), FALSE)

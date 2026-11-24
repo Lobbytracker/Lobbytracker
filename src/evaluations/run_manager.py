@@ -37,6 +37,7 @@ class RunManager:
 
     def get_preview_info(self):
         """Returns a list of dictionaries containing preview information for each run."""
+        self.all_runs = asyncio.run(self.get_all_from_db())
         runs = []
         for run in self.all_runs:
             runs.append(
