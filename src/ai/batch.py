@@ -34,7 +34,7 @@ class BatchManager:  # pylint: disable=too-few-public-methods
 
             completed_all = not failed_calls
 
-            return batch_list, failed_calls
+            return run_id, batch_list, failed_calls
 
         finally:
             batch_run.finish_evaluation_run(run_id, completed_all)

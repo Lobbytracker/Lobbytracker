@@ -50,10 +50,11 @@ class App:
 
             completed_all = manager.completed_all()
 
-            return results, failures
-
         finally:
             manager.finish_evaluation_run(run_id, completed_all)
+
+        self.calculate_f1(run_id)
+        return results, failures
 
     def prompt_thing(self):
         """Runs a test analysis on the first document and two concepts."""
@@ -76,10 +77,11 @@ class App:
 
             completed_all = manager.completed_all()
 
-            return results, failures
-
         finally:
             manager.finish_evaluation_run(run_id, completed_all)
+
+        self.calculate_f1(run_id)
+        return results, failures
 
     def add_prompt(self):
         """Lets the user add a new prompt."""
@@ -170,8 +172,9 @@ class App:
         batch_manager = BatchManager(
             self.tui, selected_documents, concepts, self.selected_model
         )
-        results, failures = batch_manager.batch_call()
+        run_id, results, failures = batch_manager.batch_call()
         self.tui.print_batch_summary(len(results), len(failures))
+        self.calculate_f1(run_id)
 
     def calculate_f1(self, run_id=None):
         """Calculates the F1 score for the given evaluation run."""

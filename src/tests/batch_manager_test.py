@@ -19,7 +19,7 @@ class TestBatchManager(unittest.TestCase):
 
         result = self.manager.batch_call()
 
-        self.assertEqual((["result", "result"], []), result)
+        self.assertEqual((1, ["result", "result"], []), result)
 
     @patch("ai.batch.LlmManager")
     def test_batch_call_passes_evaluation_run_id(self, llm_manager):
