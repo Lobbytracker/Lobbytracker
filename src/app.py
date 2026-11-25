@@ -193,7 +193,7 @@ class App:
             4: self.change_model,
             5: self.print_golden_standard,
             6: self.call_batch,
-            7: self.calculate_f1,
+            7: self.print_runs,
             8: self.print_runs,
         }
 

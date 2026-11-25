@@ -25,8 +25,8 @@ class Tui:
             4: "Vaihda tekoälymallia",
             5: "Tulosta golden standard tiedostoille",
             6: "Suorita batch-prosessointi",
-            7: "Laske F1-arvo viimeisimmälle ajolle",
-            8: "Näytä aikaisemmat ajot",
+            7: "Laske F1-arvo halutulle ajolle",
+            8: "Vertaile ajojen F1-arvoja",
         }
 
         self.io.output(
