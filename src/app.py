@@ -158,9 +158,10 @@ class App:
     def print_runs(self):
         """Displays evaluation runs."""
         runs = self.runs.get_preview_info()
-        run_id = self.tui.ask_run_ids(runs)
-        if run_id is not None:
-            self.calculate_f1(run_id)
+        run_ids = self.tui.ask_run_ids(runs)
+        if run_ids is not None:
+            for run_id in run_ids.split(","):
+                self.calculate_f1(int(run_id))
 
     def call_batch(self):
         """Calls the BatchManager to process documents and concepts in batch mode."""

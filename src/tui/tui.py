@@ -186,20 +186,23 @@ class Tui:
         self.io.output(table)
 
     def ask_run_ids(self, runs):
-        """Shows runs and returns the selected run id."""
+        """Shows runs and returns the selected run ids."""
 
         if not runs:
             self.io.output("Ei valittavia ajoja")
             return None
 
-        prompt = "\nAnna ajon ID"
-        next_page_prompt = "\nLaske ajon F1-arvot antamalla ajon ID tai kirjoita x nähdäksesi seuraavat 10 ajoa: "
+        prompt = "\nAnna ajojen ID:t"
+        next_page_prompt = (
+            "\nLaske ajojen F1-arvot antamalla ajon ID:t pilkulla erotettuna "
+            "tai kirjoita x nähdäksesi seuraavat 10 ajoa: "
+        )
         start = 0
         runs = runs[::-1]
         valid_ids = {run["id"] for run in runs}
 
         while True:
-            run_id, start = self.show_next_items(
+            selection, start = self.show_next_items(
                 runs,
                 self.print_runs,
                 prompt,
@@ -207,16 +210,17 @@ class Tui:
                 start,
             )
             try:
-                run_id = int(run_id)
-            except (TypeError, ValueError):
-                self.io.output("Väärä syöte. Anna ajon ID.")
+                ids = [int(part) for part in selection.split(",")]
+            except ValueError:
+                self.io.output("Väärä syöte. Anna ID-numerot pilkulla erotettuna.")
                 continue
 
-            if run_id not in valid_ids:
-                self.io.output(f"Tuntematon ID: {run_id}")
+            invalid = [run_id for run_id in ids if run_id not in valid_ids]
+            if invalid:
+                self.io.output(f"Tuntemattomat ID:t: {invalid}")
                 continue
 
-            return run_id
+            return selection
 
     def ask_document_ids(self, documents, limit=None):
         """Shows documents and returns the selected document id."""
