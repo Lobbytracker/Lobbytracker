@@ -87,6 +87,18 @@ class RunManager:
         """Returns the summary info for the given runs."""
         runs = self.get_by_ids(run_ids)
         summary = {}
+        summary["ids"] = [
+            "model",
+            "prompt",
+            "F1 (macro)",
+            "F1 (micro)",
+            "precision",
+            "recall",
+            "tp",
+            "tn",
+            "fp",
+            "fn"
+        ]
         for run in runs:
             run_info = F1Calculator(run["id"])
             new_run = [
