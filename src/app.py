@@ -182,7 +182,7 @@ class App:
             self.tui, selected_documents, concepts, self.selected_model
         )
         run_id, results, failures = batch_manager.batch_call()
-        self.tui.print_batch_summary(len(results), len(failures))
+        self.tui.print_batch_summary(len(results), len(failures), failures)
         self.calculate_f1(run_id)
 
     def calculate_f1(self, run_id=None):

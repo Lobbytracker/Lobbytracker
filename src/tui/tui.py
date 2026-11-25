@@ -356,10 +356,11 @@ class Tui:
         self.io.output(f"Precision: {f1_calculator.calculate_precision()}")
         self.io.output(f"Recall: {f1_calculator.calculate_recall()}")
 
-    def print_batch_summary(self, completed_count, failed_count):
+    def print_batch_summary(self, completed_count, failed_count, failed_pairs):
         """Prints a summary for batch processing."""
         self.io.output(
-            f"Ajo valmis: {completed_count} onnistui, {failed_count} epäonnistui."
+            f"Ajo valmis: {completed_count} onnistui, {failed_count} epäonnistui. "
+            f"\nEpäonnistuneet dokumentti-konseptiparit (tiedosto ID, konsepti ID): {failed_pairs}"
         )
 
     def print_run_summary(self, summary: dict):

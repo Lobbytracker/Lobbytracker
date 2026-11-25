@@ -171,7 +171,7 @@ class LlmManager:  # pylint: disable=too-many-instance-attributes
             }
             self.output_to_db(result)  # saved for both passed and failed
             if failed:
-                self.failed_api_calls.append((run_id, concept, document))
+                self.failed_api_calls.append((document_id, concept["id"]))
                 continue
             self.session_list.append(result)
             if on_result is not None:
