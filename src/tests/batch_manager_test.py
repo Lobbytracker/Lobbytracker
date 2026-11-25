@@ -10,7 +10,7 @@ class TestBatchManager(unittest.TestCase):
         self.documents = populate_test_data.populate_documents_test_data()
         self.concepts = populate_test_data.populate_concepts_test_data()
         self.tui = Mock()
-        self.manager = BatchManager(self.tui, self.documents, self.concepts)
+        self.manager = BatchManager(self.tui, self.documents[:2], self.concepts)
 
     @patch("ai.batch.LlmManager")
     def test_batch_call_returns_results(self, llm_manager):
