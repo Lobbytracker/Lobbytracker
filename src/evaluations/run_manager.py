@@ -1,6 +1,7 @@
 import asyncio
 
 import db.db_calls as db
+from evaluations.f1_calculation import F1Calculator
 
 
 class RunManager:
@@ -80,3 +81,26 @@ class RunManager:
         if minutes:
             return f"{minutes}m {seconds}s"
         return f"{seconds}s"
+
+
+    def get_summary_info(self, run_ids: str):
+        """Returns the summary info for the given runs."""
+        runs = self.get_by_ids(run_ids)
+        summary = {}
+        for run in runs:
+            run_info = F1Calculator(run["id"])
+            new_run = [
+                run["model"],
+                f"{str(run["prompt"])[:20]}...",
+                run_info.calculate_f1_macro(),
+                run_info.calculate_f1_micro(),
+                run_info.calculate_precision(),
+                run_info.calculate_recall(),
+                run_info.calculate_true_positives(),
+                run_info.calculate_true_negatives(),
+                run_info.calculate_false_positives(),
+                run_info.calculate_false_negatives()
+            ]
+            summary[f"{run["id"]}"] = new_run
+
+        return summary

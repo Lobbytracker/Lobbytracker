@@ -163,6 +163,14 @@ class App:
             for run_id in run_ids.split(","):
                 self.calculate_f1(int(run_id))
 
+    def compare_runs(self):
+        """Displays the evaluation run summaries."""
+        runs = self.runs.get_preview_info()
+        run_ids = self.tui.ask_run_ids(runs)
+        if run_ids is not None:
+            summary_info = self.runs.get_summary_info(run_ids)
+            self.tui.print_run_summary(summary_info)
+
     def call_batch(self):
         """Calls the BatchManager to process documents and concepts in batch mode."""
         documents = self.documents.all_documents
@@ -195,7 +203,7 @@ class App:
             5: self.print_golden_standard,
             6: self.call_batch,
             7: self.print_runs,
-            8: self.print_runs,
+            8: self.compare_runs,
         }
 
         while True:

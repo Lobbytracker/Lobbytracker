@@ -361,3 +361,7 @@ class Tui:
         self.io.output(
             f"Ajo valmis: {completed_count} onnistui, {failed_count} epäonnistui."
         )
+
+    def print_run_summary(self, summary: dict):
+        """Prints the chosen run's F1 summary."""
+        self.io.output(summary)
