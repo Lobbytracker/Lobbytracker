@@ -364,4 +364,22 @@ class Tui:
 
     def print_run_summary(self, summary: dict):
         """Prints the chosen run's F1 summary."""
-        self.io.output(summary)
+        cols = list(summary.keys())
+        rows = []
+
+        for i in range(len(summary["ids"])):
+            new_row = []
+            for _, val in summary.items():
+                new_row.append(str(val[i]))
+            rows.append(new_row)
+
+        table = Table(
+            title="\nTiedot valituista ajoista:",
+            box=box.SIMPLE,
+            header_style="bold blue",
+        )
+        for col in cols:
+            table.add_column(col)
+        for row in rows:
+            table.add_row(*(str(r) for r in row))
+        self.io.output(table)
