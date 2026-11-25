@@ -1,7 +1,10 @@
-.PHONY: start app stop status db tables logs init-db reset-db
+.PHONY: start app stop status db tables logs init-db init-test-db reset-db
 
 init-db:
 	PYTHONPATH=src uv run src/db/initialize_db.py
+
+init-test-db:
+	uv run --directory src python -m db.initialize_test_db
 
 reset-db:
 	docker compose exec db psql -U postgres -d lobbytracker -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;'

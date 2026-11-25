@@ -13,6 +13,7 @@ This document describes the application structure, main technologies, and databa
 | `src/ai/ai.py` | Aitta connection, model catalogue, prompts, response schema, and result collection. |
 | `src/ai/batch.py` | Processes a limited set of document-concept pairs through sequential requests. |
 | `src/db/initialize_db.py` | Defines and runs database initialization when executed as a script. |
+| `src/db/initialize_test_db.py` | Initializes the test database using the shared database initializer. |
 | `src/db/db_calls.py` | Database reads and model result persistence using asyncpg. |
 | `src/evaluations/` | Encodes document-concept pairs and calculates scikit-learn metrics. |
 | `src/error_handling.py` | Defines the exception used to return from selection prompts to the main menu. |
@@ -52,3 +53,7 @@ Docker Compose initializes the tables after the database is healthy.
 | `llmoutput` | `id`, `document_id` (references `files.id`), `concept_id` (references `concepts.id`), `present` (boolean), `passage`, `agreement` (boolean or null). |
 
 Initialization creates missing tables but does not migrate existing table structures.
+
+Run `make init-test-db` to initialize the schema in the database specified by
+`TEST_DATABASE_URL`. The database must already exist; initialization does not
+populate it.
