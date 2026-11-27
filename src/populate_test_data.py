@@ -135,6 +135,7 @@ def populate_llm_output_test_data():
             "present": True,
             "passage": "AI-generated slop is a valuable part of society and should be protected.",
             "agreement": True,
+            "status": "passed",
         },
         {
             "id": 2,
@@ -144,6 +145,7 @@ def populate_llm_output_test_data():
             "present": False,
             "passage": None,
             "agreement": None,
+            "status": "passed",
         },
         {
             "id": 3,
@@ -153,6 +155,17 @@ def populate_llm_output_test_data():
             "present": True,
             "passage": "Cat girls are a valuable part of society and should be protected.",
             "agreement": True,
+            "status": "passed",
+        },
+        {
+            "id": 4,
+            "run_id": 2,
+            "document_id": 3,
+            "concept_id": 4,
+            "present": None,
+            "passage": None,
+            "agreement": None,
+            "status": "failed",
         },
     ]
     return llm_output

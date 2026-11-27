@@ -9,7 +9,7 @@ from evaluations.f1_calculation import F1Calculator
 from tui.tui_io import TuiIO
 
 
-class Tui:
+class Tui:  # pylint: disable=too-many-public-methods
     """Class for managing the text user interface."""
 
     def __init__(self, io=TuiIO):
@@ -344,6 +344,13 @@ class Tui:
     def calculate_f1_score(self, run_id=None):
         """Calculates F1 score for the given llm run."""
         f1_calculator = F1Calculator(run_id=run_id)
+
+        if not f1_calculator.llm_output:
+            self.io.output(
+                f"\nAjolla {run_id} ei ole onnistuneita tuloksia, F1-arvoja ei voi laskea."
+            )
+            return
+
         self.io.output("\n--- F1-arvojen laskenta ---")
         self.io.output(f"Ajon {run_id} F1-arvot:")
         self.io.output(f"True Positives: {f1_calculator.calculate_true_positives()}")
@@ -356,11 +363,17 @@ class Tui:
         self.io.output(f"Precision: {f1_calculator.calculate_precision()}")
         self.io.output(f"Recall: {f1_calculator.calculate_recall()}")
 
-    def print_batch_summary(self, completed_count, failed_count, failed_pairs):
+    def print_batch_summary(self, completed_count, failed_count):
         """Prints a summary for batch processing."""
         self.io.output(
             f"Ajo valmis: {completed_count} onnistui, {failed_count} epäonnistui. "
-            f"\nEpäonnistuneet dokumentti-konseptiparit (tiedosto ID, konsepti ID): {failed_pairs}"
+        )
+
+    def print_failed_batch_summary(self, failed_pairs):
+        """Prints a summary if there are failed pairs in batch processing."""
+        self.io.output(
+            "\nEpäonnistuneet dokumentti-konseptiparit "
+            f"(tiedosto ID, konsepti ID): {failed_pairs}"
         )
 
     def print_run_summary(self, summary: dict):
@@ -384,3 +397,9 @@ class Tui:
         for row in rows:
             table.add_row(*(str(r) for r in row))
         self.io.output(table)
+
+    def print_rerun_notice(self, rerun, max_reruns, count):
+        """Prints the rerun info."""
+        self.io.output(
+            f"{count} epäonnistunutta paria, automaattinen uudelleenajo {rerun}/{max_reruns}..."
+        )

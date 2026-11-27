@@ -137,7 +137,13 @@ async def save_output(output, database_url=DATABASE_URL):
         await conn.executemany(
             """INSERT INTO llmOutput (
             run_id, document_id, concept_id, present, passage, agreement, status)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)""",
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            ON CONFLICT (run_id, document_id, concept_id)
+            DO UPDATE SET
+                present = EXCLUDED.present,
+                passage = EXCLUDED.passage,
+                agreement = EXCLUDED.agreement,
+                status = EXCLUDED.status""",
             rows,
         )
     finally:
@@ -185,7 +191,9 @@ async def retrieve_document_concept_pair(run_id, database_url=DATABASE_URL):
     conn = await asyncpg.connect(database_url)
     try:
         pairs = await conn.fetch(
-            """SELECT run_id, document_id, concept_id, present FROM llmOutput WHERE run_id=$1""",
+            """SELECT run_id, document_id, concept_id, present
+            FROM llmOutput
+            WHERE run_id = $1 AND status = 'passed'""",
             run_id,
         )
         return [

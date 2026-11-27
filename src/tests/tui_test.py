@@ -31,3 +31,10 @@ class TestTui(unittest.TestCase):
         name = "testname.txt"
         formated = self.tui.format_document_name(name)
         self.assertEqual("testname", formated)
+
+    def test_print_failed_batch_summary(self):
+        self.tui.print_failed_batch_summary([(1, 2), (3, 4)])
+
+        self.assertEqual(1, len(self.io.outputs))
+        output = " ".join(self.io.outputs[0].split())
+        self.assertIn("(tiedosto ID, konsepti ID): [(1, 2), (3, 4)]", output)

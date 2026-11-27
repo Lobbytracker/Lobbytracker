@@ -178,6 +178,37 @@ class LlmManager:  # pylint: disable=too-many-instance-attributes
                 on_result(result)
         return self.session_list, self.failed_api_calls
 
+    def call_pair(self, run_id, document_row, concept, on_result=None):
+        """Runs one document/concept pair with attempts; saves and returns (result, failed)."""
+        api_call_result = None
+        for attempt in range(MAX_API_CALL_ATTEMPTS):
+            try:
+                api_call_result = self.api_call(concept, document_row["content"])
+                break
+            except (openai.APIError, ValidationError) as e:
+                self.io.output(
+                    f"Concept {concept['id']} attempt {attempt + 1} failed: {e}"
+                )
+
+        failed = api_call_result is None
+        result = {
+            "run_id": run_id,
+            "document_id": document_row["id"],
+            "concept_id": concept["id"],
+            "concept": concept["concept"],
+            "status": "failed" if failed else "passed",
+            "present": None if failed else api_call_result.present,
+            "passage": (
+                None if failed or not api_call_result.present
+                else api_call_result.passage
+            ),
+            "agreement": None if failed else api_call_result.agreement,
+        }
+        self.output_to_db(result)
+        if not failed and on_result is not None:
+            on_result(result)
+        return result, failed
+
     def completed_all(self):
         """Returns True if all API calls were successful, False otherwise."""
         return not self.failed_api_calls

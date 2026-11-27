@@ -49,3 +49,55 @@ class TestBatchManager(unittest.TestCase):
         self.assertEqual(self.documents[1], calls[2].args[0])
         self.assertEqual(self.concepts, calls[1].args[1])
         self.assertEqual(self.concepts, calls[2].args[1])
+
+    @patch("ai.batch.LlmManager")
+    def test_failed_pair_is_rerun_and_succeeds(self, llm_manager):
+        pair = (self.documents[0]["id"], self.concepts[0]["id"])
+        llm_manager.return_value.create_evaluation_run.return_value = 1
+        llm_manager.return_value.call_aitta.side_effect = [
+            ([], [pair]),      
+            (["ok"], []),      
+            (["rerun ok"], []), 
+        ]
+
+        run_id, results, failed = self.manager.batch_call()
+
+        self.assertEqual(1, run_id)
+        self.assertEqual(["ok", "rerun ok"], results)
+        self.assertEqual([], failed)
+        self.tui.print_rerun_notice.assert_called_once_with(1, 2, 1)
+
+        rerun_call = llm_manager.call_args_list[3]
+        self.assertEqual(self.documents[0], rerun_call.args[0])
+        self.assertEqual([self.concepts[0]], rerun_call.args[1])
+
+    @patch("ai.batch.LlmManager")
+    def test_pair_failing_every_time_stops_after_max_reruns(self, llm_manager):
+        pair = (self.documents[0]["id"], self.concepts[0]["id"])
+        llm_manager.return_value.create_evaluation_run.return_value = 1
+        llm_manager.return_value.call_aitta.side_effect = [
+            ([], [pair]),
+            (["ok"], []),
+            ([], [pair]),  
+            ([], [pair]),  
+        ]
+
+        _, results, failed = self.manager.batch_call()
+
+        self.assertEqual(["ok"], results)
+        self.assertEqual([pair], failed)
+        self.assertEqual(4, llm_manager.return_value.call_aitta.call_count)
+        self.assertEqual(2, self.tui.print_rerun_notice.call_count)
+        llm_manager.return_value.finish_evaluation_run.assert_called_once_with(
+            1, False
+        )
+
+    @patch("ai.batch.LlmManager")
+    def test_no_rerun_when_nothing_failed(self, llm_manager):
+        llm_manager.return_value.create_evaluation_run.return_value = 1
+        llm_manager.return_value.call_aitta.return_value = (["ok"], [])
+
+        self.manager.batch_call()
+
+        self.tui.print_rerun_notice.assert_not_called()
+        self.assertEqual(2, llm_manager.return_value.call_aitta.call_count)
